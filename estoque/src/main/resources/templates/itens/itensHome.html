@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Locais</title>
+    <title>Itens</title>
 
     <link href="/css/style.css" rel="stylesheet">
 
@@ -18,26 +18,26 @@
 
     <div class="sub-head">
 
-        <input id="searchInput" onkeyup="filtrarCards()" type="text" placeholder="  Pesquisar">
+        <input id="searchInput" onkeyup="filtrarItens()" type="text" placeholder="  Pesquisar">
 
         <div class="filtros">
-            <select name="Categoria" id="filtroCategoria" onclick="filtrarCards()">
+            <select name="Categoria" id="filtroCategoria" onclick="filtrarItens()">
                 <option value="">Categoria</option>
                 <option th:each="categoria : ${categorias}"
-                        th:value="${categoria}"
+                        th:value="${categoria.descricao}"
                         th:text="${categoria.descricao}">
                 </option>
             </select>
 
-            <select name="Local" id="filtroLocal" onclick="filtrarCards()">
+            <select name="Local" id="filtroLocal" onclick="filtrarItens()">
                 <option value="">Local</option>
-                <option th:each="local : ${itemEstoque}"
-                        th:value="${local.estoque}"
-                        th:text="${local.estoque.nome}">
+                <option th:each="local : ${estoques}"
+                        th:value="${local.nome}"
+                        th:text="${local.nome}">
                 </option>
             </select>
 
-            <select name="Faltando" id="filtroFaltando" onclick="filtrarCards()">
+            <select name="Faltando" id="filtroFaltando" onclick="filtrarItens()">
                 <option value="">Faltando</option>
                 <option value="true">Sim</option>
                 <option value="false">Não</option>
@@ -47,11 +47,36 @@
 
     </div>
     
-    <div class="cadastrar" > 
-        <a th:href="@{/itens/cadastrar}">
-            <button>Cadastrar +</button>
+
+    <div class="sub">
+
+        <div class="titulo">Itens</div> 
+
+            <div class="cadastrar" >
+                <a th:href="@{/itens/cadastrar}">
+                    <button>Cadastrar +</button>
+                </a>
+            </div>
+
+    </div>
+
+    <div class="paginacao">
+        <a th:if="${pagina.hasPrevious()}"
+        th:href="@{/itens(page=${pagina.number - 1}, size=${pagina.size})}">
+            ◀ Anterior
+        </a>
+
+        <span th:if="${pagina.hasPrevious() ||pagina.hasNext() }">
+            Página <span th:text="${pagina.number + 1}"></span>
+            de <span th:text="${pagina.totalPages}"></span>
+        </span>
+
+        <a th:if="${pagina.hasNext()}"
+        th:href="@{/itens(page=${pagina.number + 1}, size=${pagina.size})}">
+            Próxima ▶
         </a>
     </div>
+
 
     <div class="tabela-itens">
         <table>
@@ -61,13 +86,49 @@
                 <th>Categoria</th>
                 <th>Quantidade</th>
             </tr>
-            <tr th:each="i : ${itemEstoque}">
+            <tr class="conteudo-table"
+                th:each="i : ${itemEstoque}"
+                th:attr="data-item=${i.item.nome},
+                         data-local=${i.estoque.nome != null ? i.estoque.nome : ''},
+                         data-categoria=${i.item.categoriaItem.descricao != null ? i.item.categoriaItem.descricao : ''},
+                         data-faltando=${i.faltando != null ? i.faltando : ''}">
+
                 <th th:text="${i.item.nome}">item</th>
                 <th th:text="${i.estoque.nome}">local</th>
                 <th th:text="${i.item.categoriaItem.descricao}">categoria</th>
                 <th th:text="${i.quantidade}">quantidade</th>
             </tr>
         </table>
+        
     </div>
+
+    <script>
+        function filtrarItens(){
+
+            const searchInput = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+
+            const filtroCategoria = (document.getElementById('filtroCategoria').value);
+            const filtroLocal = (document.getElementById('filtroLocal').value);
+            const filtroFaltando = (document.getElementById('filtroFaltando').value);
+
+            const itens = document.querySelectorAll('.tabela-itens .conteudo-table');
+
+            itens.forEach(i => {
+                const itemNome = (i.dataset.item || '').toLowerCase().trim();
+                const categoria = i.dataset.categoria || '';
+                const local = i.dataset.local || '';
+                const faltando = i.dataset.faltando || '';
+
+                const matchesItemNome = itemNome.includes(searchInput);
+                
+                const matchesCategoria = filtroCategoria === '' ? true : (categoria !== '' && categoria === filtroCategoria);
+                const matchesLocal = filtroLocal === '' ? true : (local !== '' && local === filtroLocal);
+                const matchesFaltando = filtroFaltando == '' ? true : (faltando != '' && faltando == filtroFaltando);
+
+                i.style.display = (matchesCategoria && matchesFaltando && matchesItemNome && matchesLocal) ? 'table-row' : 'none';
+            });
+        }
+    </script>
+
 </body>
 </html>

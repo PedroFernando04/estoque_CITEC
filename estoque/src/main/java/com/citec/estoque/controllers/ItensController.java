@@ -3,11 +3,14 @@ package com.citec.estoque.controllers;
 import com.citec.estoque.entities.enums.EnumCategoriasItem;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
+import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
 import com.citec.estoque.repositorys.tabelasAuxiliares.ItemEstoqueRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,14 +36,23 @@ public class ItensController {
 
 
     @GetMapping("/itens")
-    public String itens(Model model){
+    public String itens(Model model,
+                        @RequestParam(defaultValue = "0") Integer page,
+                        @RequestParam(defaultValue = "15") Integer size){
 
-        List<ItemEstoque> itemEstoque = itemEstoqueRepository.findAll();
-        List<EnumCategoriasItem> categorias = Arrays.asList(EnumCategoriasItem.values());
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ItemEstoque> pagina = itemEstoqueRepository.findAll(pageRequest);
+
+        List<Estoque> estoques = pagina.stream()
+                        .map(ItemEstoque::getEstoque)
+                                .distinct()
+                                        .toList();
 
 
-        model.addAttribute("itemEstoque", itemEstoque);
-        model.addAttribute("categorias", categorias);
+        model.addAttribute("estoques", estoques);
+        model.addAttribute("pagina", pagina);
+        model.addAttribute("itemEstoque", pagina.getContent());
+        model.addAttribute("categorias", Arrays.asList(EnumCategoriasItem.values()));
 
         return "itens/itensHome";
     }
@@ -69,7 +81,7 @@ public class ItensController {
 
              itemService.salvarItem(item);
 
-         }catch (IllegalArgumentException e){
+         } catch (IllegalArgumentException e){
              return "redirect:/itens/cadastrar";
          }
 

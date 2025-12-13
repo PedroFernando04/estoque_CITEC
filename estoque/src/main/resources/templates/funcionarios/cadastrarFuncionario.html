@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Funcionario</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="titulo">Funcionários</div>
+
+    <form th:action="@{/funcionarios/cadastrar}" method="post">
+
+        <div class="formulario">
+            <label for="nome">Nome:</label>
+            <input type="text" name="nome" id="nome">
+        </div>
+
+        <div class="formulario">
+            <label for="clero">Clero: </label>
+            <select name="clero" id="clero">
+                <option th:each="clero : ${clerosExistentes}"
+                        th:value="${clero}"
+                        th:text="${clero.descricao}">
+                </option>
+            </select>
+        </div>
+
+        <div class="formulario">
+            <button type="submit" id="botaoEnviar">Registrar</button>
+        </div>
+    </form>
+</body>
+</html>

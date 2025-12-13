@@ -1,5 +1,6 @@
 package com.citec.estoque.entities.tabelasAuxiliares;
 
+import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
 import jakarta.persistence.*;
@@ -36,6 +37,10 @@ public class Movimentacao {
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime data;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private EnumStatusMovimentacao status;
 
     //Construtores
     public Movimentacao() {}

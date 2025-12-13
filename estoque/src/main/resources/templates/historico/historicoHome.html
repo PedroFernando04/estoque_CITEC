@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="sub-head" id="sub-head-movimentacao">
+
+        <div class="filtros" >
+            <select name="Movimento" id="filtroMovimento" onclick="filtrarHistorico()">
+                <option value="">Movimento</option>
+                <option th:each="status : ${statusExistentes}"
+                        th:value="${status.descricao}"
+                        th:text="${status.descricao}">
+                </option>
+            </select>
+
+            <select name="Origem" id="filtroOrigem" onclick="filtrarHistorico()">
+                <option value="">Origem</option>
+                <option th:each="o : ${origensExistentes}"
+                        th:value="${o != null ? o.nome : ''}"
+                        th:text="${o != null ? o.nome : ''}">
+                </option>
+            </select>
+
+            <select name="Destino" id="filtroDestino" onclick="filtrarHistorico()">
+                <option value="">Destino</option>
+                <option th:each="d : ${destinosExistentes}"
+                        th:value="${d.nome}"
+                        th:text="${d.nome}">>
+                </option>
+            </select>
+
+            <select name="Item" id="filtroItem" onclick="filtrarHistorico()">
+                <option value="">Item</option>
+                <option th:each="i : ${itensExistentes}"
+                        th:value="${i.nome}"
+                        th:text="${i.nome}">>
+                </option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="sub">
+        <div class="titulo">
+            Histórico
+        </div>
+    </div>
+
+    <div class="historico">
+
+            <div>
+                <table >
+                    <tr class="cabecalho-table">
+                        <th>Movimento</th>
+                        <th>Origem</th>
+                        <th>Destino</th>
+                        <th>Item</th>
+                        <th>Quantidade</th>
+                        <th>Data</th>
+                    </tr>
+                    <tr class="linha-historico"
+                        th:if="${!movimentacoes.empty}"
+                        th:each="movimento : ${movimentacoes}"
+                        th:attr="data-movimento=${movimento.status.descricao != null ? movimento.status.descricao : ''},
+                                 data-origem=${movimento.origem != null ? movimento.origem.nome : ''},
+                                 data-destino=${movimento.destino.nome != null ? movimento.destino.nome : ''},
+                                 data-item=${movimento.item.nome != null ? movimento.item.nome : ''}">
+                         
+                        <th th:text="${movimento.status.descricao}">movimento</th>
+                        <th th:text="${movimento.origem != null} ? ${movimento.origem.nome} : ''">origem</th>
+                        <th th:text="${movimento.destino.nome}">destino</th>
+                        <th th:text="${movimento.item.nome}">item</th>
+                        <th th:text="${movimento.quantidade}">quantidade</th>
+                        <th th:text="${#temporals.format(movimento.data, 'dd/MM/yyyy HH:mm')}">data</th>
+                    </tr>
+                </table>
+                <h3 th:if="${movimentacoes.empty}">Nenhuma movimentação registrada!</h3>
+            </div>
+        </div>
+
+        <script>
+        function filtrarHistorico(){
+
+            const filtroMovimento = (document.getElementById('filtroMovimento').value).trim();
+            const filtroOrigem = (document.getElementById('filtroOrigem').value).trim();
+            const filtroDestino = (document.getElementById('filtroDestino').value).trim();
+            const filtroItem = (document.getElementById('filtroItem').value).trim();
+
+            const movimentos = document.querySelectorAll('.linha-historico');
+
+            movimentos.forEach(m => {
+
+                const movimento = (m.dataset.movimento || '').trim();
+                const origem = (m.dataset.origem || '').trim();
+                const destino = (m.dataset.destino || '').trim();
+                const item = (m.dataset.item || '').trim();
+                
+                const matchesMovimento = filtroMovimento === '' ? true : (movimento !== '' && movimento === filtroMovimento);
+                const matchesOrigem = filtroOrigem === '' ? true : (origem !== '' && origem === filtroOrigem);
+                const matchesDestino = filtroDestino == '' ? true : (destino != '' && destino == filtroDestino);
+                const matchesItem = filtroItem == '' ? true : (item != '' && item == filtroItem);
+
+                m.style.display = (matchesMovimento && matchesOrigem && matchesDestino && matchesItem) ? 'table-row' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

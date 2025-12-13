@@ -1,18 +1,24 @@
 package com.citec.estoque.controllers;
 
 import com.citec.estoque.entities.enums.EnumCategoriasItem;
+import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
+import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
 import com.citec.estoque.entities.tabelasAuxiliares.Movimentacao;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
+import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
 import com.citec.estoque.entities.tabelasPrincipais.Projeto;
+import com.citec.estoque.repositorys.tabelasAuxiliares.FuncionarioProjetoRepository;
 import com.citec.estoque.repositorys.tabelasAuxiliares.ItemEstoqueRepository;
 import com.citec.estoque.repositorys.tabelasAuxiliares.MovimentacaoRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.EstoqueRepository;
+import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
 import com.citec.estoque.services.EstoqueService;
+import com.citec.estoque.services.ItemService;
 import com.citec.estoque.services.ProjetoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,6 +55,12 @@ public class LocaisController {
     @Autowired
     private MovimentacaoRepository movimentacaoRepository;
 
+    @Autowired
+    private FuncionarioProjetoRepository funcionarioProjetoRepository;
+
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
+
     @GetMapping({"/", "/locais"})
     public String locais(Model model) {
 
@@ -78,8 +90,10 @@ public class LocaisController {
     public String cadastrarLocal(Model model) {
 
         List<EnumStatusProjeto> statusExistentes = Arrays.asList(EnumStatusProjeto.values());
-
         model.addAttribute("statusExistentes", statusExistentes);
+
+        List<Funcionario> funcionariosExistentes = funcionarioRepository.findAll();
+        model.addAttribute("funcionariosExistentes", funcionariosExistentes);
 
         return "estoquesProjetos/cadastrarLocal";
     }
@@ -88,7 +102,11 @@ public class LocaisController {
     public String cadastrarLocal(@RequestParam String tipo,
                                  @RequestParam String nome,
                                  @RequestParam(value = "solicitante", required = false) String nomeSolicitante,
-                                 @RequestParam(value = "status", required = false) EnumStatusProjeto status) {
+                                 @RequestParam(value = "status", required = false) EnumStatusProjeto status,
+                                 @RequestParam(value = "funcionario", required = false) List<Long> funcionariosIds,
+                                 Model model) {
+
+        model.addAttribute("tipo", tipo);
 
         try {
             if (tipo.equals("estoque")) {
@@ -105,6 +123,19 @@ public class LocaisController {
                 projeto.setStatusProjeto(status);
 
                 projetoService.salvarProjeto(projeto);
+
+
+                for(Long funcionarioId : funcionariosIds){
+
+                    FuncionarioProjeto funcionarioProjeto = new FuncionarioProjeto();
+                    Funcionario funcionario = funcionarioRepository.findById(funcionarioId).get();
+                    funcionarioProjeto.setFuncionario(funcionario);
+                    funcionarioProjeto.setProjeto(projeto);
+
+                    funcionarioProjetoRepository.save(funcionarioProjeto);
+                }
+
+
             }
             else
                 throw new IllegalArgumentException();
@@ -122,13 +153,15 @@ public class LocaisController {
 
         if (estoque.isPresent() && estoque.get().getTipo().equals("Projeto")) {
             model.addAttribute("local", projetoRepository.findById(id).get());
+
+            List<FuncionarioProjeto> funcionariosLocal = funcionarioProjetoRepository.findByProjetoId(id);
+            model.addAttribute("funcionariosLocal", funcionariosLocal);
         }
         else if (estoque.isPresent() && estoque.get().getTipo().equals("Estoque")) {
             model.addAttribute("local", estoqueRepository.findById(id).get());
         }
         else
             throw new IllegalArgumentException("Problema no tipo do local");
-
 
 
         List<ItemEstoque> itemEstoqueLocal = itemEstoqueRepository.findByEstoqueId(id);
@@ -139,7 +172,7 @@ public class LocaisController {
 
         List<Movimentacao> movimentacoesOrigem = movimentacaoRepository.findByOrigemId(id);
         List<Movimentacao> movimentacoesDestino = movimentacaoRepository.findByDestinoId(id);
-        List<Movimentacao> movimentacaosLocal = Arrays.asList();
+        List<Movimentacao> movimentacaosLocal = new ArrayList<>();
         movimentacaosLocal.addAll(movimentacoesOrigem);
         movimentacaosLocal.addAll(movimentacoesDestino);
         model.addAttribute("movimentacoesLocal", movimentacaosLocal);
@@ -174,6 +207,7 @@ public class LocaisController {
         movimentacao.setItem(item.get());
         movimentacao.setQuantidade(quantidade);
         movimentacao.setDestino(estoque.get());
+        movimentacao.setStatus(EnumStatusMovimentacao.ENTRADA);
         movimentacaoRepository.save(movimentacao);
 
         return  "redirect:/local/{id}";

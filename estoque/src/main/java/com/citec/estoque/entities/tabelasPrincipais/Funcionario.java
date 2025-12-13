@@ -18,6 +18,7 @@ public class Funcionario {
     private String nome;
 
     @Column()
+    @Enumerated(EnumType.STRING)
     private EnumCleroFuncionario clero;
 
     //Construtores

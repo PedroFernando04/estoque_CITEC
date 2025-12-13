@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Locais</title>
+    <title>Cadastro de Local</title>
 
     <link href="/css/style.css" rel="stylesheet">
 
@@ -51,6 +51,16 @@
                                 th:each="status : ${statusExistentes}"
                                 th:value="${status}"
                                 th:text="${status.descricao}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="formulario">
+                        <label for="funcionario">Responsável(is): </label>
+                        <select multiple name="funcionario" id="funcionario" class="select-multiple">
+                            <option th:each="funcionario : ${funcionariosExistentes}"
+                                    th:value="${funcionario.id}"
+                                    th:text="${funcionario.nome}">
                             </option>
                         </select>
                     </div>
