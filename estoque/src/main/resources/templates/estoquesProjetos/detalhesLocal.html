@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locais</title>
+
+    <link href="/static/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="sub-head-detalhes">
+        <div  class="titulo-detalhe">
+
+            <h1 th:text="${local.nome}">Nome Local</h1>
+
+            <div class="label-detalhe">
+
+                <div class="card-label"
+                    th:if="${local.tipo}"
+                    th:text="${local.tipo}"
+                    th:classappend="${#strings.containsIgnoreCase(local.tipo, 'Estoque')} ? ' card-label-estoque' : ' card-label-projeto'">
+                    Tipo local
+                </div>
+
+                <div class="card-label"
+                    th:if="${local.tipo == 'Projeto'}"
+                    th:text="${local.statusProjeto.descricao}"
+                    th:classappend="${local.classeLabelStatus}"
+                    >
+                    Status local
+                </div>
+
+            </div>
+            
+        </div>
+        <div class="solicitante-detalhe">
+            <h2 th:if="${local.tipo == 'Projeto'}">Solicitante: </h2>
+            <h2 
+                th:if="${local.tipo == 'Projeto'}"
+                th:text="${local.nomeSolicitante}"> nome solicitante
+            </h2>
+
+        </div>
+        
+    </div>
+
+    <div class="container-detalhe">
+
+        <div class="item">
+            <div class="titulo-item">
+                <h3>Itens</h3>
+                <button onclick="abrirModal()">Adicionar +</button>
+            </div>
+
+
+            <form th:action="@{/local/{id}(id=${local.id})}" method="post">
+
+                <div class="modal" id="modal-adicionar">
+
+                    <div class="modal-content">
+                        <div class="cabecalho">
+                            <h3>Item +</h3>
+                            <button type="button" onclick="fecharModal()">&times;</button>
+                        </div>
+                        <div class="modal-content-input">
+                            <input list="lista-item" name="itemNome" placeholder="  Digite ou Selecione">
+                            <datalist id="lista-item">
+                                <option th:each="item : ${itensExistentes}"
+                                        th:value="${item.nome.toString()}">
+                                </option>
+                            </datalist>
+                            <input type="number" name="quantidade" id="quantidade" placeholder="  Quantidade">
+
+                            <div class="formulario">
+                                <button type="submit" id="botaoEnviar">Registrar</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </form>
+
+            
+            <div class="painel-item">
+                <table >
+                    <tr class="cabecalho-table">
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>RM</th>
+                        <th>Patrimonio</th>
+                        <th>Quantidade</th>
+                        <th th:if="${local.tipo == 'Estoque'}">Faltando</th>
+                    </tr>
+                    <tr th:if="${!itensLocal.empty}"
+                        th:each="itemEstoque : ${itensLocal}">
+                        <th th:text="${itemEstoque.item.nome}">nome</th>
+                        <th th:text="${itemEstoque.item.categoriaItem.descricao}">categoria</th>
+                        <th th:text="${itemEstoque.item.codigoRM}">rm</th>
+                        <th th:text="${itemEstoque.item.codigoPatrimonio}">patrimonio</th>
+                        <th th:text="${itemEstoque.quantidade}">quantidade</th>
+                        <th th:if="${local.tipo == 'Estoque'}"
+                            th:text="${itemEstoque.faltando} ? '❌ Faltando ❌' : '✅ OK ✅'">faltando</th>
+                    </tr>
+                </table>
+                
+                <h3 th:if="${itensLocal.empty}">Nenhum item associado!</h3>
+            </div>
+        </div>
+
+        <div class="historico">
+            <div class="titulo-historico">
+                <h3>Histórico</h3>
+            </div>
+
+            <div>
+                <table >
+                    <tr class="cabecalho-table">
+                        <th>Movimento</th>
+                        <th>Origem</th>
+                        <th>Destino</th>
+                        <th>Item</th>
+                        <th>Quantidade</th>
+                        <th>Data</th>
+                    </tr>
+                    <tr th:if="${!movimentacoesLocal.empty}"
+                        th:each="movimento : ${movimentacoesLocal}">
+                        <th th:text="${movimento.origem == movimento.id} ? 'Saída' : 'Entrada'">movimento</th>
+                        <th th:text="${movimento.origem.nome}">origem</th>
+                        <th th:text="${movimento.destino.nome}">destino</th>
+                        <th th:text="${movimento.item.nome}">item</th>
+                        <th th:text="${movimento.quantidade}">quantidade</th>
+                        <th th:text="${movimento.data}">data</th>
+                    </tr>
+                </table>
+                <h3 th:if="${movimentacoesLocal.empty}">Nenhuma movimentação registrada!</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModal(){
+            document.getElementById("modal-adicionar").style.display = "block";
+        }
+
+        function fecharModal(){
+            document.getElementById("modal-adicionar").style.display = "none";
+        }
+    </script>
+</body>
+</html>

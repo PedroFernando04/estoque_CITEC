@@ -1,0 +1,181 @@
+package com.citec.estoque.controllers;
+
+import com.citec.estoque.entities.enums.EnumCategoriasItem;
+import com.citec.estoque.entities.enums.EnumStatusProjeto;
+import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
+import com.citec.estoque.entities.tabelasAuxiliares.Movimentacao;
+import com.citec.estoque.entities.tabelasPrincipais.Estoque;
+import com.citec.estoque.entities.tabelasPrincipais.Item;
+import com.citec.estoque.entities.tabelasPrincipais.Projeto;
+import com.citec.estoque.repositorys.tabelasAuxiliares.ItemEstoqueRepository;
+import com.citec.estoque.repositorys.tabelasAuxiliares.MovimentacaoRepository;
+import com.citec.estoque.repositorys.tabelasPrincipais.EstoqueRepository;
+import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
+import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
+import com.citec.estoque.services.EstoqueService;
+import com.citec.estoque.services.ProjetoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+@Controller
+@RequestMapping
+public class LocaisController {
+    @Autowired
+    private EstoqueRepository estoqueRepository;
+
+    @Autowired
+    private ProjetoRepository projetoRepository;
+
+    @Autowired
+    private EstoqueService estoqueService;
+
+    @Autowired
+    private ProjetoService projetoService;
+
+    @Autowired
+    private ItemEstoqueRepository itemEstoqueRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private MovimentacaoRepository movimentacaoRepository;
+
+    @GetMapping({"/", "/locais"})
+    public String locais(Model model) {
+
+        List<Estoque> estoques = estoqueRepository.findAll();
+        List<Projeto> projetos = projetoRepository.findAll();
+
+        List<String> solicitantesExistentes = projetos.stream()
+                        .map(Projeto::getNomeSolicitante)
+                        .distinct()
+                        .filter(s -> s != null && !s.isEmpty())
+                        .toList();
+
+
+        List<EnumStatusProjeto> statusExistentes = Arrays.asList(EnumStatusProjeto.values());
+
+
+
+        model.addAttribute("statusExistentes", statusExistentes);
+        model.addAttribute("solicitantesExistentes", solicitantesExistentes);
+        model.addAttribute("locais", estoques);
+
+
+        return "estoquesProjetos/locais";
+    }
+
+    @GetMapping("/locais/cadastrar")
+    public String cadastrarLocal(Model model) {
+
+        List<EnumStatusProjeto> statusExistentes = Arrays.asList(EnumStatusProjeto.values());
+
+        model.addAttribute("statusExistentes", statusExistentes);
+
+        return "estoquesProjetos/cadastrarLocal";
+    }
+
+    @PostMapping("/locais/cadastrar")
+    public String cadastrarLocal(@RequestParam String tipo,
+                                 @RequestParam String nome,
+                                 @RequestParam(value = "solicitante", required = false) String nomeSolicitante,
+                                 @RequestParam(value = "status", required = false) EnumStatusProjeto status) {
+
+        try {
+            if (tipo.equals("estoque")) {
+                Estoque estoque = new Estoque();
+                estoque.setNome(nome);
+
+                estoqueService.salvarEstoque(estoque);
+            }
+
+            else if (tipo.equals("projeto")){
+                Projeto projeto = new Projeto();
+                projeto.setNome(nome);
+                projeto.setNomeSolicitante(nomeSolicitante);
+                projeto.setStatusProjeto(status);
+
+                projetoService.salvarProjeto(projeto);
+            }
+            else
+                throw new IllegalArgumentException();
+
+            return "redirect:/locais";
+
+        } catch (IllegalArgumentException e) {
+            return "redirect:/locais/cadastrar";
+        }
+    }
+
+    @GetMapping("/local/{id}")
+    public String local(Model model, @PathVariable Long id) {
+        Optional<Estoque> estoque = estoqueRepository.findById(id);
+
+        if (estoque.isPresent() && estoque.get().getTipo().equals("Projeto")) {
+            model.addAttribute("local", projetoRepository.findById(id).get());
+        }
+        else if (estoque.isPresent() && estoque.get().getTipo().equals("Estoque")) {
+            model.addAttribute("local", estoqueRepository.findById(id).get());
+        }
+        else
+            throw new IllegalArgumentException("Problema no tipo do local");
+
+
+
+        List<ItemEstoque> itemEstoqueLocal = itemEstoqueRepository.findByEstoqueId(id);
+        model.addAttribute("itensLocal", itemEstoqueLocal);
+
+        List<Item> itensExistentes = itemRepository.findAll();
+        model.addAttribute("itensExistentes", itensExistentes);
+
+        List<Movimentacao> movimentacoesOrigem = movimentacaoRepository.findByOrigemId(id);
+        List<Movimentacao> movimentacoesDestino = movimentacaoRepository.findByDestinoId(id);
+        List<Movimentacao> movimentacaosLocal = Arrays.asList();
+        movimentacaosLocal.addAll(movimentacoesOrigem);
+        movimentacaosLocal.addAll(movimentacoesDestino);
+        model.addAttribute("movimentacoesLocal", movimentacaosLocal);
+
+
+        return "estoquesProjetos/detalhesLocal";
+    }
+
+    @PostMapping("/local/{id}")
+    public String local(@PathVariable Long id,
+                        @RequestParam String itemNome,
+                        @RequestParam Integer quantidade){
+
+        Optional<Item> item = itemRepository.findByNomeIgnoreCase(itemNome);
+        Optional<Estoque> estoque = estoqueRepository.findById(id);
+
+        Optional<ItemEstoque> itemEstoqueLocal = itemEstoqueRepository.findByEstoqueIdAndItemId(id, item.get().getId());
+        if (itemEstoqueLocal.isPresent()) {
+            throw new IllegalArgumentException("Item já cadastrado neste local");
+        }
+
+        ItemEstoque itemEstoque = new ItemEstoque();
+
+        itemEstoque.setQuantidade(quantidade);
+        itemEstoque.setEstoque(estoque.get());
+        itemEstoque.setItem(item.get());
+
+        itemEstoqueRepository.save(itemEstoque);
+
+        Movimentacao movimentacao = new Movimentacao();
+        movimentacao.setData(LocalDateTime.now());
+        movimentacao.setItem(item.get());
+        movimentacao.setQuantidade(quantidade);
+        movimentacao.setDestino(estoque.get());
+        movimentacaoRepository.save(movimentacao);
+
+        return  "redirect:/local/{id}";
+    }
+}

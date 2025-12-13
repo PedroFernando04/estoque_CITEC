@@ -1,0 +1,401 @@
+
+*{
+  font-family: "Nunito Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: weight;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100,
+    "YTLC" 500;
+}
+
+body{
+    margin: 0;
+
+    background-color: #e8eaed;
+    color: #202042;
+}
+
+
+
+/* HEADER */
+
+
+header{
+    background-color: #0069AD;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    padding: 15px 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header ul{
+    display: flex;
+    flex-direction: row;
+}
+
+header ul ol{
+    cursor: pointer;
+    font-weight: bold;
+    color: #dad5d5;
+    transition: color 0.2s;
+}
+
+header ul ol:hover {
+    color: #8ac8ee;
+}
+
+header ul ol a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* SUB HEAD */
+
+.sub-head{
+    background-color: #069eb9;
+    
+    padding: 15px 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+
+}
+
+input{
+    border-radius: 20px;
+    border-style: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+
+    height: 25px;
+
+}
+
+select{
+    
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    
+    padding: 0 10px;
+    height: 30px;
+    margin-left: 10px;
+    text-align: center;
+
+    font-weight: bold;
+
+    
+}
+
+.filtros select option {
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+}
+
+
+/* HOVER PADRÃO */
+.cadastrar button:hover,
+.filtros select:hover,
+.sub-head input:hover{
+    transform: scale(1.05); 
+    background-color: #e2e2e2;
+    cursor: pointer;
+}
+
+/* BOTÃO CADASTRAR */
+
+.cadastrar{
+    display: flex;
+    justify-content: end;
+
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.cadastrar button{
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    
+    padding: 0 20px;
+    height: 30px;
+    margin-top: 10px;
+
+    font-weight: bold;
+    background-color: white;
+
+}
+
+.titulo{
+    font-size: 22px;
+    margin: 10px 0 20px 25px;
+    font-weight: bold;
+    color: #333;
+    font-size: xx-large;
+}
+
+/* CARDS */
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 30px;
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    height: 140px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+    text-align: center;
+
+
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.card h4 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 2.5em;
+}
+
+.card-label {
+    bottom: 10px;
+    right: 10px;
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1px;
+    z-index: 10;
+}
+
+.labels{
+    flex-direction: row;
+    display: flex;
+}
+
+.card-label-estoque {
+    background-color: #1e64e6;
+    color: white;
+}
+
+.card-label-projeto {
+    background-color: #f0c828;
+    color: #333;
+}
+
+.card-label-planejado {
+    background-color: yellow;
+    color: #333;
+}
+
+.card-label-andamento {
+    background-color: #28b7f0;
+    color: #333;
+}
+
+.card-label-concluido {
+    background-color: #1ee649;
+    color: #333;
+}
+
+.card-label-cancelado {
+    background-color: #f02839;
+    color: white
+    ;
+}
+
+/* ----------- TELA DE CADASTRO DE ESTOQUE ------------*/
+.containerCadastrar{
+    margin-top: 5em;
+}
+
+.formulario{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px;
+
+    font-size: large;
+
+}
+
+#selecioneTipo{
+    font-size:x-large;
+}
+
+.formulario label{
+    font-weight: bold;
+    margin-right: 10px;
+
+}
+
+
+form button{
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    
+    padding: 0 20px;
+    height: 30px;
+    margin-top: 10px;
+
+    font-weight: bold;
+    background-color: #0069AD;
+    color: white;
+}
+
+form button:hover{
+    background-color: #0a84d4;
+    transform: scale(1.05);
+}
+
+/* ----------- TELA DE DETALHES DE ESTOQUE ------------*/
+
+.sub-head-detalhes{
+    display: flex;
+    padding: 40px;
+    justify-content: space-between;
+}
+
+.sub-head-detalhes h1{
+    margin-left: 20px;
+}
+
+.titulo-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.titulo-item button{
+    padding: 4px 12px;
+    border-radius: 10px;
+    background-color: #0bbada;
+    border: none;
+    font-weight: bold;
+    height: 3em;
+}
+.titulo-item button:hover{
+    cursor: pointer;
+    transform: scale(1.05);
+    background-color: #0acff1;
+}
+
+.label-detalhe{
+    margin-left: 10px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.solicitante-detalhe,
+.titulo-detalhe{
+    display: flex;
+    align-items: center;
+}
+
+
+.solicitante-detalhe h2{
+    margin-right: 1em;
+}
+
+.container-detalhe{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+table{
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    width: 100%;
+    margin-top: 20px;
+}
+
+th{
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.historico,
+.item{
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+}
+
+/* ----------- TELA DE HOME DE ITEM ------------*/
+
+.tabela-itens{
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    
+}
+
+.modal{
+    background-color: #069eb9;
+    padding: 20px;
+    border-radius: 15px;
+
+    display: none;
+}
+
+.modal-content{
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content-input{
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    flex-direction: column;
+}
+
+.modal-content input{
+    width: 20em;
+}
+
+.cabecalho{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -20px;
+}
+
+.cabecalho-table{
+    background-color: #e0e0e0;
+    
+}
+
+
+.titulo-historico{
+    display: flex;
+    justify-content: left;
+}

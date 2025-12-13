@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locais</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="sub-head">
+
+        <input id="searchInput" onkeyup="filtrarCards()" type="text" placeholder="  Pesquisar">
+
+        <div class="filtros">
+            <select name="Solicitante" id="filtroSolicitante" onclick="filtrarCards()">
+                <option value="">Solicitante</option>
+                <option th:each="solicitante : ${solicitantesExistentes}"
+                        th:value="${solicitante}"
+                        th:text="${solicitante}">
+                </option>
+            </select>
+
+            <select name="Status" id="filtroStatus" onclick="filtrarCards()">
+                <option value="">Status</option>
+                <option th:each="status : ${statusExistentes}"
+                        th:value="${status.descricao}"
+                        th:text="${status.descricao}">
+                </option>
+            </select>
+
+            <select name="Tipo" id="filtroTipo" onclick="filtrarCards()">
+                <option value="">Tipo</option>
+                <option value="ESTOQUE">Estoque</option>
+                <option value="PROJETO">Projeto</option>
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="cadastrar" > 
+        <a th:href="@{/locais/cadastrar}">
+            <button>Cadastrar +</button>
+        </a>
+    </div>
+
+    <div class="cards-container">
+
+        <div class="titulo">Locais</div> 
+
+        <div class="cards-grid">
+            <div class="card"
+                 th:each="l : ${locais}"
+                 th:attr="data-tipo=${l.tipo != null ? l.tipo.toString() : ''},
+                          data-status=${l.tipo == 'Projeto' ? l.statusProjeto.descricao : ''},
+                          data-solicitante=${l.tipo == 'Projeto'  ? l.nomeSolicitante : ''},
+                          data-nome=${l.nome}"
+                          
+                 th:onclick="'window.location.href=\'/local/' + ${l.id} + '\''">
+
+                 <h4 th:text="${l.nome}">Nome Local</h4>
+
+                 <div class="labels">
+                    <div class="card-label"
+                        th:if="${l.tipo}"
+                        th:text="${l.tipo}"
+                        th:classappend="${#strings.containsIgnoreCase(l.tipo, 'ESTOQUE')} ? ' card-label-estoque' : ' card-label-projeto'">
+                        Tipo local
+                    </div>
+
+                    <div class="card-label"
+                        th:if="${l.tipo == 'Projeto'}"
+                        th:text="${l.statusProjeto.descricao}"
+                        th:classappend="${l.classeLabelStatus}"
+                        >
+                        Status local
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        function filtrarCards() {
+
+            const searchInput = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            
+            const filtroSolicitante = (document.getElementById('filtroSolicitante').value);
+            const filtroStatus = (document.getElementById('filtroStatus').value);
+            const filtroTipo = (document.getElementById('filtroTipo').value.toUpperCase());
+            
+            const cards = document.querySelectorAll('.cards-grid .card');
+
+            cards.forEach(card => {
+
+                const tipo = (card.dataset.tipo || '').toUpperCase();
+                const solicitante = card.dataset.solicitante || '';
+                const nome = card.dataset.nome || '';
+                const status = card.dataset.status || '';
+
+
+            const matchesTipo = (
+                    filtroTipo === '' ||
+                    tipo === filtroTipo ||
+                    (tipo &&  tipo.includes(filtroTipo)) ||
+                    (filtroTipo &&  filtroTipo.includes(tipo))
+                );
+
+            const matchesStatus = filtroStatus === '' ? true : (status !== '' && status === filtroStatus);
+
+            const matchesSolicitante = filtroSolicitante === '' ? true : (solicitante !== '' && solicitante === filtroSolicitante);
+
+            const matchesSearch = nome.includes(searchInput);
+
+
+            card.style.display = (matchesTipo && matchesStatus && matchesSolicitante && matchesSearch) ? 'flex' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

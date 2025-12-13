@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locais</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="sub-head">
+
+        <input id="searchInput" onkeyup="filtrarCards()" type="text" placeholder="  Pesquisar">
+
+        <div class="filtros">
+            <select name="Categoria" id="filtroCategoria" onclick="filtrarCards()">
+                <option value="">Categoria</option>
+                <option th:each="categoria : ${categorias}"
+                        th:value="${categoria}"
+                        th:text="${categoria.descricao}">
+                </option>
+            </select>
+
+            <select name="Local" id="filtroLocal" onclick="filtrarCards()">
+                <option value="">Local</option>
+                <option th:each="local : ${itemEstoque}"
+                        th:value="${local.estoque}"
+                        th:text="${local.estoque.nome}">
+                </option>
+            </select>
+
+            <select name="Faltando" id="filtroFaltando" onclick="filtrarCards()">
+                <option value="">Faltando</option>
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
+            </select>
+
+        </div>
+
+    </div>
+    
+    <div class="cadastrar" > 
+        <a th:href="@{/itens/cadastrar}">
+            <button>Cadastrar +</button>
+        </a>
+    </div>
+
+    <div class="tabela-itens">
+        <table>
+            <tr class="cabecalho-table">
+                <th>Item</th>
+                <th>Local</th>
+                <th>Categoria</th>
+                <th>Quantidade</th>
+            </tr>
+            <tr th:each="i : ${itemEstoque}">
+                <th th:text="${i.item.nome}">item</th>
+                <th th:text="${i.estoque.nome}">local</th>
+                <th th:text="${i.item.categoriaItem.descricao}">categoria</th>
+                <th th:text="${i.quantidade}">quantidade</th>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

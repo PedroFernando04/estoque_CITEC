@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locais</title>
+
+    <link href="/static/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <img src="/static/imgs/Captura de tela 2025-12-10 150018.png" alt="logo-cesmac">
+
+    <ul>
+        <ol>
+            <a th:href="@{/locais}">Estoques/Projetos</a>
+        </ol>
+        <ol>Pedidos</ol>
+        <ol>
+          <a th:href="@{/itens}">Itens</a>  
+        </ol>
+        <ol>Histórico</ol>
+    </ul>
+</header>
+</body>
+</html>
