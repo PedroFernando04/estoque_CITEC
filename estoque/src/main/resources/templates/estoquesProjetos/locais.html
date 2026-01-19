@@ -48,17 +48,36 @@
 
     </div>
 
+    <div class="sub">
+        <div class="titulo">Locais</div> 
+
+        <div class="cadastrar" > 
+            <a th:href="@{/locais/cadastrar}">
+                <button>Cadastrar +</button>
+            </a>
+        </div>
+    </div>
 
     
-    <div class="cadastrar" > 
-        <a th:href="@{/locais/cadastrar}">
-            <button>Cadastrar +</button>
+
+    <div class="paginacao">
+        <a th:if="${pagina.hasPrevious()}"
+        th:href="@{/locais(page=${pagina.number - 1}, size=${pagina.size})}">
+            ◀ Anterior
+        </a>
+
+        <span th:if="${pagina.hasPrevious() ||pagina.hasNext() }">
+            Página <span th:text="${pagina.number + 1}"></span>
+            de <span th:text="${pagina.totalPages}"></span>
+        </span>
+
+        <a th:if="${pagina.hasNext()}"
+        th:href="@{/locais(page=${pagina.number + 1}, size=${pagina.size})}">
+            Próxima ▶
         </a>
     </div>
 
     <div class="cards-container">
-
-        <div class="titulo">Locais</div> 
 
         <div class="cards-grid">
             <div class="card"
@@ -108,7 +127,7 @@
 
                 const tipo = (card.dataset.tipo || '').toUpperCase();
                 const solicitante = card.dataset.solicitante || '';
-                const nome = card.dataset.nome || '';
+                const nome = (card.dataset.nome || '').toLowerCase().trim();
                 const status = card.dataset.status || '';
 
 

@@ -53,24 +53,50 @@
 
     </div>
 
-    <div class="tabela-itens">
-        <table>
-            <tr class="cabecalho-table">
-                <th>Nome</th>
-                <th>Clero</th>
-                <th>Projeto</th>
-            </tr>
-            <tr class="conteudo-table"
-                th:each="f : ${funcionarioProjetos}"
-                th:attr="data-nome=${f.funcionario.nome},
-                         data-clero=${f.funcionario.clero.descricao != null ? f.funcionario.clero.descricao : ''},
-                         data-projeto=${f.projeto.nome != null ? f.projeto.nome : ''}">
+    <div class="paginacao">
+        <a th:if="${pagina.hasPrevious()}"
+        th:href="@{/funcionarios(page=${pagina.number - 1}, size=${pagina.size})}">
+            ◀ Anterior
+        </a>
 
-                <th th:text="${f.funcionario.nome}">nome</th>
-                <th th:text="${f.funcionario.clero.descricao}">clero</th>
-                <th th:text="${f.projeto.nome}">projeto</th>
-            </tr>
-        </table>
+        <span th:if="${pagina.hasPrevious() ||pagina.hasNext() }">
+            Página <span th:text="${pagina.number + 1}"></span>
+            de <span th:text="${pagina.totalPages}"></span>
+        </span>
+
+        <a th:if="${pagina.hasNext()}"
+        th:href="@{/funcionarios(page=${pagina.number + 1}, size=${pagina.size})}">
+            Próxima ▶
+        </a>
+    </div>
+
+    <div class="historico">
+
+        <div>
+            <table>
+                <tr th:if="${!funcionarioProjetos.empty}"
+                    class="cabecalho-table">
+                    <th>Nome</th>
+                    <th>Clero</th>
+                    <th>Projeto</th>
+                </tr>
+                <tr th:if="${!funcionarioProjetos.empty}"
+                    class="conteudo-table"
+                    th:each="f : ${funcionarioProjetos}"
+                    th:attr="data-nome=${f.funcionario.nome},
+                            data-clero=${f.funcionario.clero.descricao != null ? f.funcionario.clero.descricao : ''},
+                            data-projeto=${f.projeto.nome != null ? f.projeto.nome : ''}">
+
+                    <th th:text="${f.funcionario.nome}">nome</th>
+                    <th th:text="${f.funcionario.clero.descricao}">clero</th>
+                    <th th:text="${f.projeto.nome}">projeto</th>
+                </tr>
+            </table>
+
+            <h3 th:if="${funcionarioProjetos.empty}">Nenhum funcionário associado a projeto </h3>
+
+        </div>
+
     </div>
 
     <script>
@@ -81,7 +107,7 @@
             const filtroClero = (document.getElementById('filtroClero').value).trim();
             const filtroProjeto = (document.getElementById('filtroProjeto').value).trim();
 
-            const funcionarios = document.querySelectorAll('.tabela-itens .conteudo-table');
+            const funcionarios = document.querySelectorAll('.historico .conteudo-table');
 
             funcionarios.forEach(f => {
                 const nome = (f.dataset.nome || '').toLowerCase().trim();

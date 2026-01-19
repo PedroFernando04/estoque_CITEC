@@ -60,6 +60,24 @@
         </div>
     </div>
 
+    <div class="paginacao">
+        <a th:if="${pagina.hasPrevious()}"
+        th:href="@{/historico(page=${pagina.number - 1}, size=${pagina.size})}">
+            ◀ Anterior
+        </a>
+
+        <span th:if="${pagina.hasPrevious() ||pagina.hasNext() }">
+            Página <span th:text="${pagina.number + 1}"></span>
+            de <span th:text="${pagina.totalPages}"></span>
+        </span>
+
+        <a th:if="${pagina.hasNext()}"
+        th:href="@{/historico(page=${pagina.number + 1}, size=${pagina.size})}">
+            Próxima ▶
+        </a>
+    </div>
+
+
     <div class="historico">
 
             <div>

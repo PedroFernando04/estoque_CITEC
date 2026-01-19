@@ -21,6 +21,8 @@ import com.citec.estoque.services.EstoqueService;
 import com.citec.estoque.services.ItemService;
 import com.citec.estoque.services.ProjetoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,9 +64,14 @@ public class LocaisController {
     private FuncionarioRepository funcionarioRepository;
 
     @GetMapping({"/", "/locais"})
-    public String locais(Model model) {
+    public String locais(Model model,
+                         @RequestParam(defaultValue = "0") Integer page,
+                         @RequestParam(defaultValue = "18") Integer size) {
 
-        List<Estoque> estoques = estoqueRepository.findAll();
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Estoque> pagina = estoqueRepository.findAll(pageRequest);
+
+        List<Estoque> estoques = pagina.getContent();
         List<Projeto> projetos = projetoRepository.findAll();
 
         List<String> solicitantesExistentes = projetos.stream()
@@ -81,6 +88,8 @@ public class LocaisController {
         model.addAttribute("statusExistentes", statusExistentes);
         model.addAttribute("solicitantesExistentes", solicitantesExistentes);
         model.addAttribute("locais", estoques);
+        model.addAttribute("pagina", pagina);
+
 
 
         return "estoquesProjetos/locais";

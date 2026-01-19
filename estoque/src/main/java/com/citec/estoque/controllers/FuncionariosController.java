@@ -10,6 +10,8 @@ import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
 import com.citec.estoque.services.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,9 +36,15 @@ public class FuncionariosController {
 
 
     @GetMapping("/funcionarios")
-    public String funcionarios(Model model) {
+    public String funcionarios(Model model,
+                               @RequestParam(defaultValue = "0") Integer page,
+                               @RequestParam(defaultValue = "15") Integer size) {
 
-        List<FuncionarioProjeto> funcionarioProjetos =  funcionarioProjetoRepository.findAll();
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<FuncionarioProjeto> pagina = funcionarioProjetoRepository.findAll(pageRequest);
+        model.addAttribute("pagina", pagina);
+
+        List<FuncionarioProjeto> funcionarioProjetos =  pagina.getContent();
         model.addAttribute("funcionarioProjetos", funcionarioProjetos);
 
         List<Projeto> projetosExistentes = funcionarioProjetos.stream()

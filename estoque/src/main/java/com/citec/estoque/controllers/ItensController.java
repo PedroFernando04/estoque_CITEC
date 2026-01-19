@@ -1,7 +1,6 @@
 package com.citec.estoque.controllers;
 
 import com.citec.estoque.entities.enums.EnumCategoriasItem;
-import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Item;

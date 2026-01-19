@@ -78,29 +78,36 @@
     </div>
 
 
-    <div class="tabela-itens">
-        <table>
-            <tr class="cabecalho-table">
-                <th>Item</th>
-                <th>Local</th>
-                <th>Categoria</th>
-                <th>Quantidade</th>
-            </tr>
-            <tr class="conteudo-table"
-                th:each="i : ${itemEstoque}"
-                th:attr="data-item=${i.item.nome},
-                         data-local=${i.estoque.nome != null ? i.estoque.nome : ''},
-                         data-categoria=${i.item.categoriaItem.descricao != null ? i.item.categoriaItem.descricao : ''},
-                         data-faltando=${i.faltando != null ? i.faltando : ''}">
+    <div class="historico">
+        <div>
+            <table>
+                
+                <tr th:if="${!itemEstoque.empty}"
+                    class="cabecalho-table">
+                    <th>Item</th>
+                    <th>Local</th>
+                    <th>Categoria</th>
+                    <th>Quantidade</th>
+                </tr>
+                <tr th:if="${!itemEstoque.empty}"
+                    class="conteudo-table"
+                    th:each="i : ${itemEstoque}"
+                    th:attr="data-item=${i.item.nome},
+                            data-local=${i.estoque.nome != null ? i.estoque.nome : ''},
+                            data-categoria=${i.item.categoriaItem.descricao != null ? i.item.categoriaItem.descricao : ''},
+                            data-faltando=${i.faltando != null ? i.faltando : ''}">
 
-                <th th:text="${i.item.nome}">item</th>
-                <th th:text="${i.estoque.nome}">local</th>
-                <th th:text="${i.item.categoriaItem.descricao}">categoria</th>
-                <th th:text="${i.quantidade}">quantidade</th>
-            </tr>
-        </table>
-        
+                    <th th:text="${i.item.nome}">item</th>
+                    <th th:text="${i.estoque.nome}">local</th>
+                    <th th:text="${i.item.categoriaItem.descricao}">categoria</th>
+                    <th th:text="${i.quantidade}">quantidade</th>
+                </tr>
+            </table>
+            <h3 th:if="${itemEstoque.empty}">Nenhum item associado a local ainda</h3>
+        </div>
+
     </div>
+        
 
     <script>
         function filtrarItens(){
@@ -111,7 +118,7 @@
             const filtroLocal = (document.getElementById('filtroLocal').value);
             const filtroFaltando = (document.getElementById('filtroFaltando').value);
 
-            const itens = document.querySelectorAll('.tabela-itens .conteudo-table');
+            const itens = document.querySelectorAll('.historico .conteudo-table');
 
             itens.forEach(i => {
                 const itemNome = (i.dataset.item || '').toLowerCase().trim();
