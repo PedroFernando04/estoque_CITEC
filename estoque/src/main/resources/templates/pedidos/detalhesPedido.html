@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="sub-head-detalhes">
+        <div  class="titulo-detalhe">
+
+            <h1 th:text="|#${pedido.id}|">#ID</h1>
+
+            <div class="label-detalhe">
+
+                <div class="card-label"
+                    th:if="${pedido.statusPedido}"
+                    th:text="${pedido.statusPedido.descricao}"
+                    th:classappend="${pedido.classeLabelStatus}"
+                    >
+                    Status pedido
+                </div>
+
+            </div>
+            
+        </div>
+
+        <div class="detalhes-detalhe">
+            <div class="solicitante-detalhe">
+                <h2>Data da Solicitação:  </h2>
+                <h2 
+                    th:text="${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy HH:mm')}"> 11/22/3333
+                </h2>
+            </div>
+        </div>
+
+        
+
+    </div>
+
+    <div class="container-detalhe">
+
+        <div class="item">
+            <div class="titulo-item">
+                <h3>Itens</h3>
+                <button onclick="abrirModal()">Adicionar +</button>
+            </div>
+
+
+            <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
+
+                <div class="modal" id="modal-adicionar">
+
+                    <div class="modal-content">
+                        <div class="cabecalho">
+                            <h3>Item +</h3>
+                            <button type="button" onclick="fecharModal()">&times;</button>
+                        </div>
+                        <div class="modal-content-input">
+                            <input list="lista-item" name="itemNome" placeholder="  Digite ou Selecione">
+                            <datalist id="lista-item">
+                                <option th:each="item : ${itensExistentes}"
+                                        th:value="${item.nome.toString()}">
+                                </option>
+                            </datalist>
+                            <input type="number" name="quantidade" id="quantidade" placeholder="  Quantidade">
+
+                            <div class="formulario">
+                                <button type="submit" id="botaoEnviar">Registrar</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </form>
+
+            
+            <div class="painel-item">
+                <table >
+                    <tr class="cabecalho-table">
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>RM</th>
+                        <th>Patrimonio</th>
+                        <th>Quantidade</th>
+                    </tr>
+                    <tr th:if="${!itensLocal.empty}"
+                        th:each="itemPedido : ${itensLocal}">
+                        <th th:text="${itemPedido.item.nome}">nome</th>
+                        <th th:text="${itemPedido.item.categoriaItem.descricao}">categoria</th>
+                        <th th:text="${itemPedido.item.codigoRM}">rm</th>
+                        <th th:text="${itemPedido.item.codigoPatrimonio}">patrimonio</th>
+                        <th th:text="${itemPedido.quantidade}">quantidade</th>
+                    </tr>
+                </table>
+                
+                <h3 th:if="${itensLocal.empty}">Nenhum item associado!</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function abrirModal(){
+            document.getElementById("modal-adicionar").style.display = "block";
+        }
+
+        function fecharModal(){
+            document.getElementById("modal-adicionar").style.display = "none";
+        }
+    </script>
+</body>
+</html>

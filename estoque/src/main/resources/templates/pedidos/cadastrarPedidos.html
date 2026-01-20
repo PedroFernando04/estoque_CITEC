@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Pedido</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+     <form th:action="@{/pedidos/cadastrar}" method="post" id="registrarForm" >
+
+        <div class="formulario">
+            <label for="destino">Destino:</label>
+            <select name="destino" id="destino">
+                <option 
+                    th:each="destino : ${destinos}"
+                    th:value="${destino.id}"
+                    th:text="${destino.nome}">
+                </option>
+            </select>
+        </div>
+
+        <div class="formulario">
+            <label for="status">Status:</label>
+            <select name="status" id="status">
+                <option 
+                    th:each="status : ${statusExistentes}"
+                    th:value="${status}"
+                    th:text="${status.descricao}">
+                </option>
+            </select>
+        </div>
+
+            
+        <div class="formulario">
+            <button type="submit" id="botaoEnviar" >Registrar</button>
+        </div>
+    </form>
+</body>
+</html>

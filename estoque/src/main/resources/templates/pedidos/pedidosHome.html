@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="sub-head" id="sub-head-movimentacao">
+
+        <div class="filtros">
+            <select name="Status" id="filtroStatus" onclick="filtrarItens()">
+                <option value="">Status</option>
+                <option th:each="categoria : ${status}"
+                        th:value="${categoria.descricao}"
+                        th:text="${categoria.descricao}">
+                </option>
+            </select>
+
+            <select name="Destino" id="filtroDestino" onclick="filtrarItens()">
+                <option value="">Destino</option>
+                <option th:each="local : ${destinos}"
+                        th:value="${local.nome}"
+                        th:text="${local.nome}">
+                </option>
+            </select>
+
+            <select name="Item" id="filtroItem" onclick="filtrarItens()">
+                <option value="">Item</option>
+                <option th:each="item : ${itens}"
+                        th:value="${item.nome}"
+                        th:text="${item.nome}">
+                </option>
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="sub">
+
+        <div class="titulo">Pedidos</div> 
+
+            <div class="cadastrar" >
+                <a th:href="@{/pedidos/cadastrar}">
+                    <button>Cadastrar +</button>
+                </a>
+            </div>
+
+    </div>
+
+    <div class="paginacao">
+        <a th:if="${pagina.hasPrevious()}"
+        th:href="@{/pedidos(page=${pagina.number - 1}, size=${pagina.size})}">
+            ◀ Anterior
+        </a>
+
+        <span th:if="${pagina.hasPrevious() ||pagina.hasNext() }">
+            Página <span th:text="${pagina.number + 1}"></span>
+            de <span th:text="${pagina.totalPages}"></span>
+        </span>
+
+        <a th:if="${pagina.hasNext()}"
+        th:href="@{/pedidos(page=${pagina.number + 1}, size=${pagina.size})}">
+            Próxima ▶
+        </a>
+    </div>
+
+
+    <div class="historico">
+
+            <div>
+                <table >
+                    <tr th:if="${!pedidos.empty}"
+                        class="cabecalho-table">
+                        <th>Id</th>
+                        <th>Status</th>
+                        <th>Destino</th>
+                        <th>Item</th>
+                        <th>Data</th>
+                    </tr>
+                    <tr class="linha-historico"
+                        th:if="${!pedidos.empty}"
+                        th:each="pedido : ${pedidos}"
+                        th:attr="data-status=${pedido.status.descricao != null ? pedido.status.descricao : ''},
+                                 data-destino=${pedido.destino.nome != null ? pedido.destino.nome : ''}">
+                         
+                        <th th:text="|#${pedido.id}|">#id</th>
+                        <th th:text="${pedido.status != null} ? ${pedido.status.descricao} : ''">status</th>
+                        <th th:text="${pedido.destino.nome}">destino</th>
+                        <th>
+                            <ul>
+                                <ol th:each = "item : ${pedido.itens}">
+                                    <span th:text = ${item.item.nome}>nomeItem</span>
+
+                                    -
+
+                                    <span th:text = |${item.quantidade}x|>qntItem</span>
+                                </ol>
+                            </ul>
+                        </th>
+                        <th th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy HH:mm')}">data</th>
+                        
+                        <th th:onclick="'window.location.href=\'/pedidos/' + ${pedido.id} + '\''">Editar</th>
+                    </tr>
+                </table>
+                <h3 th:if="${pedidos.empty}">Nenhum pedido registrado!</h3>
+            </div>
+        </div>
+</body>
+</html>
