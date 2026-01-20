@@ -27,8 +27,6 @@ public class ItensController {
     @Autowired
     private ItemEstoqueRepository itemEstoqueRepository;
 
-    @Autowired
-    private ItemRepository itemRepository;
 
     @Autowired
     private ItemService itemService;

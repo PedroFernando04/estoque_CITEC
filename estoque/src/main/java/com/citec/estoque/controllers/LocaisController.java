@@ -1,6 +1,5 @@
 package com.citec.estoque.controllers;
 
-import com.citec.estoque.entities.enums.EnumCategoriasItem;
 import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
@@ -18,7 +17,6 @@ import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
 import com.citec.estoque.services.EstoqueService;
-import com.citec.estoque.services.ItemService;
 import com.citec.estoque.services.ProjetoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

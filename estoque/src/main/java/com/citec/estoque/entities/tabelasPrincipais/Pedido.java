@@ -37,4 +37,13 @@ public class Pedido {
         this.statusPedido = statusPedido;
         this.destino = destino;
     }
+
+    //Getter
+    public String getClasseLabelStatus(){
+        return switch (getStatusPedido()) {
+            case SOLICITADO -> "card-label-planejado";
+            case RECEBIDO -> "card-label-concluido";
+            case CANCELADO -> "card-label-cancelado";
+        };
+    }
 }
