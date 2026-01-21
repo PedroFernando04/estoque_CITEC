@@ -96,22 +96,28 @@
                                  data-destino=${pedido.destino.nome != null ? pedido.destino.nome : ''}">
                          
                         <th th:text="|#${pedido.id}|">#id</th>
-                        <th th:text="${pedido.status != null} ? ${pedido.status.descricao} : ''">status</th>
+                        <th>
+                            <div class="label-detalhe" 
+                                 th:text="${pedido.status != null} ? ${pedido.status.descricao} : ''" 
+                                 th:classappend="${pedido.classeLabelStatus}">
+                                    status
+                            </div>
+                        </th>
                         <th th:text="${pedido.destino.nome}">destino</th>
                         <th>
                             <ul>
-                                <ol th:each = "item : ${pedido.itens}">
-                                    <span th:text = ${item.item.nome}>nomeItem</span>
+                                <li th:each = "item : ${pedido.itens}">
+                                    <span th:text = ${item.item.nome} - >nomeItem</span>
 
-                                    -
-
-                                    <span th:text = |${item.quantidade}x|>qntItem</span>
-                                </ol>
+                                    <span th:text = "| - ${item.quantidade}x|">qntItem</span>
+                                </li>
                             </ul>
                         </th>
                         <th th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy HH:mm')}">data</th>
                         
-                        <th th:onclick="'window.location.href=\'/pedidos/' + ${pedido.id} + '\''">Editar</th>
+                        <th>
+                            <button th:onclick="'window.location.href=\'/pedidos/' + ${pedido.id} + '\''" th:if="${pedido.status.name() != 'RECEBIDO'}">Editar</button>
+                        </th>
                     </tr>
                 </table>
                 <h3 th:if="${pedidos.empty}">Nenhum pedido registrado!</h3>

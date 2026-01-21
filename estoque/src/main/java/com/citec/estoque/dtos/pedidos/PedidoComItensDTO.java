@@ -56,4 +56,12 @@ public class PedidoComItensDTO {
     public void setDestino(Estoque destino) {
         this.destino = destino;
     }
+
+    public String getClasseLabelStatus(){
+        return switch (getStatus()) {
+            case SOLICITADO -> "card-label-planejado";
+            case RECEBIDO -> "card-label-concluido";
+            case CANCELADO -> "card-label-cancelado";
+        };
+    }
 }

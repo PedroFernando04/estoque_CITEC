@@ -23,17 +23,36 @@
 
             <div class="label-detalhe">
 
-                <div class="card-label"
-                    th:if="${pedido.statusPedido}"
-                    th:text="${pedido.statusPedido.descricao}"
-                    th:classappend="${pedido.classeLabelStatus}"
-                    >
-                    Status pedido
+                <div>
+
+                    <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
+
+                        <select name="novoStatus"
+                                class="card-label-detalhe"
+                                th:classappend="${pedido.classeLabelStatus}">
+
+                            <option th:each="status : ${statusExistentes}"
+                                    th:value="${status.name()}"
+                                    th:text="${status.descricao}"
+                                    th:selected="${status == pedido.statusPedido}"
+                                    classappend="none">
+                            </option>
+
+                        </select>
+
+                        <button type="submit" name="update">
+                            Atualizar status
+                        </button>
+
+                    </form>
+                    
                 </div>
 
             </div>
             
         </div>
+
+        <h1 th:text="|Destino: ${pedido.destino.nome}|">Destino:</h1>
 
         <div class="detalhes-detalhe">
             <div class="solicitante-detalhe">
@@ -76,7 +95,7 @@
                             <input type="number" name="quantidade" id="quantidade" placeholder="  Quantidade">
 
                             <div class="formulario">
-                                <button type="submit" id="botaoEnviar">Registrar</button>
+                                <button type="submit" id="botaoEnviar" name="add">Registrar</button>
                             </div>
                         </div>
                         
@@ -86,8 +105,8 @@
             </form>
 
             
-            <div class="painel-item">
-                <table >
+            <div class="historico">
+                <table>
                     <tr class="cabecalho-table">
                         <th>Nome</th>
                         <th>Categoria</th>
@@ -102,6 +121,12 @@
                         <th th:text="${itemPedido.item.codigoRM}">rm</th>
                         <th th:text="${itemPedido.item.codigoPatrimonio}">patrimonio</th>
                         <th th:text="${itemPedido.quantidade}">quantidade</th>
+                        <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
+                            <th >
+                                <button type="submit" name="remove" id="remove" th:value="${itemPedido.id}">X</button>
+                            </th>
+                        </form>
+                        
                     </tr>
                 </table>
                 

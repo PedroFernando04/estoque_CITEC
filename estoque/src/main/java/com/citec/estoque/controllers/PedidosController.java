@@ -117,12 +117,14 @@ public class PedidosController {
         }
         else throw new IllegalArgumentException("Pedido não encontrado");
 
-
+        List<EnumStatusPedido> status = Arrays.asList(EnumStatusPedido.values());
+        model.addAttribute("statusExistentes", status);
 
         return "pedidos/detalhesPedido";
     }
 
-    @PostMapping("/pedidos/{id}")
+    //INSERT
+    @PostMapping( value = "/pedidos/{id}", params = "add")
     public String detalhesPedidos(@PathVariable Long id, Model model,
                                   @RequestParam String itemNome,
                                   @RequestParam Integer quantidade){
@@ -130,15 +132,29 @@ public class PedidosController {
         Optional<Item> item = itemRepository.findByNomeIgnoreCase(itemNome);
         Optional<Pedido> pedido = pedidoRepository.findById(id);
 
-        if (item.isPresent() && pedido.isPresent()) {
-            ItemPedido itemPedido = new ItemPedido();
-            itemPedido.setQuantidade(quantidade);
-            itemPedido.setItem(item.get());
-            itemPedido.setPedido(pedido.get());
+        pedidoService.salvarPedido(item, pedido, quantidade);
 
-            itemPedidoRepository.save(itemPedido);
-        } else throw new IllegalArgumentException("Item não encontrado");
 
+        return "redirect:/pedidos/{id}";
+    }
+
+    //DELETE
+    @PostMapping(value = "/pedidos/{id}", params = "remove")
+    public String removerPedidos(@PathVariable Long id, Model model, @RequestParam Long remove){
+
+        pedidoService.deletarItem(remove);
+
+        return "redirect:/pedidos/{id}";
+    }
+    
+    //  UPDATE
+    @PostMapping(value = "/pedidos/{id}", params = "update")
+    public String atualizarPedidos(@PathVariable Long id, Model model, @RequestParam EnumStatusPedido novoStatus){
+
+        List<EnumStatusPedido> status = Arrays.asList(EnumStatusPedido.values());
+        model.addAttribute("statusExistentes", status);
+
+        pedidoService.atualizarStatus(novoStatus, id);
 
         return "redirect:/pedidos/{id}";
     }

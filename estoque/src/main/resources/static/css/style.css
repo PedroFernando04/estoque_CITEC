@@ -105,6 +105,7 @@ select{
 
 
 /* HOVER PADRÃO */
+.historico button,
 .cadastrar button:hover,
 .filtros select:hover,
 .sub-head input:hover{
@@ -123,6 +124,7 @@ select{
     margin-top: 10px;
 }
 
+.historico button,
 .cadastrar button{
     border-radius: 10px;
     border: none;
@@ -196,6 +198,14 @@ select{
     text-transform: uppercase;
     letter-spacing: 0.1px;
     z-index: 10;
+}
+
+.card-label-detalhe{
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .labels{
@@ -488,4 +498,30 @@ th{
 
 #sub-head-movimentacao{
     justify-content: end;
+}
+
+li{
+    list-style: none;
+    display: flex;
+    justify-content:center;
+    margin-left: -40px;
+}
+
+.historico span{
+    margin-right: 5px;
+}
+
+#remove{
+    background-color: rgba(241, 11, 11, 0.993);
+    color: rgb(255, 255, 255);
+}
+
+.botaoEditar{
+    display: flex;
+    justify-content: space-around;
+}
+
+select option {
+    color: black;
+    background-color: white;
 }

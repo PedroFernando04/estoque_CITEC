@@ -23,14 +23,14 @@
 
             <div class="label-detalhe">
 
-                <div class="card-label"
+                <div class="card-label-detalhe"
                     th:if="${local.tipo}"
                     th:text="${local.tipo}"
                     th:classappend="${#strings.containsIgnoreCase(local.tipo, 'Estoque')} ? ' card-label-estoque' : ' card-label-projeto'">
                     Tipo local
                 </div>
 
-                <div class="card-label"
+                <div class="card-label-detalhe"
                     th:if="${local.tipo == 'Projeto'}"
                     th:text="${local.statusProjeto.descricao}"
                     th:classappend="${local.classeLabelStatus}"

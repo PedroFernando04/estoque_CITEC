@@ -193,29 +193,7 @@ public class LocaisController {
                         @RequestParam String itemNome,
                         @RequestParam Integer quantidade){
 
-        Optional<Item> item = itemRepository.findByNomeIgnoreCase(itemNome);
-        Optional<Estoque> estoque = estoqueRepository.findById(id);
-
-        Optional<ItemEstoque> itemEstoqueLocal = itemEstoqueRepository.findByEstoqueIdAndItemId(id, item.get().getId());
-        if (itemEstoqueLocal.isPresent()) {
-            throw new IllegalArgumentException("Item já cadastrado neste local");
-        }
-
-        ItemEstoque itemEstoque = new ItemEstoque();
-
-        itemEstoque.setQuantidade(quantidade);
-        itemEstoque.setEstoque(estoque.get());
-        itemEstoque.setItem(item.get());
-
-        itemEstoqueRepository.save(itemEstoque);
-
-        Movimentacao movimentacao = new Movimentacao();
-        movimentacao.setData(LocalDateTime.now());
-        movimentacao.setItem(item.get());
-        movimentacao.setQuantidade(quantidade);
-        movimentacao.setDestino(estoque.get());
-        movimentacao.setStatus(EnumStatusMovimentacao.ENTRADA);
-        movimentacaoRepository.save(movimentacao);
+        estoqueService.inserirItem(itemNome, quantidade, id);
 
         return  "redirect:/local/{id}";
     }

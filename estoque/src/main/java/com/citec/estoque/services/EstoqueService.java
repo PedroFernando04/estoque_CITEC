@@ -7,5 +7,7 @@ public interface EstoqueService {
 
     public void salvarEstoque(Estoque estoque);
 
+    public void inserirItem(String itemNome, Integer quantidade, Long id);
+
 
 }
