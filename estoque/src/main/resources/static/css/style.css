@@ -120,7 +120,7 @@ select{
     display: flex;
     justify-content: end;
 
-    margin-right: 10px;
+    
     margin-top: 10px;
 }
 
@@ -137,6 +137,7 @@ select{
     font-weight: bold;
     background-color: white;
 
+    margin-right: 10px;
 }
 
 .titulo{
@@ -525,3 +526,10 @@ select option {
     color: black;
     background-color: white;
 }
+
+
+th button{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+

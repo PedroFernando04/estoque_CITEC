@@ -12,13 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping
@@ -27,9 +25,11 @@ public class ItensController {
     @Autowired
     private ItemEstoqueRepository itemEstoqueRepository;
 
-
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
 
     @GetMapping("/itens")
@@ -83,5 +83,62 @@ public class ItensController {
          }
 
          return "redirect:/itens";
+    }
+
+    @GetMapping("/itens/cadastrados")
+    public String itensCadastrados(Model model,
+                                   @RequestParam(defaultValue = "0") Integer page,
+                                   @RequestParam(defaultValue = "15") Integer size){
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Item> pagina = itemRepository.findAll(pageRequest);
+        model.addAttribute("pagina", pagina);
+
+        List<EnumCategoriasItem> categoriasExistentes = Arrays.asList(EnumCategoriasItem.values());
+        model.addAttribute("categorias", categoriasExistentes);
+
+        List<Item> itensExistentes = itemRepository.findAll();
+        model.addAttribute("itensExistentes", itensExistentes);
+
+        return "itens/itensCadastrados";
+    }
+
+    @PostMapping(value = "/itens/cadastrados", params = "remove")
+    public String removerItem(@RequestParam Long remove){
+
+        Optional<Item> itemExcluido = itemRepository.findById(remove);
+
+        try {
+            itemService.removerItem(itemExcluido.get());
+        }  catch (IllegalArgumentException e) {
+            return "redirect:/itens/cadastrados";
+        }
+
+
+        return "redirect:/itens/cadastrados";
+    }
+
+    @GetMapping("/itens/{id}")
+    public String editarItem(Model model, @PathVariable Long id){
+
+        Optional<Item> item = itemRepository.findById(id);
+        model.addAttribute("item", item.get());
+
+        List<EnumCategoriasItem> categoriasExistentes = Arrays.asList(EnumCategoriasItem.values());
+        model.addAttribute("categoriasExistentes", categoriasExistentes);
+
+        return "itens/editarItens";
+    }
+
+    @PostMapping(value = "/itens/{id}", params = "update")
+    public String editarItem(@PathVariable Long id,
+                             @RequestParam(required = false) String nome,
+                             @RequestParam(required = false) EnumCategoriasItem categoria,
+                             @RequestParam(required = false) String rm,
+                             @RequestParam(required = false) String patrimonio){
+
+        itemService.updateItem(id, nome, categoria, rm, patrimonio);
+
+        return "redirect:/itens/cadastrados";
     }
 }
