@@ -76,7 +76,7 @@ public class PedidoServiceImpl implements PedidoService {
             List<ItemPedido> itens = itemPedidoRepository.findByPedido(pedido.get());
 
             for (ItemPedido itemPedido : itens) {
-                estoqueService.inserirItem(itemPedido.getItem().getNome(), itemPedido.getQuantidade(), itemPedido.getPedido().getDestino().getId());
+                estoqueService.inserirItem(itemPedido.getItem().getNome(), itemPedido.getQuantidade(), itemPedido.getPedido().getDestino().getId(), null);
             }
 
         }

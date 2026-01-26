@@ -5,19 +5,18 @@ import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.entities.tabelasPrincipais.Projeto;
 import com.citec.estoque.repositorys.tabelasAuxiliares.FuncionarioProjetoRepository;
+import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.services.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping
@@ -29,6 +28,8 @@ public class FuncionariosController {
     @Autowired
     private FuncionarioProjetoRepository funcionarioProjetoRepository;
 
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
 
     @GetMapping("/funcionarios")
     public String funcionarios(Model model,
@@ -80,5 +81,57 @@ public class FuncionariosController {
         }
 
         return "redirect:/funcionarios";
+    }
+
+    @GetMapping("/funcionarios/cadastrados")
+    public String funcionariosCadastrados(Model model,
+                                          @RequestParam(defaultValue = "0") Integer page,
+                                          @RequestParam(defaultValue = "15") Integer size) {
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Funcionario> pagina = funcionarioRepository.findAll(pageRequest);
+        model.addAttribute("pagina", pagina);
+
+        List<Funcionario> funcionariosExistentes = pagina.getContent();
+        model.addAttribute("funcionariosExistentes", funcionariosExistentes);
+
+        List<EnumCleroFuncionario> clerosExistentes = Arrays.asList(EnumCleroFuncionario.values());
+        model.addAttribute("clerosExistentes", clerosExistentes);
+
+        return "funcionarios/funcionariosCadastrados";
+    }
+
+    @PostMapping(value = "/funcionarios/cadastrados", params = "remove")
+    public String removerFuncionario(Model model, @RequestParam Long remove) {
+
+        try{
+            funcionarioRepository.deleteById(remove);
+        } catch(Exception e){
+            return "redirect:/funcionarios/cadastrados";
+        }
+
+        return  "redirect:/funcionarios/cadastrados";
+    }
+
+    @GetMapping("/funcionarios/{id}")
+    public String updateFuncionario(@PathVariable Long id, Model model) {
+
+        Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
+        model.addAttribute("funcionario", funcionario.get());
+
+        List<EnumCleroFuncionario> clerosExistentes = Arrays.asList(EnumCleroFuncionario.values());
+        model.addAttribute("clerosExistentes", clerosExistentes);
+
+        return  "/funcionarios/editarFuncionario";
+    }
+
+    @PostMapping(value = "/funcionarios/{id}", params = "update")
+    public String updateFuncionario(@PathVariable Long id, @RequestParam String nome, @RequestParam EnumCleroFuncionario clero) {
+
+        try {
+            funcionarioService.updateFuncionario(id, nome, clero);
+        } catch (Exception e) { return "redirect:/funcionarios/{" + id + "}"; }
+
+        return "redirect:/funcionarios/cadastrados";
     }
 }

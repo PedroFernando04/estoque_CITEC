@@ -184,17 +184,31 @@ public class LocaisController {
         movimentacaosLocal.addAll(movimentacoesDestino);
         model.addAttribute("movimentacoesLocal", movimentacaosLocal);
 
+        List<Estoque> locais = estoqueRepository.findAll();
+        model.addAttribute("locaisExistentes", locais);
 
         return "estoquesProjetos/detalhesLocal";
     }
 
-    @PostMapping("/local/{id}")
+    @PostMapping(value = "/local/{id}", params = "botaoEnviar")
     public String local(@PathVariable Long id,
                         @RequestParam String itemNome,
-                        @RequestParam Integer quantidade){
+                        @RequestParam Integer quantidade,
+                        @RequestParam(required = false) String itemOrigem){
 
-        estoqueService.inserirItem(itemNome, quantidade, id);
+        estoqueService.inserirItem(itemNome, quantidade, id, itemOrigem);
 
         return  "redirect:/local/{id}";
+    }
+
+    @PostMapping(value = "/local/{id}", params = "faltando")
+    public String localFaltando(Model model, Long faltando){
+
+        try {
+            estoqueService.atualizarItemEstoqueFaltando(faltando);
+
+        } catch (Exception e) {return "redirect:/local/{id}";}
+
+        return "redirect:/local/{id}";
     }
 }

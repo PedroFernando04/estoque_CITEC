@@ -44,14 +44,25 @@ public class EstoqueServiceImpl implements EstoqueService {
     }
 
     //INSERT
-    public void inserirItem(String itemNome, Integer quantidade, Long id) {
+    public void inserirItem(String itemNome, Integer quantidade, Long id, String itemOrigem) {
 
         Optional<Item> item = itemRepository.findByNomeIgnoreCase(itemNome);
         Optional<Estoque> estoque = estoqueRepository.findById(id);
+        Optional<Estoque> estoqueOrigem = estoqueRepository.findByNomeIgnoreCase(itemOrigem);
 
         Optional<ItemEstoque> itemEstoqueLocal = itemEstoqueRepository.findByEstoqueIdAndItemId(id, item.get().getId());
+
         if (itemEstoqueLocal.isPresent()) {
             throw new IllegalArgumentException("Item já cadastrado neste local");
+        }
+
+        if(itemOrigem != null && !itemOrigem.isBlank() && estoqueOrigem.isPresent()) {
+
+            Optional<ItemEstoque> itemEstoqueBuscado = itemEstoqueRepository.findByEstoqueIdAndItemId(estoqueOrigem.get().getId(), item.get().getId());
+
+            if (itemEstoqueBuscado.isPresent()){
+                deletarItemEstoque(itemEstoqueBuscado.get().getId(), quantidade);
+            } else throw new IllegalArgumentException("O item seleciando não está presente na origem informada");
         }
 
         ItemEstoque itemEstoque = new ItemEstoque();
@@ -68,8 +79,41 @@ public class EstoqueServiceImpl implements EstoqueService {
         movimentacao.setQuantidade(quantidade);
         movimentacao.setDestino(estoque.get());
         movimentacao.setStatus(EnumStatusMovimentacao.ENTRADA);
+        if(itemOrigem == null || itemOrigem.isBlank())
+            movimentacao.setOrigem(null);
+        else
+            movimentacao.setOrigem(estoqueOrigem.get());
         movimentacaoRepository.save(movimentacao);
+
+
     }
 
+    public void atualizarItemEstoqueFaltando(Long itemEstoqueId){
+        Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemEstoqueId);
 
+        if (itemEstoque.isPresent()) {
+            if (itemEstoque.get().getFaltando())
+                itemEstoque.get().setFaltando(false);
+            else
+                itemEstoque.get().setFaltando(true);
+
+            itemEstoqueRepository.save(itemEstoque.get());
+        } else throw new IllegalArgumentException("Relação ItemEstoque não encontrada");
+    }
+
+    public void deletarItemEstoque(Long itemEstoqueId, Integer quantidade) {
+
+        Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemEstoqueId);
+
+        if (quantidade <= 0 )
+            throw new IllegalArgumentException("Quantide inseridade deve ser maior que zero");
+
+        if (quantidade.equals(itemEstoque.get().getQuantidade())) {
+            itemEstoqueRepository.deleteById(itemEstoqueId);
+        } else {
+            itemEstoque.get().setQuantidade(itemEstoque.get().getQuantidade() - quantidade);
+            itemEstoqueRepository.save(itemEstoque.get());
+        }
+
+    }
 }

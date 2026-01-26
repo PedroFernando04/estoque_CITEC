@@ -93,10 +93,18 @@
                                         th:value="${item.nome.toString()}">
                                 </option>
                             </datalist>
+
                             <input type="number" name="quantidade" id="quantidade" placeholder="  Quantidade">
 
+                            <input list="lista-locais" name="itemOrigem" placeholder="  Digite ou Selecione">
+                            <datalist id="lista-locais">
+                                <option th:each="local : ${locaisExistentes}"
+                                        th:value="${local.nome.toString()}">
+                                </option>
+                            </datalist>
+
                             <div class="formulario">
-                                <button type="submit" id="botaoEnviar">Registrar</button>
+                                <button type="submit" id="botaoEnviar" name="botaoEnviar">Registrar</button>
                             </div>
                         </div>
                         
@@ -125,6 +133,17 @@
                         <th th:text="${itemEstoque.quantidade}">quantidade</th>
                         <th th:if="${local.tipo == 'Estoque'}"
                             th:text="${itemEstoque.faltando} ? '❌ Faltando ❌' : '✅ OK ✅'">faltando</th>
+                        <form th:action="@{/local/{id}(id=${local.id})}" method="post">
+                            <th th:if="${local.tipo == 'Estoque'}">
+                                <button type="submit" 
+                                        th:text="${itemEstoque.faltando} ? '✅' : '❌'"
+                                        th:value="${itemEstoque.id}"
+                                        name="faltando"
+                                        id="faltando">
+                                        faltando
+                                </button>
+                            </th>
+                        </form>
                     </tr>
                 </table>
                 
