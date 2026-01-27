@@ -548,3 +548,22 @@ th button{
     margin-right: 5px;
 }
 
+/* ----------- TELA DE ERRO ------------*/
+
+.Erro{
+    background-color: red;
+    padding: 30px;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    margin-top: 30px;
+    border-radius: 20px;
+    height: 200px;
+
+    width: 80%;
+
+}

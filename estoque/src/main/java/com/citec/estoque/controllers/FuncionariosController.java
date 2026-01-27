@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,7 +77,7 @@ public class FuncionariosController {
 
             funcionarioService.salvarFuncionario(funcionario);
 
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return "redirect:/funcionarios/cadastrar";
         }
 
@@ -106,8 +107,8 @@ public class FuncionariosController {
 
         try{
             funcionarioRepository.deleteById(remove);
-        } catch(Exception e){
-            return "redirect:/funcionarios/cadastrados";
+        } catch(Exception e) {
+            throw new IllegalArgumentException("Não é possível excluir um funcionário associado a algum projeto");
         }
 
         return  "redirect:/funcionarios/cadastrados";
