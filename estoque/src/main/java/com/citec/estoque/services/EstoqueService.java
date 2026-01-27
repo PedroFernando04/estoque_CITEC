@@ -12,4 +12,6 @@ public interface EstoqueService {
     public void atualizarItemEstoqueFaltando(Long itemEstoqueId);
 
     public void deletarItemEstoque(Long itemEstoqueId, Integer quantidade);
+
+    public void atualizarEstoque(Long id, String nome);
 }

@@ -40,6 +40,7 @@
 
             </div>
             
+
         </div>
 
         <div class="detalhes-detalhe" th:if="${local.tipo == 'Projeto'}">
@@ -62,11 +63,17 @@
                     </table>
                 </div>
             </div>
+
         </div>
 
-        
-
     </div>
+
+    <div class="cadastrar" id="botaoEditar">
+        <a  th:href="@{/local/{id}/editar(id=${local.id})}">
+            <button>Editar</button>
+        </a>
+    </div>
+    
 
     <div class="container-detalhe">
 
@@ -141,6 +148,15 @@
                                         name="faltando"
                                         id="faltando">
                                         faltando
+                                </button>
+                            </th>
+
+                            <th>
+                                <button type="submit"
+                                        th:value="${itemEstoque.id}"
+                                        name="remove"
+                                        id="remove">
+                                        X
                                 </button>
                             </th>
                         </form>

@@ -211,4 +211,56 @@ public class LocaisController {
 
         return "redirect:/local/{id}";
     }
+
+    @PostMapping(value = "/local/{id}", params = "remove")
+    public String removerItemLocal(Model model, Long remove){
+
+        Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(remove);
+
+        try {
+            estoqueService.deletarItemEstoque(remove, itemEstoque.get().getQuantidade());
+
+        } catch (Exception e) {return "redirect:/local/{id}";}
+
+        return "redirect:/local/{id}";
+    }
+
+    @GetMapping("/local/{id}/editar")
+    public String editar(Model model, @PathVariable Long id){
+
+        Optional<Estoque> local = estoqueRepository.findById(id);
+        model.addAttribute("local", local.get());
+
+        List<EnumStatusProjeto> statusExistentes = Arrays.asList(EnumStatusProjeto.values());
+        model.addAttribute("statusExistentes", statusExistentes);
+
+        List<Funcionario> funcionariosExistentes = funcionarioRepository.findAll();
+        model.addAttribute("funcionariosExistentes", funcionariosExistentes);
+
+        return "estoquesProjetos/editarLocal";
+    }
+
+    @PostMapping(value = "/local/{id}/editar", params = "update")
+    public String editar(Model model,
+                         @PathVariable Long id,
+                         @RequestParam(required = false) String nome,
+                         @RequestParam(required = false) String solicitante,
+                         @RequestParam(required = false) EnumStatusProjeto status,
+                         @RequestParam(required = false) List<Long> funcionario){
+
+        Optional<Estoque> local = estoqueRepository.findById(id);
+
+
+            if (local.get().getTipo().equals("Estoque")) {
+                estoqueService.atualizarEstoque(id, nome);
+
+            }
+            if (local.get().getTipo().equals("Projeto")) {
+                projetoService.atualizarProjeto(id, nome, solicitante, status, funcionario);
+            }
+
+            estoqueRepository.save(local.get());
+
+        return  "redirect:/local/{id}";
+    }
 }

@@ -1,9 +1,11 @@
 package com.citec.estoque.services.implementacao;
 
 import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
+import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
 import com.citec.estoque.entities.tabelasAuxiliares.Movimentacao;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
+import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
 import com.citec.estoque.repositorys.tabelasAuxiliares.ItemEstoqueRepository;
 import com.citec.estoque.repositorys.tabelasAuxiliares.MovimentacaoRepository;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -115,5 +118,17 @@ public class EstoqueServiceImpl implements EstoqueService {
             itemEstoqueRepository.save(itemEstoque.get());
         }
 
+    }
+
+    public void atualizarEstoque(Long id, String nome) {
+        Optional<Estoque> estoque = estoqueRepository.findById(id);
+
+        if (estoque.isPresent()) {
+            if (!nome.isBlank())
+                estoque.get().setNome(nome);
+
+            estoqueRepository.save(estoque.get());
+
+        } else throw new IllegalArgumentException("Estoque não encontrado");
     }
 }
