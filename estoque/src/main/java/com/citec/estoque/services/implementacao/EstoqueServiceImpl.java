@@ -1,17 +1,13 @@
 package com.citec.estoque.services.implementacao;
 
 import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
-import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
 import com.citec.estoque.entities.tabelasAuxiliares.Movimentacao;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
-import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
-import com.citec.estoque.entities.tabelasPrincipais.Projeto;
 import com.citec.estoque.repositorys.tabelasAuxiliares.ItemEstoqueRepository;
 import com.citec.estoque.repositorys.tabelasAuxiliares.MovimentacaoRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.EstoqueRepository;
-import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
 import com.citec.estoque.services.EstoqueService;
@@ -19,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service

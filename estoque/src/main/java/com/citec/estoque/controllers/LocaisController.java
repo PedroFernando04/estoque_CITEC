@@ -62,7 +62,7 @@ public class LocaisController {
     @GetMapping({"/", "/locais"})
     public String locais(Model model,
                          @RequestParam(defaultValue = "0") Integer page,
-                         @RequestParam(defaultValue = "5") Integer size,
+                         @RequestParam(defaultValue = "12") Integer size,
                          @RequestParam(required = false) String filtroNome,
                          @RequestParam(required = false) String filtroSolicitante,
                          @RequestParam(required = false) EnumStatusProjeto filtroStatus,
