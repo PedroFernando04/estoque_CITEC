@@ -18,33 +18,37 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <div class="sub-head">
+        <input name="filtroNome" type="text" placeholder="  Pesquisar">
+        
+        <form th:action="@{/locais}" method="get" name="filtrar">
 
-        <input id="searchInput" onkeyup="filtrarCards()" type="text" placeholder="  Pesquisar">
+            <div class="filtros">
+                
+                <select name="filtroSolicitante"  >
+                    <option value="">Solicitante</option>
+                    <option th:each="solicitante : ${solicitantesExistentes}"
+                            th:value="${solicitante}"
+                            th:text="${solicitante}">
+                    </option>
+                </select>
 
-        <div class="filtros">
-            <select name="Solicitante" id="filtroSolicitante" onclick="filtrarCards()">
-                <option value="">Solicitante</option>
-                <option th:each="solicitante : ${solicitantesExistentes}"
-                        th:value="${solicitante}"
-                        th:text="${solicitante}">
-                </option>
-            </select>
+                <select name="filtroStatus" id="filtroStatus" >
+                    <option value="">Status</option>
+                    <option th:each="status : ${statusExistentes}"
+                            th:value="${status}"
+                            th:text="${status.descricao}">
+                    </option>
+                </select>
 
-            <select name="Status" id="filtroStatus" onclick="filtrarCards()">
-                <option value="">Status</option>
-                <option th:each="status : ${statusExistentes}"
-                        th:value="${status.descricao}"
-                        th:text="${status.descricao}">
-                </option>
-            </select>
+                <select name="filtroTipo" id="filtroTipo">
+                    <option value="">Tipo</option>
+                    <option value="Estoque">Estoque</option>
+                    <option value="Projeto">Projeto</option>
+                </select>
 
-            <select name="Tipo" id="filtroTipo" onclick="filtrarCards()">
-                <option value="">Tipo</option>
-                <option value="ESTOQUE">Estoque</option>
-                <option value="PROJETO">Projeto</option>
-            </select>
-
-        </div>
+                <button type="submit">Filtrar</button>
+            </div>
+        </form>
 
     </div>
 
@@ -82,10 +86,6 @@
         <div class="cards-grid">
             <div class="card"
                  th:each="l : ${locais}"
-                 th:attr="data-tipo=${l.tipo != null ? l.tipo.toString() : ''},
-                          data-status=${l.tipo == 'Projeto' ? l.statusProjeto.descricao : ''},
-                          data-solicitante=${l.tipo == 'Projeto'  ? l.nomeSolicitante : ''},
-                          data-nome=${l.nome}"
                           
                  th:onclick="'window.location.href=\'/local/' + ${l.id} + '\''">
 
@@ -110,44 +110,5 @@
             </div>
         </div>
     </div>
-    
-
-    <script>
-        function filtrarCards() {
-
-            const searchInput = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-            
-            const filtroSolicitante = (document.getElementById('filtroSolicitante').value);
-            const filtroStatus = (document.getElementById('filtroStatus').value);
-            const filtroTipo = (document.getElementById('filtroTipo').value.toUpperCase());
-            
-            const cards = document.querySelectorAll('.cards-grid .card');
-
-            cards.forEach(card => {
-
-                const tipo = (card.dataset.tipo || '').toUpperCase();
-                const solicitante = card.dataset.solicitante || '';
-                const nome = (card.dataset.nome || '').toLowerCase().trim();
-                const status = card.dataset.status || '';
-
-
-            const matchesTipo = (
-                    filtroTipo === '' ||
-                    tipo === filtroTipo ||
-                    (tipo &&  tipo.includes(filtroTipo)) ||
-                    (filtroTipo &&  filtroTipo.includes(tipo))
-                );
-
-            const matchesStatus = filtroStatus === '' ? true : (status !== '' && status === filtroStatus);
-
-            const matchesSolicitante = filtroSolicitante === '' ? true : (solicitante !== '' && solicitante === filtroSolicitante);
-
-            const matchesSearch = nome.includes(searchInput);
-
-
-            card.style.display = (matchesTipo && matchesStatus && matchesSolicitante && matchesSearch) ? 'flex' : 'none';
-            });
-        }
-    </script>
 </body>
 </html>

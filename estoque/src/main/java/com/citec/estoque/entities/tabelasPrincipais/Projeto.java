@@ -16,7 +16,7 @@ public class Projeto extends Estoque {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private EnumStatusProjeto statusProjeto;
+    private EnumStatusProjeto  statusProjeto;
 
     //Construtores
     public Projeto() {}

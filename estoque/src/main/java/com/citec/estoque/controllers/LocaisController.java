@@ -1,6 +1,5 @@
 package com.citec.estoque.controllers;
 
-import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +62,11 @@ public class LocaisController {
     @GetMapping({"/", "/locais"})
     public String locais(Model model,
                          @RequestParam(defaultValue = "0") Integer page,
-                         @RequestParam(defaultValue = "18") Integer size) {
+                         @RequestParam(defaultValue = "5") Integer size,
+                         @RequestParam(required = false) String filtroNome,
+                         @RequestParam(required = false) String filtroSolicitante,
+                         @RequestParam(required = false) EnumStatusProjeto filtroStatus,
+                         @RequestParam(required = false) String filtroTipo) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Estoque> pagina = estoqueRepository.findAll(pageRequest);
@@ -81,14 +83,10 @@ public class LocaisController {
 
         List<EnumStatusProjeto> statusExistentes = Arrays.asList(EnumStatusProjeto.values());
 
-
-
         model.addAttribute("statusExistentes", statusExistentes);
         model.addAttribute("solicitantesExistentes", solicitantesExistentes);
         model.addAttribute("locais", estoques);
         model.addAttribute("pagina", pagina);
-
-
 
         return "estoquesProjetos/locais";
     }
@@ -129,28 +127,15 @@ public class LocaisController {
                 projeto.setNomeSolicitante(nomeSolicitante);
                 projeto.setStatusProjeto(status);
 
-                projetoService.salvarProjeto(projeto);
-
-
-                for(Long funcionarioId : funcionariosIds){
-
-                    FuncionarioProjeto funcionarioProjeto = new FuncionarioProjeto();
-                    Funcionario funcionario = funcionarioRepository.findById(funcionarioId).get();
-                    funcionarioProjeto.setFuncionario(funcionario);
-                    funcionarioProjeto.setProjeto(projeto);
-
-                    funcionarioProjetoRepository.save(funcionarioProjeto);
-                }
-
-
+                projetoService.salvarProjeto(projeto, funcionariosIds);
             }
             else
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Problema no tipo do local");
 
             return "redirect:/locais";
 
-        } catch (IllegalArgumentException e) {
-            return "redirect:/locais/cadastrar";
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Erro ao cadastrar Local:  " + e.getMessage());
         }
     }
 
@@ -195,8 +180,11 @@ public class LocaisController {
                         @RequestParam String itemNome,
                         @RequestParam Integer quantidade,
                         @RequestParam(required = false) String itemOrigem){
-
-        estoqueService.inserirItem(itemNome, quantidade, id, itemOrigem);
+        try {
+            estoqueService.inserirItem(itemNome, quantidade, id, itemOrigem);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Erro ao inserir item no Local:  " + e.getMessage());
+        }
 
         return  "redirect:/local/{id}";
     }
@@ -207,7 +195,9 @@ public class LocaisController {
         try {
             estoqueService.atualizarItemEstoqueFaltando(faltando);
 
-        } catch (Exception e) {return "redirect:/local/{id}";}
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Erro ao registrar falta do item no estoque: " +e.getMessage());
+        }
 
         return "redirect:/local/{id}";
     }
@@ -220,7 +210,9 @@ public class LocaisController {
         try {
             estoqueService.deletarItemEstoque(remove, itemEstoque.get().getQuantidade());
 
-        } catch (Exception e) {return "redirect:/local/{id}";}
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Erro ao deletar item do local: " +e.getMessage());
+        }
 
         return "redirect:/local/{id}";
     }
@@ -248,7 +240,8 @@ public class LocaisController {
                          @RequestParam(required = false) EnumStatusProjeto status,
                          @RequestParam(required = false) List<Long> funcionario){
 
-        Optional<Estoque> local = estoqueRepository.findById(id);
+        try {
+            Optional<Estoque> local = estoqueRepository.findById(id);
 
 
             if (local.get().getTipo().equals("Estoque")) {
@@ -260,6 +253,10 @@ public class LocaisController {
             }
 
             estoqueRepository.save(local.get());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Erro ao atualizar local: " +e.getMessage());
+        }
+
 
         return  "redirect:/local/{id}";
     }

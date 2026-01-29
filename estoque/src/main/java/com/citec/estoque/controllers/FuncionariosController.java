@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +77,7 @@ public class FuncionariosController {
             funcionarioService.salvarFuncionario(funcionario);
 
         } catch (Exception e) {
-            return "redirect:/funcionarios/cadastrar";
+            throw new  RuntimeException("Erro ao cadastrar funcionario:  " + e.getMessage());
         }
 
         return "redirect:/funcionarios";
@@ -131,7 +130,9 @@ public class FuncionariosController {
 
         try {
             funcionarioService.updateFuncionario(id, nome, clero);
-        } catch (Exception e) { return "redirect:/funcionarios/{" + id + "}"; }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Erro ao atualizar Funcionário:  " + e.getMessage());
+        }
 
         return "redirect:/funcionarios/cadastrados";
     }

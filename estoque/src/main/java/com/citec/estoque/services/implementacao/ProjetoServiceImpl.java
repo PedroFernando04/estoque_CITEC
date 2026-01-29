@@ -28,7 +28,7 @@ public class ProjetoServiceImpl implements ProjetoService {
     private FuncionarioRepository funcionarioRepository;
 
 
-    public void salvarProjeto(Projeto projeto) {
+    public void salvarProjeto(Projeto projeto, List<Long> funcionariosIds) {
         Optional<Projeto> projetoRetorno = projetoRepository.findByNomeIgnoreCase(projeto.getNome());
 
         if (projetoRetorno.isPresent())
@@ -36,6 +36,16 @@ public class ProjetoServiceImpl implements ProjetoService {
 
         else
             projetoRepository.save(projeto);
+
+        for(Long funcionarioId : funcionariosIds){
+
+            FuncionarioProjeto funcionarioProjeto = new FuncionarioProjeto();
+            Funcionario funcionario = funcionarioRepository.findById(funcionarioId).get();
+            funcionarioProjeto.setFuncionario(funcionario);
+            funcionarioProjeto.setProjeto(projeto);
+
+            funcionarioProjetoRepository.save(funcionarioProjeto);
+        }
     }
 
     public void atualizarProjeto(Long id, String nome, String solicitante, EnumStatusProjeto status, List<Long> funcionariosId) {

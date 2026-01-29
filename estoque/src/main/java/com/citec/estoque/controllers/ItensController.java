@@ -78,8 +78,8 @@ public class ItensController {
 
              itemService.salvarItem(item);
 
-         } catch (IllegalArgumentException e){
-             return "redirect:/itens/cadastrar";
+         } catch (Exception e){
+             throw new  IllegalArgumentException("Erro ao cadastrar Item:  " + e.getMessage());
          }
 
          return "redirect:/itens";
@@ -110,8 +110,8 @@ public class ItensController {
 
         try {
             itemService.removerItem(itemExcluido.get());
-        }  catch (IllegalArgumentException e) {
-            return "redirect:/itens/cadastrados";
+        }  catch (Exception e) {
+            throw new IllegalArgumentException("Não é possível remover um item presente em algum local:  " + e.getMessage());
         }
 
 
@@ -137,7 +137,12 @@ public class ItensController {
                              @RequestParam(required = false) String rm,
                              @RequestParam(required = false) String patrimonio){
 
-        itemService.updateItem(id, nome, categoria, rm, patrimonio);
+        try {
+            itemService.updateItem(id, nome, categoria, rm, patrimonio);
+        } catch (Exception e){
+            throw new IllegalArgumentException("Erro ao atualizar Item:  " + e.getMessage());
+        }
+
 
         return "redirect:/itens/cadastrados";
     }

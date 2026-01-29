@@ -14,4 +14,6 @@ public interface EstoqueService {
     public void deletarItemEstoque(Long itemEstoqueId, Integer quantidade);
 
     public void atualizarEstoque(Long id, String nome);
+
+
 }

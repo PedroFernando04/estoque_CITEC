@@ -89,16 +89,20 @@ public class PedidosController {
     @PostMapping("/pedidos/cadastrar")
     public String cadastrarPedidos(@RequestParam Estoque destino,
                                    @RequestParam EnumStatusPedido status) {
-        Pedido pedido = new Pedido();
-        pedido.setDestino(destino);
-        pedido.setDataPedido(LocalDateTime.now());
-        pedido.setStatusPedido(status);
+        try{
+            Pedido pedido = new Pedido();
+            pedido.setDestino(destino);
+            pedido.setDataPedido(LocalDateTime.now());
+            pedido.setStatusPedido(status);
 
-        pedidoRepository.save(pedido);
+            pedidoRepository.save(pedido);
 
-        Long id = pedido.getId();
+            Long id = pedido.getId();
 
-        return "redirect:/pedidos/" + id;
+            return "redirect:/pedidos/" + id;
+        } catch(Exception e){
+            throw new IllegalArgumentException("Erro ao cadastrar pedido: " +e.getMessage());
+        }
     }
 
     @GetMapping("/pedidos/{id}")
@@ -129,11 +133,14 @@ public class PedidosController {
                                   @RequestParam String itemNome,
                                   @RequestParam Integer quantidade){
 
-        Optional<Item> item = itemRepository.findByNomeIgnoreCase(itemNome);
-        Optional<Pedido> pedido = pedidoRepository.findById(id);
+        try {
+            Optional<Item> item = itemRepository.findByNomeIgnoreCase(itemNome);
+            Optional<Pedido> pedido = pedidoRepository.findById(id);
 
-        pedidoService.salvarPedido(item, pedido, quantidade);
-
+            pedidoService.salvarPedido(item, pedido, quantidade);
+        } catch(Exception e){
+            throw new IllegalArgumentException("Erro ao inserir item no pedido: " +e.getMessage());
+        }
 
         return "redirect:/pedidos/{id}";
     }
@@ -142,7 +149,11 @@ public class PedidosController {
     @PostMapping(value = "/pedidos/{id}", params = "remove")
     public String removerPedidos(@PathVariable Long id, Model model, @RequestParam Long remove){
 
-        pedidoService.deletarItem(remove);
+        try {
+            pedidoService.deletarItem(remove);
+        } catch(Exception e){
+            throw new IllegalArgumentException("Erro ao deletar item no pedido: " +e.getMessage());
+        }
 
         return "redirect:/pedidos/{id}";
     }
@@ -154,7 +165,11 @@ public class PedidosController {
         List<EnumStatusPedido> status = Arrays.asList(EnumStatusPedido.values());
         model.addAttribute("statusExistentes", status);
 
-        pedidoService.atualizarStatus(novoStatus, id);
+        try {
+            pedidoService.atualizarStatus(novoStatus, id);
+        } catch(Exception e){
+            throw new IllegalArgumentException("Erro ao atualizar pedido: " +e.getMessage());
+        }
 
         return "redirect:/pedidos/{id}";
     }
