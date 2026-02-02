@@ -16,22 +16,26 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="sub-head">
+    <form th:action="@{/itens/cadastrados}" method="get" class="sub-head">
 
-        <input id="searchInput" type="text" placeholder="  Pesquisar ">
+        <input name="nome" type="text" placeholder="  Pesquisar ">
 
         <div class="filtros">
-            <select name="Categoria" id="filtroCategoria">
+            <select name="categoria" id="filtroCategoria">
                 <option value="">Categoria</option>
                 <option th:each="categoria : ${categorias}"
-                        th:value="${categoria.descricao}"
+                        th:value="${categoria}"
                         th:text="${categoria.descricao}">
                 </option>
             </select>
 
+            <button type="submit">
+                Filtrar
+            </button>
+
         </div>
 
-    </div>
+    </form>
     
 
     <div class="sub">

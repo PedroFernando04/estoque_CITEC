@@ -7,15 +7,20 @@ import com.citec.estoque.entities.tabelasPrincipais.Item;
 import com.citec.estoque.repositorys.tabelasAuxiliares.ItemEstoqueRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.services.ItemService;
+import com.citec.estoque.specification.tabelasAuxiliares.ItemEstoqueSpecification;
+import com.citec.estoque.specification.tabelasPrincipais.ItemSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -35,21 +40,33 @@ public class ItensController {
     @GetMapping("/itens")
     public String itens(Model model,
                         @RequestParam(defaultValue = "0") Integer page,
-                        @RequestParam(defaultValue = "15") Integer size){
+                        @RequestParam(defaultValue = "15") Integer size,
+                        @RequestParam(required = false) String nome,
+                        @RequestParam(required = false) EnumCategoriasItem categoria,
+                        @RequestParam(required = false) Long estoqueId,
+                        @RequestParam(required = false) Boolean faltando){
 
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<ItemEstoque> pagina = itemEstoqueRepository.findAll(pageRequest);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Specification<ItemEstoque> spec =
+                Specification.where(ItemEstoqueSpecification.comNome(nome))
+                    .and(ItemEstoqueSpecification.comCategoria(categoria))
+                    .and(ItemEstoqueSpecification.comEstoque(estoqueId))
+                    .and(ItemEstoqueSpecification.comFaltando(faltando));
+
+        Page<ItemEstoque> pagina = itemEstoqueRepository.findAll(spec, pageRequest);
 
         List<Estoque> estoques = pagina.stream()
                         .map(ItemEstoque::getEstoque)
+                            .filter(Objects::nonNull)
                                 .distinct()
-                                        .toList();
+                                    .toList();
 
 
         model.addAttribute("estoques", estoques);
         model.addAttribute("pagina", pagina);
         model.addAttribute("itemEstoque", pagina.getContent());
-        model.addAttribute("categorias", Arrays.asList(EnumCategoriasItem.values()));
+        model.addAttribute("categorias", EnumCategoriasItem.values());
 
         return "itens/itensHome";
     }
@@ -88,17 +105,23 @@ public class ItensController {
     @GetMapping("/itens/cadastrados")
     public String itensCadastrados(Model model,
                                    @RequestParam(defaultValue = "0") Integer page,
-                                   @RequestParam(defaultValue = "15") Integer size){
+                                   @RequestParam(defaultValue = "15") Integer size,
+                                   @RequestParam(required = false) String nome,
+                                   @RequestParam(required = false) EnumCategoriasItem categoria){
 
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Item> pagina = itemRepository.findAll(pageRequest);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Specification<Item> spec =
+                Specification.where(ItemSpecification.comNome(nome))
+                    .and(ItemSpecification.comCategoria(categoria));
+
+        Page<Item> pagina = itemRepository.findAll(spec, pageRequest);
         model.addAttribute("pagina", pagina);
 
         List<EnumCategoriasItem> categoriasExistentes = Arrays.asList(EnumCategoriasItem.values());
         model.addAttribute("categorias", categoriasExistentes);
 
-        List<Item> itensExistentes = itemRepository.findAll();
-        model.addAttribute("itensExistentes", itensExistentes);
+        model.addAttribute("itensExistentes", pagina.getContent());
 
         return "itens/itensCadastrados";
     }

@@ -8,6 +8,7 @@ import com.citec.estoque.repositorys.tabelasAuxiliares.MovimentacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +31,7 @@ public class MovimentacoesController {
                             @RequestParam(defaultValue = "15")  Integer size) {
 
 
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Movimentacao> pagina = movimentacaoRepository.findAll(pageRequest);
         model.addAttribute("pagina", pagina);
 

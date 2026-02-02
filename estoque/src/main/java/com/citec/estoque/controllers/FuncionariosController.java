@@ -1,5 +1,6 @@
 package com.citec.estoque.controllers;
 
+import com.citec.estoque.entities.enums.EnumCategoriasItem;
 import com.citec.estoque.entities.enums.EnumCleroFuncionario;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
@@ -7,15 +8,20 @@ import com.citec.estoque.entities.tabelasPrincipais.Projeto;
 import com.citec.estoque.repositorys.tabelasAuxiliares.FuncionarioProjetoRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.services.FuncionarioService;
+import com.citec.estoque.specification.tabelasAuxiliares.FuncionarioProjetoSpecification;
+import com.citec.estoque.specification.tabelasPrincipais.FuncionarioSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -34,19 +40,27 @@ public class FuncionariosController {
     @GetMapping("/funcionarios")
     public String funcionarios(Model model,
                                @RequestParam(defaultValue = "0") Integer page,
-                               @RequestParam(defaultValue = "15") Integer size) {
+                               @RequestParam(defaultValue = "15") Integer size,
+                               @RequestParam(required = false) String nome,
+                               @RequestParam(required = false) EnumCleroFuncionario clero,
+                               @RequestParam(required = false) Long projeto) {
 
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<FuncionarioProjeto> pagina = funcionarioProjetoRepository.findAll(pageRequest);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Specification<FuncionarioProjeto> spec =
+            Specification.where(FuncionarioProjetoSpecification.comNome(nome))
+                    .and(FuncionarioProjetoSpecification.comClero(clero))
+                    .and(FuncionarioProjetoSpecification.comProjeto(projeto));
+
+        Page<FuncionarioProjeto> pagina = funcionarioProjetoRepository.findAll(spec, pageRequest);
         model.addAttribute("pagina", pagina);
+        model.addAttribute("funcionarioProjetos", pagina.getContent());
 
-        List<FuncionarioProjeto> funcionarioProjetos =  pagina.getContent();
-        model.addAttribute("funcionarioProjetos", funcionarioProjetos);
-
-        List<Projeto> projetosExistentes = funcionarioProjetos.stream()
+        List<Projeto> projetosExistentes = pagina.getContent().stream()
                 .map(FuncionarioProjeto::getProjeto)
-                .distinct()
-                .toList();
+                    .filter(Objects::nonNull)
+                        .distinct()
+                            .toList();
         model.addAttribute("projetosExistentes", projetosExistentes);
 
         List<EnumCleroFuncionario> clerosExistentes = Arrays.asList(EnumCleroFuncionario.values());
@@ -86,14 +100,20 @@ public class FuncionariosController {
     @GetMapping("/funcionarios/cadastrados")
     public String funcionariosCadastrados(Model model,
                                           @RequestParam(defaultValue = "0") Integer page,
-                                          @RequestParam(defaultValue = "15") Integer size) {
+                                          @RequestParam(defaultValue = "3") Integer size,
+                                          @RequestParam(required = false) EnumCleroFuncionario clero,
+                                          @RequestParam(required = false) String nome) {
 
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Funcionario> pagina = funcionarioRepository.findAll(pageRequest);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Specification<Funcionario> spec =
+                Specification.where(FuncionarioSpecification.comNome(nome))
+                        .and(FuncionarioSpecification.comClero(clero));
+
+        Page<Funcionario> pagina = funcionarioRepository.findAll(spec, pageRequest);
         model.addAttribute("pagina", pagina);
 
-        List<Funcionario> funcionariosExistentes = pagina.getContent();
-        model.addAttribute("funcionariosExistentes", funcionariosExistentes);
+        model.addAttribute("funcionariosExistentes", pagina.getContent());
 
         List<EnumCleroFuncionario> clerosExistentes = Arrays.asList(EnumCleroFuncionario.values());
         model.addAttribute("clerosExistentes", clerosExistentes);

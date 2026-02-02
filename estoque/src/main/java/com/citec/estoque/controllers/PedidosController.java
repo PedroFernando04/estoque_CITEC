@@ -47,7 +47,7 @@ public class PedidosController {
     @GetMapping("/pedidos")
     public String pedidos(Model model,
                           @RequestParam(defaultValue = "0") Integer page,
-                          @RequestParam(defaultValue = "1") Integer size) {
+                          @RequestParam(defaultValue = "10") Integer size) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Pedido> pagina = pedidoRepository.findAll(pageRequest);

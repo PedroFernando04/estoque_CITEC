@@ -16,36 +16,40 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="sub-head">
+    <form th:action="@{/itens}" method="get" class="sub-head">
 
-        <input id="searchInput" onkeyup="filtrarItens()" type="text" placeholder="  Pesquisar">
+        <input name="nome" type="text" placeholder="  Pesquisar">
 
         <div class="filtros">
-            <select name="Categoria" id="filtroCategoria" onclick="filtrarItens()">
+            <select name="categoria" >
                 <option value="">Categoria</option>
                 <option th:each="categoria : ${categorias}"
-                        th:value="${categoria.descricao}"
+                        th:value="${categoria}"
                         th:text="${categoria.descricao}">
                 </option>
             </select>
 
-            <select name="Local" id="filtroLocal" onclick="filtrarItens()">
+            <select name="estoqueId" >
                 <option value="">Local</option>
                 <option th:each="local : ${estoques}"
-                        th:value="${local.nome}"
+                        th:value="${local.id}"
                         th:text="${local.nome}">
                 </option>
             </select>
 
-            <select name="Faltando" id="filtroFaltando" onclick="filtrarItens()">
+            <select name="faltando">
                 <option value="">Faltando</option>
                 <option value="true">Sim</option>
                 <option value="false">Não</option>
             </select>
 
+            <button type="submit">
+                Filtrar
+            </button>
+
         </div>
 
-    </div>
+    </form>
     
 
     <div class="sub">
@@ -111,35 +115,6 @@
         </div>
 
     </div>
-        
-
-    <script>
-        function filtrarItens(){
-
-            const searchInput = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-
-            const filtroCategoria = (document.getElementById('filtroCategoria').value);
-            const filtroLocal = (document.getElementById('filtroLocal').value);
-            const filtroFaltando = (document.getElementById('filtroFaltando').value);
-
-            const itens = document.querySelectorAll('.historico .conteudo-table');
-
-            itens.forEach(i => {
-                const itemNome = (i.dataset.item || '').toLowerCase().trim();
-                const categoria = i.dataset.categoria || '';
-                const local = i.dataset.local || '';
-                const faltando = i.dataset.faltando || '';
-
-                const matchesItemNome = itemNome.includes(searchInput);
-                
-                const matchesCategoria = filtroCategoria === '' ? true : (categoria !== '' && categoria === filtroCategoria);
-                const matchesLocal = filtroLocal === '' ? true : (local !== '' && local === filtroLocal);
-                const matchesFaltando = filtroFaltando == '' ? true : (faltando != '' && faltando == filtroFaltando);
-
-                i.style.display = (matchesCategoria && matchesFaltando && matchesItemNome && matchesLocal) ? 'table-row' : 'none';
-            });
-        }
-    </script>
 
 </body>
 </html>

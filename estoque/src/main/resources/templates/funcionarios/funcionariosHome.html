@@ -16,30 +16,34 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="sub-head">
+    <form th:action="@{/funcionarios}" method="get" class="sub-head">
 
-        <input id="searchInput" onkeyup="filtrarFuncionarios()" type="text" placeholder="  Pesquisar">
+        <input name="nome" type="text" placeholder="  Pesquisar">
 
         <div class="filtros">
-            <select name="Clero" id="filtroClero" onclick="filtrarFuncionarios()">
+            <select name="clero" id="filtroClero" >
                 <option value="">Clero</option>
                 <option th:each="clero : ${clerosExistentes}"
-                        th:value="${clero.descricao}"
+                        th:value="${clero}"
                         th:text="${clero.descricao}">
                 </option>
             </select>
 
-            <select name="Projeto" id="filtroProjeto" onclick="filtrarFuncionarios()">
+            <select name="projeto" id="filtroProjeto">
                 <option value="">Projeto</option>
                 <option th:each="p : ${projetosExistentes}"
-                        th:value="${p.nome}"
+                        th:value="${p.id}"
                         th:text="${p.nome}">
                 </option>
             </select>
 
+            <button type="submit">
+                Filtrar
+            </button>
+
         </div>
 
-    </div>
+    </form>
 
     <div class="sub">
 
@@ -86,10 +90,7 @@
                 </tr>
                 <tr th:if="${!funcionarioProjetos.empty}"
                     class="conteudo-table"
-                    th:each="f : ${funcionarioProjetos}"
-                    th:attr="data-nome=${f.funcionario.nome},
-                            data-clero=${f.funcionario.clero.descricao != null ? f.funcionario.clero.descricao : ''},
-                            data-projeto=${f.projeto.nome != null ? f.projeto.nome : ''}">
+                    th:each="f : ${funcionarioProjetos}">
 
                     <th th:text="${f.funcionario.nome}">nome</th>
                     <th th:text="${f.funcionario.clero.descricao}">clero</th>
@@ -103,29 +104,5 @@
 
     </div>
 
-    <script>
-        function filtrarFuncionarios(){
-
-            const searchInput = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-
-            const filtroClero = (document.getElementById('filtroClero').value).trim();
-            const filtroProjeto = (document.getElementById('filtroProjeto').value).trim();
-
-            const funcionarios = document.querySelectorAll('.historico .conteudo-table');
-
-            funcionarios.forEach(f => {
-                const nome = (f.dataset.nome || '').toLowerCase().trim();
-                const clero = (f.dataset.clero || '').trim();
-                const projeto = (f.dataset.projeto || '').trim();
-
-                const matchesNome = nome.includes(searchInput);
-                
-                const matchesClero = filtroClero === '' ? true : (clero !== '' && clero === filtroClero);
-                const matchesProjeto = filtroProjeto === '' ? true : (projeto !== '' && projeto === filtroProjeto);
-
-                f.style.display = (matchesNome && matchesClero && matchesProjeto) ? 'table-row' : 'none';
-            });
-        }
-    </script>
 </body>
 </html>

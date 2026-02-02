@@ -20,6 +20,7 @@ import com.citec.estoque.services.ProjetoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +69,7 @@ public class LocaisController {
                          @RequestParam(required = false) EnumStatusProjeto filtroStatus,
                          @RequestParam(required = false) String filtroTipo) {
 
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Estoque> pagina = estoqueRepository.findAll(pageRequest);
 
         List<Estoque> estoques = pagina.getContent();

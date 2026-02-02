@@ -554,7 +554,6 @@ th button{
     background-color: red;
     padding: 30px;
 
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -568,3 +567,10 @@ th button{
 
 }
 
+.cadas{
+        display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
