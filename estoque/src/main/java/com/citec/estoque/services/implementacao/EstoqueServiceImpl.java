@@ -82,11 +82,14 @@ public class EstoqueServiceImpl implements EstoqueService {
         movimentacao.setItem(item.get());
         movimentacao.setQuantidade(quantidade);
         movimentacao.setDestino(estoque.get());
-        movimentacao.setStatus(EnumStatusMovimentacao.ENTRADA);
-        if(itemOrigem == null || itemOrigem.isBlank())
+        if(itemOrigem == null || itemOrigem.isBlank()) {
             movimentacao.setOrigem(null);
-        else
+            movimentacao.setStatus(EnumStatusMovimentacao.ENTRADA);
+        }
+        else {
             movimentacao.setOrigem(estoqueOrigem.get());
+            movimentacao.setStatus(EnumStatusMovimentacao.MOVIMENTACAO);
+        }
         movimentacaoRepository.save(movimentacao);
 
 

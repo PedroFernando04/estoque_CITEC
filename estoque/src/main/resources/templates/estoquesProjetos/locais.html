@@ -17,14 +17,12 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="sub-head">
-        <input name="filtroNome" type="text" placeholder="  Pesquisar">
-        
-        <form th:action="@{/locais}" method="get" name="filtrar">
+    <form th:action="@{/locais}" method="get" class="sub-head">
+        <input name="nome" type="text" placeholder="  Pesquisar">
 
             <div class="filtros">
                 
-                <select name="filtroSolicitante"  >
+                <select name="solicitante">
                     <option value="">Solicitante</option>
                     <option th:each="solicitante : ${solicitantesExistentes}"
                             th:value="${solicitante}"
@@ -32,7 +30,7 @@
                     </option>
                 </select>
 
-                <select name="filtroStatus" id="filtroStatus" >
+                <select name="status">
                     <option value="">Status</option>
                     <option th:each="status : ${statusExistentes}"
                             th:value="${status}"
@@ -40,17 +38,18 @@
                     </option>
                 </select>
 
-                <select name="filtroTipo" id="filtroTipo">
+                <select name="tipo">
                     <option value="">Tipo</option>
-                    <option value="Estoque">Estoque</option>
-                    <option value="Projeto">Projeto</option>
+                    <option value="ESTOQUE">Estoque</option>
+                    <option value="PROJETO">Projeto</option>
                 </select>
 
-                <button type="submit">Filtrar</button>
+                <button type="submit">
+                    Filtrar
+                </button>
             </div>
-        </form>
 
-    </div>
+    </form>
 
     <div class="sub">
         <div class="titulo">Locais</div> 

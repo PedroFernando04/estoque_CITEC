@@ -11,9 +11,11 @@ import com.citec.estoque.repositorys.tabelasPrincipais.EstoqueRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.PedidoRepository;
 import com.citec.estoque.services.PedidoService;
+import com.citec.estoque.specification.tabelasPrincipais.PedidoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -47,25 +49,31 @@ public class PedidosController {
     @GetMapping("/pedidos")
     public String pedidos(Model model,
                           @RequestParam(defaultValue = "0") Integer page,
-                          @RequestParam(defaultValue = "10") Integer size) {
+                          @RequestParam(defaultValue = "10") Integer size,
+                          @RequestParam(required = false) Long destinoId,
+                          @RequestParam(required = false) Long itemId,
+                          @RequestParam(required = false) EnumStatusPedido status) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Pedido> pagina = pedidoRepository.findAll(pageRequest);
+
+        Specification<Pedido> spec =
+                Specification.where(PedidoSpecification.comDestino(destinoId)
+                .and(PedidoSpecification.comStatus(status)
+                        .and(PedidoSpecification.comItem(itemId))));
+
+        Page<PedidoComItensDTO> pagina = pedidoService.listarPedidosComItens(spec, pageRequest);
         model.addAttribute("pagina", pagina);
+        model.addAttribute("pedidos", pagina.getContent());
 
-        List<PedidoComItensDTO> pedidos = pedidoService.listarPedidosComItens();
-        model.addAttribute("pedidos", pedidos);
+        model.addAttribute("status", Arrays.asList(EnumStatusPedido.values()));
 
-        List<EnumStatusPedido> status = Arrays.asList(EnumStatusPedido.values());
-        model.addAttribute("status", status);
-
-        List<Estoque> destinos = pedidos.stream()
+        List<Estoque> destinos = pagina.getContent().stream()
                 .map(PedidoComItensDTO::getDestino)
                     .distinct()
                         .toList();
         model.addAttribute("destinos", destinos);
 
-        List<Item> itens = itemRepository.findAll();
+        Page<Item> itens = itemRepository.findAll(pageRequest);
         model.addAttribute("itens", itens);
 
         return "pedidos/pedidosHome";

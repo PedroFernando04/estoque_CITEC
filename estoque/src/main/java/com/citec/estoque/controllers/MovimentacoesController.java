@@ -5,10 +5,12 @@ import com.citec.estoque.entities.tabelasAuxiliares.Movimentacao;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
 import com.citec.estoque.repositorys.tabelasAuxiliares.MovimentacaoRepository;
+import com.citec.estoque.specification.tabelasAuxiliares.MovimentacaoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,11 +30,22 @@ public class MovimentacoesController {
     @GetMapping("/historico")
     public String historico(Model model,
                             @RequestParam(defaultValue = "0") Integer page,
-                            @RequestParam(defaultValue = "15")  Integer size) {
+                            @RequestParam(defaultValue = "15")  Integer size,
+                            @RequestParam(required = false) EnumStatusMovimentacao status,
+                            @RequestParam(required = false) Long origemId,
+                            @RequestParam(required = false) Long destinoId,
+                            @RequestParam(required = false) Long itemId) {
 
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Movimentacao> pagina = movimentacaoRepository.findAll(pageRequest);
+
+        Specification<Movimentacao> spec =
+                Specification.where(MovimentacaoSpecification.comStatus(status)
+                .and(MovimentacaoSpecification.comOrigem(origemId))
+                .and(MovimentacaoSpecification.comDestino(destinoId))
+                .and(MovimentacaoSpecification.comItem(itemId)));
+
+        Page<Movimentacao> pagina = movimentacaoRepository.findAll(spec, pageRequest);
         model.addAttribute("pagina", pagina);
 
         List<Movimentacao> movimentacoes = pagina.getContent();

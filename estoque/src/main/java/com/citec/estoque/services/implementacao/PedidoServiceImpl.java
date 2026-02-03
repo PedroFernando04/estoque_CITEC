@@ -10,6 +10,10 @@ import com.citec.estoque.repositorys.tabelasPrincipais.PedidoRepository;
 import com.citec.estoque.services.EstoqueService;
 import com.citec.estoque.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,25 +32,32 @@ public class PedidoServiceImpl implements PedidoService {
     @Autowired
     private EstoqueService estoqueService;
 
-    public List<PedidoComItensDTO> listarPedidosComItens() {
+    public Page<PedidoComItensDTO> listarPedidosComItens(Specification<Pedido> spec, Pageable pageable) {
 
-        List<Pedido> pedidos = pedidoRepository.findAll();
-        List<PedidoComItensDTO> pedidosComItensDTO = new ArrayList<>();
+        Page<Pedido> paginaPedidos = pedidoRepository.findAll(spec, pageable);
 
-        for (Pedido pedido : pedidos) {
-            List<ItemPedido> itens = itemPedidoRepository.findByPedido(pedido);
+        List<PedidoComItensDTO> dtos = paginaPedidos.getContent()
+                .stream()
+                .map(pedido -> {
 
-            PedidoComItensDTO dto = new PedidoComItensDTO();
-            dto.setId(pedido.getId());
-            dto.setData(pedido.getDataPedido());
-            dto.setStatus(pedido.getStatusPedido());
-            dto.setItens(itens);
-            dto.setDestino(pedido.getDestino());
+                    List<ItemPedido> itens = itemPedidoRepository.findByPedido(pedido);
 
-            pedidosComItensDTO.add(dto);
-        }
+                    PedidoComItensDTO dto = new PedidoComItensDTO();
+                    dto.setId(pedido.getId());
+                    dto.setData(pedido.getDataPedido());
+                    dto.setStatus(pedido.getStatusPedido());
+                    dto.setItens(itens);
+                    dto.setDestino(pedido.getDestino());
 
-        return pedidosComItensDTO;
+                    return dto;
+                })
+                .toList();
+
+        return new PageImpl<>(
+                dtos,
+                pageable,
+                paginaPedidos.getTotalElements()
+        );
     }
 
     public void salvarPedido(Optional<Item> item, Optional<Pedido> pedido, Integer quantidade) {

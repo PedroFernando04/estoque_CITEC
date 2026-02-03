@@ -23,7 +23,7 @@ public class Movimentacao {
     @ManyToOne
     private Estoque origem;
 
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = true)
     @ManyToOne
     private Estoque destino;
 

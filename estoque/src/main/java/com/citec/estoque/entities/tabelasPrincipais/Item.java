@@ -21,10 +21,10 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private EnumCategoriasItem categoriaItem;
 
-    @Column(nullable = false, length = 7, name = "codigo_rm", unique = true)
+    @Column(nullable = true, length = 7, name = "codigo_rm", unique = true)
     private String codigoRM;
 
-    @Column(length = 6, nullable = false, unique = true)
+    @Column(length = 6, nullable = true, unique = true)
     private String codigoPatrimonio;
 
     //Construtores

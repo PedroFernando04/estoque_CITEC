@@ -1,5 +1,6 @@
 package com.citec.estoque.controllers;
 
+import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
@@ -17,18 +18,18 @@ import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
 import com.citec.estoque.services.EstoqueService;
 import com.citec.estoque.services.ProjetoService;
+import com.citec.estoque.specification.tabelasPrincipais.EstoqueSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Controller
 @RequestMapping
@@ -64,13 +65,20 @@ public class LocaisController {
     public String locais(Model model,
                          @RequestParam(defaultValue = "0") Integer page,
                          @RequestParam(defaultValue = "12") Integer size,
-                         @RequestParam(required = false) String filtroNome,
-                         @RequestParam(required = false) String filtroSolicitante,
-                         @RequestParam(required = false) EnumStatusProjeto filtroStatus,
-                         @RequestParam(required = false) String filtroTipo) {
+                         @RequestParam(required = false) String nome,
+                         @RequestParam(required = false) String solicitante,
+                         @RequestParam(required = false) EnumStatusProjeto status,
+                         @RequestParam(required = false) String tipo) {
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Estoque> pagina = estoqueRepository.findAll(pageRequest);
+
+        Specification<Estoque> spec =
+                Specification.where(EstoqueSpecification.comNome(nome)
+                        .and(EstoqueSpecification.comSolicitante(solicitante))
+                        .and(EstoqueSpecification.comTipo(tipo))
+                        .and(EstoqueSpecification.comStatus(status)));
+
+        Page<Estoque> pagina = estoqueRepository.findAll(spec, pageRequest);
 
         List<Estoque> estoques = pagina.getContent();
         List<Projeto> projetos = projetoRepository.findAll();
@@ -163,11 +171,7 @@ public class LocaisController {
         List<Item> itensExistentes = itemRepository.findAll();
         model.addAttribute("itensExistentes", itensExistentes);
 
-        List<Movimentacao> movimentacoesOrigem = movimentacaoRepository.findByOrigemId(id);
-        List<Movimentacao> movimentacoesDestino = movimentacaoRepository.findByDestinoId(id);
-        List<Movimentacao> movimentacaosLocal = new ArrayList<>();
-        movimentacaosLocal.addAll(movimentacoesOrigem);
-        movimentacaosLocal.addAll(movimentacoesDestino);
+        List<Movimentacao> movimentacaosLocal = movimentacaoRepository.findTop15ByOrigemOrDestino(id, PageRequest.of(0, 15));
         model.addAttribute("movimentacoesLocal", movimentacaosLocal);
 
         List<Estoque> locais = estoqueRepository.findAll();
@@ -210,6 +214,14 @@ public class LocaisController {
 
         try {
             estoqueService.deletarItemEstoque(remove, itemEstoque.get().getQuantidade());
+
+            Movimentacao movimentacao = new Movimentacao();
+            movimentacao.setData(LocalDateTime.now());
+            movimentacao.setItem(itemEstoque.get().getItem());
+            movimentacao.setQuantidade(itemEstoque.get().getQuantidade());
+            movimentacao.setOrigem(itemEstoque.get().getEstoque());
+            movimentacao.setStatus(EnumStatusMovimentacao.SAIDA);
+            movimentacaoRepository.save(movimentacao);
 
         } catch (Exception e) {
             throw new IllegalArgumentException("Erro ao deletar item do local: " +e.getMessage());

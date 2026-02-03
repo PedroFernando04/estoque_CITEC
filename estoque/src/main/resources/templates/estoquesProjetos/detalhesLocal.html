@@ -184,9 +184,9 @@
                     </tr>
                     <tr th:if="${!movimentacoesLocal.empty}"
                         th:each="movimento : ${movimentacoesLocal}">
-                        <th th:text="${movimento.origem == movimento.id} ? 'Saída' : 'Entrada'">movimento</th>
+                        <th th:text="${movimento.status.descricao}">movimento</th>
                         <th th:text="${movimento.origem} ? ${movimento.origem.nome} : ''">origem</th>
-                        <th th:text="${movimento.destino.nome}">destino</th>
+                        <th th:text="${movimento.destino} ? ${movimento.destino.nome} : ''">destino</th>
                         <th th:text="${movimento.item.nome}">item</th>
                         <th th:text="${movimento.quantidade}">quantidade</th>
                         <th th:text="${#temporals.format(movimento.data, 'dd/MM/yyyy HH:mm')}">data</th>
