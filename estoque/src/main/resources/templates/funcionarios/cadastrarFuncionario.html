@@ -26,11 +26,11 @@
         </div>
 
         <div class="formulario">
-            <label for="clero">Clero: </label>
-            <select name="clero" id="clero">
-                <option th:each="clero : ${clerosExistentes}"
-                        th:value="${clero}"
-                        th:text="${clero.descricao}">
+            <label for="cargo">Cargo: </label>
+            <select name="cargo" id="clero">
+                <option th:each="cargo : ${cargosExistentes}"
+                        th:value="${cargo}"
+                        th:text="${cargo.descricao}">
                 </option>
             </select>
         </div>

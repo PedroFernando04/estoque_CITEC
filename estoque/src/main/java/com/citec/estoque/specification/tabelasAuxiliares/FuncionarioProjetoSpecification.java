@@ -1,8 +1,7 @@
 package com.citec.estoque.specification.tabelasAuxiliares;
 
-import com.citec.estoque.entities.enums.EnumCleroFuncionario;
+import com.citec.estoque.entities.enums.EnumCargoFuncionario;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
-import com.citec.estoque.entities.tabelasPrincipais.Projeto;
 import org.springframework.data.jpa.domain.Specification;
 
 public class FuncionarioProjetoSpecification {
@@ -15,7 +14,7 @@ public class FuncionarioProjetoSpecification {
         };
     }
 
-    public static Specification<FuncionarioProjeto> comClero(EnumCleroFuncionario clero) {
+    public static Specification<FuncionarioProjeto> comClero(EnumCargoFuncionario clero) {
         return (root, query, cb) -> {
             if (clero == null) {
                 return null;

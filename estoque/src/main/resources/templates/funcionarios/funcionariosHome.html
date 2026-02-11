@@ -21,11 +21,11 @@
         <input name="nome" type="text" placeholder="  Pesquisar">
 
         <div class="filtros">
-            <select name="clero" id="filtroClero" >
-                <option value="">Clero</option>
-                <option th:each="clero : ${clerosExistentes}"
-                        th:value="${clero}"
-                        th:text="${clero.descricao}">
+            <select name="cargo" id="filtroClero" >
+                <option value="">Cargo</option>
+                <option th:each="cargo : ${cargosExistentes}"
+                        th:value="${cargo}"
+                        th:text="${cargo.descricao}">
                 </option>
             </select>
 
@@ -93,7 +93,7 @@
                     th:each="f : ${funcionarioProjetos}">
 
                     <th th:text="${f.funcionario.nome}">nome</th>
-                    <th th:text="${f.funcionario.clero.descricao}">clero</th>
+                    <th th:text="${f.funcionario.cargo.descricao}">cargo</th>
                     <th th:text="${f.projeto.nome}">projeto</th>
                 </tr>
             </table>

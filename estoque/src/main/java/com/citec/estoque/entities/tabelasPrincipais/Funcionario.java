@@ -1,6 +1,6 @@
 package com.citec.estoque.entities.tabelasPrincipais;
 
-import com.citec.estoque.entities.enums.EnumCleroFuncionario;
+import com.citec.estoque.entities.enums.EnumCargoFuncionario;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,13 +19,13 @@ public class Funcionario {
 
     @Column()
     @Enumerated(EnumType.STRING)
-    private EnumCleroFuncionario clero;
+    private EnumCargoFuncionario cargo;
 
     //Construtores
     public Funcionario() {}
 
-    public Funcionario(String nome, EnumCleroFuncionario clero) {
+    public Funcionario(String nome, EnumCargoFuncionario cargo) {
         this.nome = nome;
-        this.clero = clero;
+        this.cargo = cargo;
     }
 }

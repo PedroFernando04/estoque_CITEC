@@ -21,11 +21,11 @@
         <input name="nome" type="text" placeholder="  Pesquisar ">
 
         <div class="filtros">
-            <select name="clero">
-                <option value="">Clero</option>
-                <option th:each="clero : ${clerosExistentes}"
-                        th:value="${clero}"
-                        th:text="${clero.descricao}">
+            <select name="cargo">
+                <option value="">Cargo</option>
+                <option th:each="cargo : ${cargosExistentes}"
+                        th:value="${cargo}"
+                        th:text="${cargo.descricao}">
                 </option>
             </select>
 
@@ -74,14 +74,14 @@
                 <tr th:if="${!funcionariosExistentes.empty}"
                     class="cabecalho-table">
                     <th>Nome</th>
-                    <th>Clero</th>
+                    <th>Cargo</th>
                 </tr>
                 <tr th:if="${!funcionariosExistentes.empty}"
                     class="conteudo-table"
                     th:each="funcionario : ${funcionariosExistentes}">
 
                     <th th:text="${funcionario.nome}">item</th>
-                    <th th:text="${funcionario.clero.descricao}">categoria</th>
+                    <th th:text="${funcionario.cargo.descricao}">categoria</th>
                     <form th:action="@{/funcionarios/cadastrados}" method="post">
                         <th>
                             <button type="button" th:onclick="'window.location.href=\'/funcionarios/' + ${funcionario.id} + '\''">Editar</button>

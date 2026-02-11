@@ -1,6 +1,6 @@
 package com.citec.estoque.services.implementacao;
 
-import com.citec.estoque.entities.enums.EnumCleroFuncionario;
+import com.citec.estoque.entities.enums.EnumCargoFuncionario;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.repositorys.tabelasAuxiliares.FuncionarioProjetoRepository;
@@ -38,14 +38,14 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         } else throw new IllegalArgumentException("Funcionário atribuído a algum projeto");
     }
 
-    public void updateFuncionario(Long id, String nome, EnumCleroFuncionario clero) {
+    public void updateFuncionario(Long id, String nome, EnumCargoFuncionario cargo) {
         Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
 
         if (funcionario.isPresent()) {
             if(!nome.isBlank())
                 funcionario.get().setNome(nome);
-            if(clero != null)
-                funcionario.get().setClero(clero);
+            if(cargo != null)
+                funcionario.get().setCargo(cargo);
 
             funcionarioRepository.save(funcionario.get());
         } else throw new IllegalArgumentException("Funcionário não encontrado");

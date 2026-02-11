@@ -86,11 +86,13 @@ public class ItensController {
                                 @RequestParam String rm,
                                 @RequestParam String patrimonio){
          try {
+             String rmLimpo = itemService.limparRm(rm);
+
              Item item = new Item();
 
              item.setNome(nome);
              item.setCategoriaItem(categoria);
-             item.setCodigoRM(rm);
+             item.setCodigoRM(rmLimpo);
              item.setCodigoPatrimonio(patrimonio);
 
              itemService.salvarItem(item);

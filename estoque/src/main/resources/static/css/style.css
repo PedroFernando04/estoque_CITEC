@@ -456,9 +456,15 @@ th{
 
 .modal-content-input{
     display: flex;
-    gap: 1em;
     align-items: center;
     flex-direction: column;
+    gap: 1em;
+}
+
+.modal-content-input-content{
+    display: flex;
+    align-items: center;
+    gap:10px
 }
 
 .modal-content input{

@@ -3,7 +3,9 @@ package com.citec.estoque.services.implementacao;
 import com.citec.estoque.entities.enums.EnumCategoriasItem;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemPedido;
+import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
+import com.citec.estoque.entities.tabelasPrincipais.Pedido;
 import com.citec.estoque.repositorys.tabelasAuxiliares.ItemEstoqueRepository;
 import com.citec.estoque.repositorys.tabelasAuxiliares.ItemPedidoRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
@@ -26,6 +28,9 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemEstoqueRepository itemEstoqueRepository;
 
+    public String limparRm(String rm) {
+        return rm.replaceAll("\\D", "");
+    }
 
     public void salvarItem(Item item){
         Optional<Item> nomeDuplicado = itemRepository.findByNomeIgnoreCase(item.getNome());
@@ -34,9 +39,9 @@ public class ItemServiceImpl implements ItemService {
 
         if(nomeDuplicado.isPresent()){
             throw new IllegalArgumentException("Nome já cadastrado");
-        } else if (rmDuplicado.isPresent()) {
+        } else if (rmDuplicado.isPresent() && !item.getCodigoRM().equals("")) {
             throw new IllegalArgumentException("Código RM já cadastrado");
-        }else if (patrimonioDuplicado.isPresent()) {
+        }else if (patrimonioDuplicado.isPresent() && !item.getCodigoPatrimonio().equals("")) {
             throw new IllegalArgumentException("Código de Patrimônio já cadastrado");
         } else  {
             itemRepository.save(item);
@@ -50,7 +55,35 @@ public class ItemServiceImpl implements ItemService {
 
         if(pedidosVerificados.isEmpty() && estoquesVerificados.isEmpty()){
             itemRepository.delete(item);
-        } else throw new IllegalArgumentException("O item não pode ser excluído, pois está associado a um pedido ou estoque");
+        } else {
+            if(!estoquesVerificados.isEmpty()){
+                List<ItemEstoque> estoquesAssociados = itemEstoqueRepository.findByItem(item);
+                List<Estoque> estoques = estoquesAssociados.stream()
+                        .map(ItemEstoque::getEstoque)
+                        .distinct()
+                        .toList();
+                List<String> nomesEstoques = estoques.stream()
+                        .map(Estoque::getNome)
+                        .toList();
+
+                String projetos = String.join(", ", nomesEstoques);
+
+                throw new IllegalArgumentException("O item não pode ser excluído, pois está associado ao(s) seguinte(s) projeto(s): " + projetos);
+            }
+
+            if(!pedidosVerificados.isEmpty()){
+                List<ItemPedido> pedidosAssociados = itemPedidoRepository.findByItem(item);
+                List<Pedido> pedidos = pedidosAssociados.stream()
+                        .map(ItemPedido::getPedido)
+                        .distinct()
+                        .toList();
+                List<Long> nomesPedidos = pedidos.stream()
+                        .map(Pedido::getId)
+                        .toList();
+
+                throw new IllegalArgumentException("O item não pode ser excluído, pois está associado ao(s) seguinte(s) pedido(s): " + nomesPedidos);
+            }
+        }
     }
 
     //update

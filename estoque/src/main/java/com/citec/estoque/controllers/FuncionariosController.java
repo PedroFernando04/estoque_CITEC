@@ -1,7 +1,6 @@
 package com.citec.estoque.controllers;
 
-import com.citec.estoque.entities.enums.EnumCategoriasItem;
-import com.citec.estoque.entities.enums.EnumCleroFuncionario;
+import com.citec.estoque.entities.enums.EnumCargoFuncionario;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.entities.tabelasPrincipais.Projeto;
@@ -42,7 +41,7 @@ public class FuncionariosController {
                                @RequestParam(defaultValue = "0") Integer page,
                                @RequestParam(defaultValue = "15") Integer size,
                                @RequestParam(required = false) String nome,
-                               @RequestParam(required = false) EnumCleroFuncionario clero,
+                               @RequestParam(required = false) EnumCargoFuncionario clero,
                                @RequestParam(required = false) Long projeto) {
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
@@ -63,8 +62,8 @@ public class FuncionariosController {
                             .toList();
         model.addAttribute("projetosExistentes", projetosExistentes);
 
-        List<EnumCleroFuncionario> clerosExistentes = Arrays.asList(EnumCleroFuncionario.values());
-        model.addAttribute("clerosExistentes", clerosExistentes);
+        List<EnumCargoFuncionario> cargosExistentes = Arrays.asList(EnumCargoFuncionario.values());
+        model.addAttribute("cargosExistentes", cargosExistentes);
 
         return "funcionarios/funcionariosHome";
     }
@@ -72,8 +71,8 @@ public class FuncionariosController {
     @GetMapping("/funcionarios/cadastrar")
     public String cadastrarFuncionario(Model model) {
 
-        List<EnumCleroFuncionario> clerosExistentes = Arrays.asList(EnumCleroFuncionario.values());
-        model.addAttribute("clerosExistentes", clerosExistentes);
+        List<EnumCargoFuncionario> cargosExistentes = Arrays.asList(EnumCargoFuncionario.values());
+        model.addAttribute("cargosExistentes", cargosExistentes);
 
 
         return "funcionarios/cadastrarFuncionario";
@@ -81,12 +80,12 @@ public class FuncionariosController {
 
     @PostMapping("/funcionarios/cadastrar")
     public String cadastrarFuncionario(@RequestParam String nome,
-                                       @RequestParam EnumCleroFuncionario clero) {
+                                       @RequestParam EnumCargoFuncionario cargo) {
 
         try {
             Funcionario funcionario = new Funcionario();
             funcionario.setNome(nome);
-            funcionario.setClero(clero);
+            funcionario.setCargo(cargo);
 
             funcionarioService.salvarFuncionario(funcionario);
 
@@ -101,22 +100,22 @@ public class FuncionariosController {
     public String funcionariosCadastrados(Model model,
                                           @RequestParam(defaultValue = "0") Integer page,
                                           @RequestParam(defaultValue = "3") Integer size,
-                                          @RequestParam(required = false) EnumCleroFuncionario clero,
+                                          @RequestParam(required = false) EnumCargoFuncionario cargo,
                                           @RequestParam(required = false) String nome) {
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
         Specification<Funcionario> spec =
                 Specification.where(FuncionarioSpecification.comNome(nome))
-                        .and(FuncionarioSpecification.comClero(clero));
+                        .and(FuncionarioSpecification.comCargo(cargo));
 
         Page<Funcionario> pagina = funcionarioRepository.findAll(spec, pageRequest);
         model.addAttribute("pagina", pagina);
 
         model.addAttribute("funcionariosExistentes", pagina.getContent());
 
-        List<EnumCleroFuncionario> clerosExistentes = Arrays.asList(EnumCleroFuncionario.values());
-        model.addAttribute("clerosExistentes", clerosExistentes);
+        List<EnumCargoFuncionario> cargosExistentes = Arrays.asList(EnumCargoFuncionario.values());
+        model.addAttribute("cargosExistentes", cargosExistentes);
 
         return "funcionarios/funcionariosCadastrados";
     }
@@ -139,14 +138,14 @@ public class FuncionariosController {
         Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
         model.addAttribute("funcionario", funcionario.get());
 
-        List<EnumCleroFuncionario> clerosExistentes = Arrays.asList(EnumCleroFuncionario.values());
-        model.addAttribute("clerosExistentes", clerosExistentes);
+        List<EnumCargoFuncionario> cargosExistentes = Arrays.asList(EnumCargoFuncionario.values());
+        model.addAttribute("cargosExistentes", cargosExistentes);
 
         return  "/funcionarios/editarFuncionario";
     }
 
     @PostMapping(value = "/funcionarios/{id}", params = "update")
-    public String updateFuncionario(@PathVariable Long id, @RequestParam String nome, @RequestParam EnumCleroFuncionario clero) {
+    public String updateFuncionario(@PathVariable Long id, @RequestParam String nome, @RequestParam EnumCargoFuncionario clero) {
 
         try {
             funcionarioService.updateFuncionario(id, nome, clero);

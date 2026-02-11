@@ -57,7 +57,7 @@
                     <table class="table-responsavel">
                         <tr th:each="f : ${funcionariosLocal}">
                             <th 
-                                th:text="${f.funcionario.nome + ' (' + f.funcionario.clero.descricao + ')' }"> funcionario
+                                th:text="${f.funcionario.nome + ' (' + f.funcionario.cargo.descricao + ')' }"> funcionario
                             </th>
                         </tr>
                     </table>
@@ -94,21 +94,31 @@
                             <button type="button" onclick="fecharModal()">&times;</button>
                         </div>
                         <div class="modal-content-input">
-                            <input list="lista-item" name="itemNome" placeholder="  Digite ou Selecione">
-                            <datalist id="lista-item">
-                                <option th:each="item : ${itensExistentes}"
-                                        th:value="${item.nome.toString()}">
-                                </option>
-                            </datalist>
+                            <div class="modal-content-input-content">
+                                <h4>Item: </h4>
+                                <input list="lista-item" name="itemNome" autocomplete="off" placeholder="  Digite ou Selecione">
+                                <datalist id="lista-item">
+                                    <option th:each="item : ${itensExistentes}"
+                                            th:value="${item.nome.toString()}">
+                                    </option>
+                                </datalist>
+                            </div>
 
-                            <input type="number" name="quantidade" id="quantidade" placeholder="  Quantidade">
-
-                            <input list="lista-locais" name="itemOrigem" placeholder="  Digite ou Selecione">
-                            <datalist id="lista-locais">
-                                <option th:each="local : ${locaisExistentes}"
-                                        th:value="${local.nome.toString()}">
-                                </option>
-                            </datalist>
+                            <div class="modal-content-input-content">
+                                <h4>Quantidade:</h4>
+                                <input type="number" name="quantidade" id="quantidade" placeholder="  Digite a quantidade">
+                            </div>
+                            
+                            <div class="modal-content-input-content">
+                                <h4>Origem:</h4>
+                                <input list="lista-locais" name="itemOrigem" placeholder="  Digite ou Selecione">
+                                <datalist id="lista-locais">
+                                    <option th:each="local : ${locaisExistentes}"
+                                            th:value="${local.nome.toString()}">
+                                    </option>
+                                </datalist>
+                            </div>
+                            
 
                             <div class="formulario">
                                 <button type="submit" id="botaoEnviar" name="botaoEnviar">Registrar</button>
@@ -135,7 +145,7 @@
                         th:each="itemEstoque : ${itensLocal}">
                         <th th:text="${itemEstoque.item.nome}">nome</th>
                         <th th:text="${itemEstoque.item.categoriaItem.descricao}">categoria</th>
-                        <th th:text="${itemEstoque.item.codigoRM}">rm</th>
+                        <th th:text="${itemEstoque.item.codigoRMFormatado}">rm</th>
                         <th th:text="${itemEstoque.item.codigoPatrimonio}">patrimonio</th>
                         <th th:text="${itemEstoque.quantidade}">quantidade</th>
                         <th th:if="${local.tipo == 'Estoque'}"

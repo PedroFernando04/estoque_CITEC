@@ -60,6 +60,10 @@ public class EstoqueServiceImpl implements EstoqueService {
             throw new IllegalArgumentException("Item já cadastrado neste local");
         }
 
+        if(quantidade < 0){
+            throw new IllegalArgumentException("O item não pode ser inserido com quantidade negativa");
+        }
+
         if(itemOrigem != null && !itemOrigem.isBlank() && estoqueOrigem.isPresent()) {
 
             Optional<ItemEstoque> itemEstoqueBuscado = itemEstoqueRepository.findByEstoqueIdAndItemId(estoqueOrigem.get().getId(), item.get().getId());
@@ -111,9 +115,6 @@ public class EstoqueServiceImpl implements EstoqueService {
     public void deletarItemEstoque(Long itemEstoqueId, Integer quantidade) {
 
         Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemEstoqueId);
-
-        if (quantidade <= 0 )
-            throw new IllegalArgumentException("Quantide inseridade deve ser maior que zero");
 
         if (quantidade.equals(itemEstoque.get().getQuantidade())) {
             itemEstoqueRepository.deleteById(itemEstoqueId);

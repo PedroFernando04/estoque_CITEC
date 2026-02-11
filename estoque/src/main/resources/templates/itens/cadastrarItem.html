@@ -26,7 +26,7 @@
 
             <div class="formulario">
                 <label for="nome">Nome: </label>
-                <input type="text" name="nome" id="nome">
+                <input type="text" name="nome" id="nome" placeholder="  Nome do item">
             </div>
 
             <div class="formulario">
@@ -41,12 +41,12 @@
 
             <div class="formulario">
                 <label for="rm">Código RM: </label>
-                <input type="text" name="rm" id="rm" maxlength="7" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input type="text" name="rm" id="rm" maxlength="9" pattern="\d{2}\.\d{2}\.\d{3}" placeholder="  00.00.000"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             </div>
 
             <div class="formulario">
                 <label for="patrimonio"> Patrimônio: </label>
-                <input type="text" name="patrimonio" id="patrimonio" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input type="text" name="patrimonio" id="patrimonio" maxlength="6" placeholder="  000000"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             </div>
 
              <div class="formulario">
@@ -55,5 +55,23 @@
 
         </form>
     </div>
+
+    <script>
+    document.getElementById("rm").addEventListener("input", function(e) {
+        let value = e.target.value.replace(/\D/g, "");
+
+        if (value.length > 7) {
+            value = value.slice(0, 7);
+        }
+
+        if (value.length > 4) {
+            value = value.replace(/^(\d{2})(\d{2})(\d{0,3})$/, "$1.$2.$3");
+        } else if (value.length > 2) {
+            value = value.replace(/^(\d{2})(\d{0,2})$/, "$1.$2");
+        }
+
+        e.target.value = value;
+    });
+    </script>
 </body>
 </html>

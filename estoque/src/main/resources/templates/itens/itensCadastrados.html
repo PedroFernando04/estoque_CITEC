@@ -85,7 +85,7 @@
 
                     <th th:text="${item.nome}">item</th>
                     <th th:text="${item.categoriaItem.descricao}">categoria</th>
-                    <th th:text="${item.codigoRM}">rm</th>
+                    <th th:text="${item.codigoRMFormatado}">rm</th>
                     <th th:text="${item.codigoPatrimonio}">patrimonio</th>
                     <form th:action="@{/itens/cadastrados}" method="post">
                         <th>

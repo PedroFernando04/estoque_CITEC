@@ -30,12 +30,12 @@
             </div>
 
             <div class="formulario">
-                <label for="clero">Clero: </label>
-                <select name="clero" id="clero">
-                    <option th:value="${funcionario.clero}" th:text="${funcionario.clero.descricao}">cleroAtual</option>
-                    <option th:each="clero : ${clerosExistentes}"
-                            th:value="${clero}"
-                            th:text="${clero.descricao}">
+                <label for="cargo">Cargo: </label>
+                <select name="cargo" id="cargo">
+                    <option th:value="${funcionario.cargo}" th:text="${funcionario.clero.descricao}">cleroAtual</option>
+                    <option th:each="cargo : ${cargosExistentes}"
+                            th:value="${cargo}"
+                            th:text="${cargo.descricao}">
                     </option>
                 </select>
             </div>

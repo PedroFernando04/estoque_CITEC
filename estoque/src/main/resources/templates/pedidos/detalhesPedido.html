@@ -118,7 +118,7 @@
                         th:each="itemPedido : ${itensLocal}">
                         <th th:text="${itemPedido.item.nome}">nome</th>
                         <th th:text="${itemPedido.item.categoriaItem.descricao}">categoria</th>
-                        <th th:text="${itemPedido.item.codigoRM}">rm</th>
+                        <th th:text="${itemPedido.item.codigoRMFormatado}">rm</th>
                         <th th:text="${itemPedido.item.codigoPatrimonio}">patrimonio</th>
                         <th th:text="${itemPedido.quantidade}">quantidade</th>
                         <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">

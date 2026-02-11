@@ -5,6 +5,8 @@ import com.citec.estoque.entities.tabelasPrincipais.Item;
 
 public interface ItemService {
 
+    public String limparRm(String rm);
+
     public void salvarItem(Item item);
 
     public void removerItem(Item item);
