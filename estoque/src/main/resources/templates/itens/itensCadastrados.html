@@ -21,13 +21,6 @@
         <input name="nome" type="text" placeholder="  Pesquisar ">
 
         <div class="filtros">
-            <select name="categoria" id="filtroCategoria">
-                <option value="">Categoria</option>
-                <option th:each="categoria : ${categorias}"
-                        th:value="${categoria}"
-                        th:text="${categoria.descricao}">
-                </option>
-            </select>
 
             <button type="submit">
                 Filtrar
@@ -76,8 +69,6 @@
                     class="cabecalho-table">
                     <th>Item</th>
                     <th>Categoria</th>
-                    <th>RM</th>
-                    <th>Patrimônio</th>
                 </tr>
                 <tr th:if="${!itensExistentes.empty}"
                     class="conteudo-table"
@@ -85,8 +76,7 @@
 
                     <th th:text="${item.nome}">item</th>
                     <th th:text="${item.categoriaItem.descricao}">categoria</th>
-                    <th th:text="${item.codigoRMFormatado}">rm</th>
-                    <th th:text="${item.codigoPatrimonio}">patrimonio</th>
+
                     <form th:action="@{/itens/cadastrados}" method="post">
                         <th>
                             <button type="button" th:onclick="'window.location.href=\'/itens/' + ${item.id} + '\''">Editar</button>

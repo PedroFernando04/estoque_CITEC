@@ -19,7 +19,8 @@
     <div class="sub-head-detalhes">
         <div  class="titulo-detalhe">
 
-            <h1 th:text="|#${pedido.id}|">#ID</h1>
+            <h1 th:text="|${pedido.titulo}|" >titulo</h1>
+            
 
             <div class="label-detalhe">
 
@@ -52,24 +53,27 @@
             
         </div>
 
-        <h1 th:text="|Destino: ${pedido.destino.nome}|">Destino:</h1>
+        
 
-        <div class="detalhes-detalhe">
-            <div class="solicitante-detalhe">
+        <div >
+            <div class="sub-head-detalhes">
                 <h2>Data da Solicitação:  </h2>
                 <h2 
                     th:text="${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy HH:mm')}"> 11/22/3333
                 </h2>
             </div>
         </div>
-
-        
-
     </div>
 
+    <div style="margin-left: 40px;">
+        <h1 th:text="|Destino: ${pedido.destino.nome}|" >Destino:</h1>
+        
+    </div>
+
+    
     <div class="container-detalhe">
 
-        <div class="item">
+        <div class="item" style="width: 550px;">
             <div class="titulo-item">
                 <h3>Itens</h3>
                 <button onclick="abrirModal()">Adicionar +</button>
@@ -105,33 +109,76 @@
             </form>
 
             
-            <div class="historico">
-                <table>
+            <div >
+                <table >
                     <tr class="cabecalho-table">
                         <th>Nome</th>
-                        <th>Categoria</th>
+                        <th>Fantasia</th>
                         <th>RM</th>
-                        <th>Patrimonio</th>
                         <th>Quantidade</th>
                     </tr>
                     <tr th:if="${!itensLocal.empty}"
                         th:each="itemPedido : ${itensLocal}">
                         <th th:text="${itemPedido.item.nome}">nome</th>
-                        <th th:text="${itemPedido.item.categoriaItem.descricao}">categoria</th>
+                        <th th:text="${itemPedido.item.nomeFantasia}">nome</th>
                         <th th:text="${itemPedido.item.codigoRMFormatado}">rm</th>
-                        <th th:text="${itemPedido.item.codigoPatrimonio}">patrimonio</th>
                         <th th:text="${itemPedido.quantidade}">quantidade</th>
                         <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
                             <th >
                                 <button type="submit" name="remove" id="remove" th:value="${itemPedido.id}">X</button>
+                                <button type="submit" name="more" id="more" th:value="${itemPedido.id}">+</button>
+                                <button type="submit" name="less" id="less" th:value="${itemPedido.id}">-</button>
                             </th>
                         </form>
-                        
                     </tr>
                 </table>
                 
                 <h3 th:if="${itensLocal.empty}">Nenhum item associado!</h3>
             </div>
+        </div>
+
+        <div class="historico" style="width: 550px;" >
+            <h2>Detalhes</h2>
+            <ol id="detalhes">
+                <li style="align-items: center;">
+                    <label for="" style="font-weight: bold;">
+                        Categoria: 
+                    </label> 
+                    <label class="label-detalhe" 
+                            th:text="${pedido.categoria.descricao}" 
+                            th:classappend="${pedido.classeLabelCategoria}"
+                           style="border-radius: 20px; padding: 5px;">
+                        enumCategoria
+                    </label>
+                </li>
+                <li th:if="${pedido.categoria.descricao == 'Ordem de Serviço'}">
+                    <label style="font-weight: bold;">
+                        Tipo de OS:
+                    </label>
+                    <label th:text="${pedido.tipoOs.descricao}"
+                           class="label-detalhe" >
+                        tipoOS
+                    </label>
+                </li>
+                <li th:if="${pedido.categoria.descricao == 'Transporte'}">
+                    <label style="font-weight: bold;">
+                        Tipo de Transporte:
+                    </label>
+                    <label th:text="${pedido.tipoTransporte.descricao}"
+                           class="label-detalhe">
+                        tipoTransporte
+                    </label>
+                </li>
+                <li>
+                    <label style="font-weight: bold;">
+                        Descrição:
+                    </label>
+                    <label class="label-detalhe"
+                           th:text="${pedido.descricao}">
+                        descricao
+                    </label>
+                </li>
+            </ol>
         </div>
 
     </div>

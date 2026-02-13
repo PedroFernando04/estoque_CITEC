@@ -1,10 +1,7 @@
 package com.citec.estoque.specification.tabelasAuxiliares;
 
-import com.citec.estoque.entities.enums.EnumCategoriasItem;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.beans.Expression;
 
 public class ItemEstoqueSpecification {
 
@@ -18,15 +15,6 @@ public class ItemEstoqueSpecification {
                     cb.like((root.get("item").get("codigoRM")), "%" +  nome + "%"),
                     cb.like((root.get("item").get("codigoPatrimonio")), "%" +  nome + "%")
             );
-        };
-    }
-
-    public static Specification<ItemEstoque> comCategoria(EnumCategoriasItem categoria) {
-        return (root, query, cb) -> {
-            if (categoria == null) {
-                return null;
-            }
-            return cb.equal(root.get("item").get("categoriaItem"), categoria);
         };
     }
 

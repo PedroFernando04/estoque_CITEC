@@ -21,13 +21,6 @@
         <input name="nome" type="text" placeholder="  Pesquisar">
 
         <div class="filtros">
-            <select name="categoria" >
-                <option value="">Categoria</option>
-                <option th:each="categoria : ${categorias}"
-                        th:value="${categoria}"
-                        th:text="${categoria.descricao}">
-                </option>
-            </select>
 
             <select name="estoqueId" >
                 <option value="">Local</option>
@@ -94,20 +87,14 @@
                     class="cabecalho-table">
                     <th>Item</th>
                     <th>Local</th>
-                    <th>Categoria</th>
                     <th>Quantidade</th>
                 </tr>
                 <tr th:if="${!itemEstoque.empty}"
                     class="conteudo-table"
-                    th:each="i : ${itemEstoque}"
-                    th:attr="data-item=${i.item.nome},
-                            data-local=${i.estoque.nome != null ? i.estoque.nome : ''},
-                            data-categoria=${i.item.categoriaItem.descricao != null ? i.item.categoriaItem.descricao : ''},
-                            data-faltando=${i.faltando != null ? i.faltando : ''}">
+                    th:each="i : ${itemEstoque}">
 
                     <th th:text="${i.item.nome}">item</th>
                     <th th:text="${i.estoque.nome}">local</th>
-                    <th th:text="${i.item.categoriaItem.descricao}">categoria</th>
                     <th th:text="${i.quantidade}">quantidade</th>
                 </tr>
             </table>

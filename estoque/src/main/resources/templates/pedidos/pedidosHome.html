@@ -80,26 +80,35 @@
         </a>
     </div>
 
-
+    <form class="cadas" id="remover" method="post" th:action="@{/pedidos}" style="display: none;" >
+        <div class="popup">
+            <h2>Tem certeza que deseja excluir?</h2>
+            <input type="hidden" name="remove" id="remove">
+            <div>
+                <button type="button" onclick= fecharModal() style="background-color: #0069AD;">Voltar</button>
+                <button type="submit" style="background-color: rgb(241, 33, 33);" > Excluir</button>
+            </div>
+        </div>
+        
+    </form>
     <div class="historico">
 
             <div>
                 <table >
                     <tr th:if="${!pedidos.empty}"
                         class="cabecalho-table">
-                        <th>Id</th>
+                        <th>Título</th>
                         <th>Status</th>
-                        <th>Destino</th>
+                        <th>Categoria</th>
                         <th>Item</th>
                         <th>Data</th>
+                        <th>Ações</th>
                     </tr>
                     <tr class="linha-historico"
                         th:if="${!pedidos.empty}"
-                        th:each="pedido : ${pedidos}"
-                        th:attr="data-status=${pedido.status.descricao != null ? pedido.status.descricao : ''},
-                                 data-destino=${pedido.destino.nome != null ? pedido.destino.nome : ''}">
+                        th:each="pedido : ${pedidos}">
                          
-                        <th th:text="|#${pedido.id}|">#id</th>
+                        <th th:text="${pedido.titulo}">titulo</th>
                         <th>
                             <div class="label-detalhe" 
                                  th:text="${pedido.status != null} ? ${pedido.status.descricao} : ''" 
@@ -107,7 +116,13 @@
                                     status
                             </div>
                         </th>
-                        <th th:text="${pedido.destino.nome}">destino</th>
+                        <th>
+                            <div class="label-detalhe" 
+                                th:text="${pedido.categoria.descricao}" 
+                                th:classappend="${pedido.classeLabelCategoria}">
+                                descricao
+                            </div>
+                        </th>
                         <th>
                             <ul>
                                 <li th:each = "item : ${pedido.itens}">
@@ -120,12 +135,24 @@
                         <th th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy HH:mm')}">data</th>
                         
                         <th>
-                            <button th:onclick="'window.location.href=\'/pedidos/' + ${pedido.id} + '\''" th:if="${pedido.status.name() != 'RECEBIDO'}">Editar</button>
+                            <button th:onclick = "'window.location.href=\'/pedidos/' + ${pedido.id} + '\''" th:if="${pedido.status.name() != 'RECEBIDO'}">Editar</button>
+                            <button th:onclick = "'abrirModal(' + ${pedido.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
                         </th>
                     </tr>
                 </table>
                 <h3 th:if="${pedidos.empty}">Nenhum pedido registrado!</h3>
             </div>
         </div>
+
+        <script>
+            function abrirModal(id) {
+                document.getElementById("remove").value = id;
+                document.getElementById("remover").style.display = "flex";
+            }
+
+            function fecharModal() {
+                document.getElementById("remover").style.display = "none";
+            }
+        </script>
 </body>
 </html>

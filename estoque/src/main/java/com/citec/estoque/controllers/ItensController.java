@@ -1,6 +1,5 @@
 package com.citec.estoque.controllers;
 
-import com.citec.estoque.entities.enums.EnumCategoriasItem;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
@@ -42,7 +41,6 @@ public class ItensController {
                         @RequestParam(defaultValue = "0") Integer page,
                         @RequestParam(defaultValue = "15") Integer size,
                         @RequestParam(required = false) String nome,
-                        @RequestParam(required = false) EnumCategoriasItem categoria,
                         @RequestParam(required = false) Long estoqueId,
                         @RequestParam(required = false) Boolean faltando){
 
@@ -50,7 +48,6 @@ public class ItensController {
 
         Specification<ItemEstoque> spec =
                 Specification.where(ItemEstoqueSpecification.comNome(nome))
-                    .and(ItemEstoqueSpecification.comCategoria(categoria))
                     .and(ItemEstoqueSpecification.comEstoque(estoqueId))
                     .and(ItemEstoqueSpecification.comFaltando(faltando));
 
@@ -66,7 +63,6 @@ public class ItensController {
         model.addAttribute("estoques", estoques);
         model.addAttribute("pagina", pagina);
         model.addAttribute("itemEstoque", pagina.getContent());
-        model.addAttribute("categorias", EnumCategoriasItem.values());
 
         return "itens/itensHome";
     }
@@ -74,26 +70,19 @@ public class ItensController {
     @GetMapping("/itens/cadastrar")
     public String cadastrarItem(Model model){
 
-        List<EnumCategoriasItem> categoriasExistentes = Arrays.asList(EnumCategoriasItem.values());
-        model.addAttribute("categoriasExistentes", categoriasExistentes);
-
         return "itens/cadastrarItem";
     }
 
     @PostMapping("/itens/cadastrar")
     public String cadastrarItem(@RequestParam String nome,
-                                @RequestParam EnumCategoriasItem categoria,
-                                @RequestParam String rm,
-                                @RequestParam String patrimonio){
+                                @RequestParam String rm){
          try {
              String rmLimpo = itemService.limparRm(rm);
 
              Item item = new Item();
 
              item.setNome(nome);
-             item.setCategoriaItem(categoria);
              item.setCodigoRM(rmLimpo);
-             item.setCodigoPatrimonio(patrimonio);
 
              itemService.salvarItem(item);
 
@@ -108,20 +97,15 @@ public class ItensController {
     public String itensCadastrados(Model model,
                                    @RequestParam(defaultValue = "0") Integer page,
                                    @RequestParam(defaultValue = "15") Integer size,
-                                   @RequestParam(required = false) String nome,
-                                   @RequestParam(required = false) EnumCategoriasItem categoria){
+                                   @RequestParam(required = false) String nome){
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
         Specification<Item> spec =
-                Specification.where(ItemSpecification.comNome(nome))
-                    .and(ItemSpecification.comCategoria(categoria));
+                Specification.where(ItemSpecification.comNome(nome));
 
         Page<Item> pagina = itemRepository.findAll(spec, pageRequest);
         model.addAttribute("pagina", pagina);
-
-        List<EnumCategoriasItem> categoriasExistentes = Arrays.asList(EnumCategoriasItem.values());
-        model.addAttribute("categorias", categoriasExistentes);
 
         model.addAttribute("itensExistentes", pagina.getContent());
 
@@ -149,21 +133,16 @@ public class ItensController {
         Optional<Item> item = itemRepository.findById(id);
         model.addAttribute("item", item.get());
 
-        List<EnumCategoriasItem> categoriasExistentes = Arrays.asList(EnumCategoriasItem.values());
-        model.addAttribute("categoriasExistentes", categoriasExistentes);
-
         return "itens/editarItens";
     }
 
     @PostMapping(value = "/itens/{id}", params = "update")
     public String editarItem(@PathVariable Long id,
                              @RequestParam(required = false) String nome,
-                             @RequestParam(required = false) EnumCategoriasItem categoria,
-                             @RequestParam(required = false) String rm,
-                             @RequestParam(required = false) String patrimonio){
+                             @RequestParam(required = false) String rm){
 
         try {
-            itemService.updateItem(id, nome, categoria, rm, patrimonio);
+            itemService.updateItem(id, nome, rm);
         } catch (Exception e){
             throw new IllegalArgumentException("Erro ao atualizar Item:  " + e.getMessage());
         }

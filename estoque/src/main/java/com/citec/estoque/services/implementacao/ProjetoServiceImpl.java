@@ -2,9 +2,11 @@ package com.citec.estoque.services.implementacao;
 
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
+import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.entities.tabelasPrincipais.Projeto;
 import com.citec.estoque.repositorys.tabelasAuxiliares.FuncionarioProjetoRepository;
+import com.citec.estoque.repositorys.tabelasPrincipais.EstoqueRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
 import com.citec.estoque.services.ProjetoService;
@@ -22,6 +24,9 @@ public class ProjetoServiceImpl implements ProjetoService {
     private ProjetoRepository projetoRepository;
 
     @Autowired
+    private EstoqueRepository estoqueRepository;
+
+    @Autowired
     private FuncionarioProjetoRepository funcionarioProjetoRepository;
 
     @Autowired
@@ -29,12 +34,14 @@ public class ProjetoServiceImpl implements ProjetoService {
 
 
     public void salvarProjeto(Projeto projeto, List<Long> funcionariosIds) {
-        Optional<Projeto> projetoRetorno = projetoRepository.findByNomeIgnoreCase(projeto.getNome());
+        Optional<Estoque> projetoRetorno = estoqueRepository.findByNomeIgnoreCase(projeto.getNome());
 
         if (projetoRetorno.isPresent())
             throw new IllegalArgumentException("Nome Duplicado");
 
-        else
+        else if (funcionariosIds.isEmpty()) {
+            throw new IllegalArgumentException("Nenhum funcionário definido");
+        } else
             projetoRepository.save(projeto);
 
         for(Long funcionarioId : funcionariosIds){

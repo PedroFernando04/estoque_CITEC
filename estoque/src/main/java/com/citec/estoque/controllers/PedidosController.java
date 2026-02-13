@@ -1,7 +1,10 @@
 package com.citec.estoque.controllers;
 
 import com.citec.estoque.dtos.pedidos.PedidoComItensDTO;
+import com.citec.estoque.entities.enums.EnumCategoriaPedido;
 import com.citec.estoque.entities.enums.EnumStatusPedido;
+import com.citec.estoque.entities.enums.tipoPedido.EnumTipoOsPedido;
+import com.citec.estoque.entities.enums.tipoPedido.EnumTipoTransportePedido;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemPedido;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
@@ -10,6 +13,7 @@ import com.citec.estoque.repositorys.tabelasAuxiliares.ItemPedidoRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.EstoqueRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.PedidoRepository;
+import com.citec.estoque.services.ItemService;
 import com.citec.estoque.services.PedidoService;
 import com.citec.estoque.specification.tabelasPrincipais.PedidoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,9 @@ public class PedidosController {
     @Autowired
     private EstoqueRepository estoqueRepository;
 
+    @Autowired
+    private ItemService itemService;
+
 
     @GetMapping("/pedidos")
     public String pedidos(Model model,
@@ -79,6 +86,15 @@ public class PedidosController {
         return "pedidos/pedidosHome";
     }
 
+    @PostMapping(value = "/pedidos", params = "remove")
+    public String remove(@RequestParam Long remove){
+        try {
+            pedidoRepository.deleteById(remove);
+            } catch (Exception e){ throw new IllegalArgumentException("Erro ao tentar remover o pedido: " + e.getMessage()); }
+
+        return "redirect:/pedidos";
+    }
+
     @GetMapping("/pedidos/cadastrar")
     public String cadastrarPedidos(Model model){
 
@@ -91,25 +107,45 @@ public class PedidosController {
         List<Estoque> destinos = estoqueRepository.findAll();
         model.addAttribute("destinos", destinos);
 
+        List<EnumCategoriaPedido>  categoriasExistentes = Arrays.asList(EnumCategoriaPedido.values());
+        model.addAttribute("categoriasExistentes", categoriasExistentes);
+
+        List<EnumTipoOsPedido>  tiposOsExistentes = Arrays.asList(EnumTipoOsPedido.values());
+        model.addAttribute("tiposOsExistentes", tiposOsExistentes);
+
+        List<EnumTipoTransportePedido>  tiposTransporteExistentes = Arrays.asList(EnumTipoTransportePedido.values());
+        model.addAttribute("tiposTransporteExistentes", tiposTransporteExistentes);
+
         return "pedidos/cadastrarPedidos";
     }
 
     @PostMapping("/pedidos/cadastrar")
     public String cadastrarPedidos(@RequestParam Estoque destino,
-                                   @RequestParam EnumStatusPedido status) {
+                                   @RequestParam EnumStatusPedido status,
+                                   @RequestParam String titulo,
+                                   @RequestParam(required = false) String descricao,
+                                   @RequestParam EnumCategoriaPedido categoria,
+                                   @RequestParam(required = false) EnumTipoOsPedido tipoOS,
+                                   @RequestParam(required = false) EnumTipoTransportePedido tipoTransporte) {
         try{
             Pedido pedido = new Pedido();
             pedido.setDestino(destino);
             pedido.setDataPedido(LocalDateTime.now());
             pedido.setStatusPedido(status);
+            pedido.setTitulo(titulo);
+            pedido.setDescricao(descricao);
+            pedido.setCategoria(categoria);
+            pedido.setTipoOs(tipoOS);
+            pedido.setTipoTransporte(tipoTransporte);
 
             pedidoRepository.save(pedido);
 
             Long id = pedido.getId();
 
             return "redirect:/pedidos/" + id;
+
         } catch(Exception e){
-            throw new IllegalArgumentException("Erro ao cadastrar pedido: " +e.getMessage());
+            throw new IllegalArgumentException("Erro ao cadastrar pedido: " + e.getMessage());
         }
     }
 
@@ -155,12 +191,12 @@ public class PedidosController {
 
     //DELETE
     @PostMapping(value = "/pedidos/{id}", params = "remove")
-    public String removerPedidos(@PathVariable Long id, Model model, @RequestParam Long remove){
+    public String removerPedidos(@PathVariable Long id, @RequestParam Long remove){
 
         try {
             pedidoService.deletarItem(remove);
         } catch(Exception e){
-            throw new IllegalArgumentException("Erro ao deletar item no pedido: " +e.getMessage());
+            throw new IllegalArgumentException("Erro ao deletar item no pedido: " + e.getMessage());
         }
 
         return "redirect:/pedidos/{id}";
@@ -178,6 +214,24 @@ public class PedidosController {
         } catch(Exception e){
             throw new IllegalArgumentException("Erro ao atualizar pedido: " +e.getMessage());
         }
+
+        return "redirect:/pedidos/{id}";
+    }
+
+    @PostMapping(value = "/pedidos/{id}", params = "more")
+    public String adicionarUmItem(@PathVariable Long id, @RequestParam Long more){
+        try{
+            itemService.adicionarUmItemPedido(more);
+        } catch(Exception e){throw new IllegalArgumentException("Erro ao inserir item no pedido: " + e.getMessage());}
+
+        return "redirect:/pedidos/{id}";
+    }
+
+    @PostMapping(value = "/pedidos/{id}", params = "less")
+    public String removerUmItem(@PathVariable Long id, @RequestParam Long less){
+        try{
+            itemService.removerUmItemPedido(less);
+        } catch (Exception e){throw new IllegalArgumentException("Erro ao inserir item no pedido: " + e.getMessage());}
 
         return "redirect:/pedidos/{id}";
     }

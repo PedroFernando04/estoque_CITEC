@@ -1,6 +1,5 @@
 package com.citec.estoque.services.implementacao;
 
-import com.citec.estoque.entities.enums.EnumCategoriasItem;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemEstoque;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemPedido;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
@@ -35,14 +34,11 @@ public class ItemServiceImpl implements ItemService {
     public void salvarItem(Item item){
         Optional<Item> nomeDuplicado = itemRepository.findByNomeIgnoreCase(item.getNome());
         Optional<Item> rmDuplicado = itemRepository.findByCodigoRM(item.getCodigoRM());
-        Optional<Item> patrimonioDuplicado = itemRepository.findByCodigoPatrimonio(item.getCodigoPatrimonio());
 
         if(nomeDuplicado.isPresent()){
             throw new IllegalArgumentException("Nome já cadastrado");
         } else if (rmDuplicado.isPresent() && !item.getCodigoRM().equals("")) {
             throw new IllegalArgumentException("Código RM já cadastrado");
-        }else if (patrimonioDuplicado.isPresent() && !item.getCodigoPatrimonio().equals("")) {
-            throw new IllegalArgumentException("Código de Patrimônio já cadastrado");
         } else  {
             itemRepository.save(item);
         }
@@ -87,21 +83,53 @@ public class ItemServiceImpl implements ItemService {
     }
 
     //update
-    public void updateItem(Long id, String nome, EnumCategoriasItem categoria, String rm, String patrimonio){
+    public void updateItem(Long id, String nome,  String rm){
         Optional<Item> item = itemRepository.findById(id);
 
         if(item.isPresent()){
             if (!nome.isBlank())
                 item.get().setNome(nome);
-            if (categoria != null)
-                item.get().setCategoriaItem(categoria);
             if (!rm.isBlank())
                 item.get().setCodigoRM(rm);
-            if (!patrimonio.isBlank())
-                item.get().setCodigoPatrimonio(patrimonio);
 
             itemRepository.save(item.get());
         }
         else throw new IllegalArgumentException("Item não encontrado");
+    }
+
+    public void adicionarUmItemPedido(Long itemPedidoId){
+        ItemPedido item = itemPedidoRepository.findById(itemPedidoId).orElse(null);
+
+        item.setQuantidade(item.getQuantidade() + 1);
+
+        itemPedidoRepository.save(item);
+    }
+
+    public void removerUmItemPedido(Long itemPedidoId){
+        ItemPedido item = itemPedidoRepository.findById(itemPedidoId).orElse(null);
+
+        if(item.getQuantidade() > 0){
+            item.setQuantidade(item.getQuantidade() - 1);
+
+            itemPedidoRepository.save(item);
+        } else throw new IllegalArgumentException("O item não pode ficar com quantidade negativa");
+    }
+
+    public void adicionarUmItemEstoque(Long itemEstoqueId){
+        ItemEstoque item = itemEstoqueRepository.findById(itemEstoqueId).orElse(null);
+
+        item.setQuantidade(item.getQuantidade() + 1);
+
+        itemEstoqueRepository.save(item);
+    }
+
+    public void removerUmItemEstoque(Long itemEstoqueId){
+        ItemEstoque item = itemEstoqueRepository.findById(itemEstoqueId).orElse(null);
+
+        if(item.getQuantidade() > 0){
+            item.setQuantidade(item.getQuantidade() - 1);
+
+            itemEstoqueRepository.save(item);
+        } else throw new IllegalArgumentException("O item não pode ficar com quantidade negativa");
     }
 }

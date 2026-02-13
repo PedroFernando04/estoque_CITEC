@@ -71,7 +71,6 @@ header ul ol a {
     box-shadow: 0 2px 4px rgba(0,0,0,0.5);
 
 }
-
 input{
     border-radius: 20px;
     border-style: hidden;
@@ -79,6 +78,15 @@ input{
 
     height: 25px;
 
+}
+
+textarea{
+    border-radius: 20px;
+    border-style: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+
+    height: 150px;
+    width: 300px;
 }
 
 select{
@@ -105,6 +113,8 @@ select{
 
 
 /* HOVER PADRÃO */
+.popup button,
+table button,
 .historico button,
 .cadastrar button:hover,
 .filtros select:hover,
@@ -124,6 +134,8 @@ select{
     margin-top: 10px;
 }
 
+.popup button,
+table button,
 .historico button,
 .cadastrar button{
     border-radius: 10px;
@@ -245,6 +257,24 @@ select{
     ;
 }
 
+.card-label-os {
+    background-color: #191df8;
+    color: white
+    ;
+}
+
+.card-label-rm {
+    background-color: #821cf8;
+    color: white
+    ;
+}
+
+.card-label-transporte {
+    background-color: #ff9900;
+    color: #333;
+}
+
+
 /* ----------- TELA DE CADASTRO DE ESTOQUE ------------*/
 .containerCadastrar{
     margin-top: 5em;
@@ -334,8 +364,12 @@ form button:hover{
 
 .sub-head-detalhes{
     display: flex;
-    padding: 40px;
+    padding: 30px;
     justify-content: space-between;
+
+    background-color: rgba(255, 255, 255, 0.849);
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 .sub-head-detalhes h1{
@@ -376,6 +410,8 @@ form button:hover{
 }
 
 .label-detalhe{
+    border-radius: 15px;
+
     margin-left: 10px;
     align-items: center;
     display: flex;
@@ -401,7 +437,8 @@ table{
 
 th{
     padding: 7px;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc88;
+    border-radius: 5px;
 }
 
 .detalhes-detalhe{
@@ -413,6 +450,9 @@ th{
     background-color: white;
     padding: 20px;
     border-radius: 20px;
+
+    margin-bottom: 50px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 
@@ -573,10 +613,39 @@ th button{
 
 }
 
+.popup{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    
+    background-color: white;
+    width: 500px;
+    height: 250px;
+
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+
+
+    position: fixed;
+}
 .cadas{
-        display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 
 }
+
+#detalhes{
+    li{
+        margin-top: 10px;
+    }
+}
+
+.fundo-branco{
+    background-color: #ffffff; 
+    padding: 20px; 
+    border-radius: 10px;
+}
+

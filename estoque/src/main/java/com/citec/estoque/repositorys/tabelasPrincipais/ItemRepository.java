@@ -15,5 +15,4 @@ public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificat
 
     Optional<Item> findByCodigoRM(String codigoRM);
 
-    Optional<Item> findByCodigoPatrimonio(String codigoPatrimonio);
 }

@@ -46,8 +46,14 @@ public class PedidoServiceImpl implements PedidoService {
                     dto.setId(pedido.getId());
                     dto.setData(pedido.getDataPedido());
                     dto.setStatus(pedido.getStatusPedido());
-                    dto.setItens(itens);
                     dto.setDestino(pedido.getDestino());
+                    dto.setDescricao(pedido.getDescricao());
+                    dto.setTitulo(pedido.getTitulo());
+                    dto.setCategoria(pedido.getCategoria());
+                    dto.setTipoOs(pedido.getTipoOs());
+                    dto.setTipoTransporte(pedido.getTipoTransporte());
+
+                    dto.setItens(itens);
 
                     return dto;
                 })

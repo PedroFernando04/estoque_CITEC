@@ -30,24 +30,8 @@
             </div>
 
             <div class="formulario">
-                <label for="categoria">Categoria: </label>
-                <select name="categoria" id="categoria">
-                    <option th:value="${item.categoriaItem}" th:text="${item.categoriaItem.descricao}">categoriaAtual</option>
-                    <option th:each="categoria : ${categoriasExistentes}"
-                            th:value="${categoria}"
-                            th:text="${categoria.descricao}">
-                    </option>
-                </select>
-            </div>
-
-            <div class="formulario">
                 <label for="rm">Código RM: </label>
                 <input type="text" name="rm" id="rm" maxlength="7" oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:placeholder="${item.codigoRM}">
-            </div>
-
-            <div class="formulario">
-                <label for="patrimonio"> Patrimônio: </label>
-                <input type="text" name="patrimonio" id="patrimonio" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:placeholder="${item.codigoPatrimonio}">
             </div>
 
              <div class="formulario">

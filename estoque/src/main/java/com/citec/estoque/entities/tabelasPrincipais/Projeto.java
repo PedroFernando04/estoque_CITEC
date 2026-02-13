@@ -1,5 +1,6 @@
 package com.citec.estoque.entities.tabelasPrincipais;
 
+import com.citec.estoque.entities.enums.EnumCategoriaProjeto;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,13 +19,22 @@ public class Projeto extends Estoque {
     @Enumerated(EnumType.STRING)
     private EnumStatusProjeto  statusProjeto;
 
+    @Column
+    private String descricao;
+
+    @Column(nullable = false)
+    private EnumCategoriaProjeto categoria;
+
+
     //Construtores
     public Projeto() {}
 
-    public Projeto(String nome, String nomeSolicitante, EnumStatusProjeto statusProjeto) {
+    public Projeto(String nome, String nomeSolicitante, EnumStatusProjeto statusProjeto, String descricao, EnumCategoriaProjeto categoria) {
         super(nome);
         this.nomeSolicitante = nomeSolicitante;
         this.statusProjeto = statusProjeto;
+        this.descricao = descricao;
+        this.categoria = categoria;
     }
 
     //Getter

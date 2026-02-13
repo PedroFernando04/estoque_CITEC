@@ -21,11 +21,20 @@ public class Funcionario {
     @Enumerated(EnumType.STRING)
     private EnumCargoFuncionario cargo;
 
+    @Column(nullable = true, unique = true)
+    private String login;
+
+    @Column(nullable = true, unique = true)
+    private String senha;
+
     //Construtores
     public Funcionario() {}
 
-    public Funcionario(String nome, EnumCargoFuncionario cargo) {
+    public Funcionario(Long id, String nome, EnumCargoFuncionario cargo, String login, String senha) {
+        this.id = id;
         this.nome = nome;
         this.cargo = cargo;
+        this.login = login;
+        this.senha = senha;
     }
 }
