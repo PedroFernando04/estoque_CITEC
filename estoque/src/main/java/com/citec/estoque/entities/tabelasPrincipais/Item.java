@@ -13,7 +13,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String nome;
 
     @Column(nullable = false, unique = true, name = "nome_fantasia")
@@ -22,18 +22,22 @@ public class Item {
     @Column(nullable = true, length = 7, name = "codigo_rm")
     private String codigoRM;
 
-    @Column
+    @Column(nullable = true)
     private String imagePath;
+
+    @Column(nullable = false)
+    private Boolean faltando = false;
 
     //Construtores
     public Item() {}
 
-    public Item(Long id, String nome, String nomeFantasia, String codigoRM, String imagePath) {
+    public Item(Long id, String nome, String nomeFantasia, String codigoRM, String imagePath,  Boolean faltando) {
         this.id = id;
         this.nome = nome;
         this.nomeFantasia = nomeFantasia;
         this.codigoRM = codigoRM;
         this.imagePath = imagePath;
+        this.faltando = faltando;
     }
 
     //Getter e Setter

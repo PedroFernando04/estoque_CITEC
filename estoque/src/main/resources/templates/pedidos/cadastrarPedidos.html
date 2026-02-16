@@ -35,7 +35,8 @@
                 <option 
                     th:each="status : ${statusExistentes}"
                     th:value="${status}"
-                    th:text="${status.descricao}">
+                    th:text="${status.descricao}"
+                    th:if="${status.descricao == 'Solicitado'}">
                 </option>
             </select>
         </div>
@@ -62,17 +63,17 @@
 
         <div class="formulario" id="tipoOS" style="display: none;">
             <label for="tipoOS">Tipo OS:</label>
-            <select name="tipoOS" id="">
-                <option th:each="tipoOS : ${tiposOsExistentes}"
+            <select name="tipoOS" id="tipoOS">
+                <option th:each="tipoOs : ${tiposOsExistentes}"
                         th:value="${tipoOs}"
-                        th:text="${tipoOS.descricao}">
+                        th:text="${tipoOs.descricao}">
                 </option>
             </select>
         </div>
 
         <div class="formulario" id="tipoTransporte" style="display: none;">
             <label for="tipoTransporte">Tipo Transporte:</label>
-            <select name="tipoTransporte" id="">
+            <select name="tipoTransporte" id="tipoTransporte">
                 <option th:each="tipoTransporte : ${tiposTransporteExistentes}"
                         th:value="${tipoTransporte}"
                         th:text="${tipoTransporte.descricao}">

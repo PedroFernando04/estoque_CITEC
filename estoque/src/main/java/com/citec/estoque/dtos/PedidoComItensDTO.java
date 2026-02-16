@@ -1,4 +1,4 @@
-package com.citec.estoque.dtos.pedidos;
+package com.citec.estoque.dtos;
 
 import com.citec.estoque.entities.enums.EnumCategoriaPedido;
 import com.citec.estoque.entities.enums.EnumStatusPedido;

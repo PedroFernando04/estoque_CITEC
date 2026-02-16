@@ -1,6 +1,6 @@
 package com.citec.estoque.controllers;
 
-import com.citec.estoque.dtos.pedidos.PedidoComItensDTO;
+import com.citec.estoque.dtos.PedidoComItensDTO;
 import com.citec.estoque.entities.enums.EnumCategoriaPedido;
 import com.citec.estoque.entities.enums.EnumStatusPedido;
 import com.citec.estoque.entities.enums.tipoPedido.EnumTipoOsPedido;
@@ -19,6 +19,7 @@ import com.citec.estoque.specification.tabelasPrincipais.PedidoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,7 +62,7 @@ public class PedidosController {
                           @RequestParam(required = false) Long itemId,
                           @RequestParam(required = false) EnumStatusPedido status) {
 
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
         Specification<Pedido> spec =
                 Specification.where(PedidoSpecification.comDestino(destinoId)
@@ -91,6 +92,17 @@ public class PedidosController {
         try {
             pedidoRepository.deleteById(remove);
             } catch (Exception e){ throw new IllegalArgumentException("Erro ao tentar remover o pedido: " + e.getMessage()); }
+
+        return "redirect:/pedidos";
+    }
+
+    @PostMapping(value = "/pedidos", params = "update")
+    public String updateStatus(@RequestParam Long update,
+                               @RequestParam EnumStatusPedido novoStatus){
+
+        try{
+            pedidoService.atualizarStatus(novoStatus, update);
+        } catch (Exception e){throw new  IllegalArgumentException("Erro ao tentar atualizar status: " + e.getMessage()); }
 
         return "redirect:/pedidos";
     }

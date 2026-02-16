@@ -9,8 +9,6 @@ public interface EstoqueService {
 
     public void inserirItem(String itemNome, Integer quantidade, Long id, String itemOrigem);
 
-    public void atualizarItemEstoqueFaltando(Long itemEstoqueId);
-
     public void deletarItemEstoque(Long itemEstoqueId, Integer quantidade);
 
     public void atualizarEstoque(Long id, String nome);

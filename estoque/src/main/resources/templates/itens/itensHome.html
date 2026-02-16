@@ -18,18 +18,11 @@
 
     <form th:action="@{/itens}" method="get" class="sub-head">
 
-        <input name="nome" type="text" placeholder="  Pesquisar">
+        <input name="nome" type="text" placeholder="  Pesquisar Nome ou RM">
+
+        
 
         <div class="filtros">
-
-            <select name="estoqueId" >
-                <option value="">Local</option>
-                <option th:each="local : ${estoques}"
-                        th:value="${local.id}"
-                        th:text="${local.nome}">
-                </option>
-            </select>
-
             <select name="faltando">
                 <option value="">Faltando</option>
                 <option value="true">Sim</option>
@@ -39,7 +32,6 @@
             <button type="submit">
                 Filtrar
             </button>
-
         </div>
 
     </form>
@@ -50,10 +42,6 @@
         <div class="titulo">Itens</div> 
 
             <div class="cadastrar" >
-                <a th:href="@{/itens/cadastrados}">
-                    <button>Editar</button>
-                </a>
-
                 <a th:href="@{/itens/cadastrar}">
                     <button>Cadastrar +</button>
                 </a>
@@ -62,8 +50,8 @@
     </div>
 
     <div class="paginacao">
-        <a th:if="${pagina.hasPrevious()}"
-        th:href="@{/itens(page=${pagina.number - 1}, size=${pagina.size})}">
+        <a  th:if="${pagina.hasPrevious()}"
+            th:href="@{/itens(page=${pagina.number - 1}, size=${pagina.size})}">
             ◀ Anterior
         </a>
 
@@ -72,36 +60,89 @@
             de <span th:text="${pagina.totalPages}"></span>
         </span>
 
-        <a th:if="${pagina.hasNext()}"
-        th:href="@{/itens(page=${pagina.number + 1}, size=${pagina.size})}">
+        <a  th:if="${pagina.hasNext()}"
+            th:href="@{/itens(page=${pagina.number + 1}, size=${pagina.size})}">
             Próxima ▶
         </a>
     </div>
 
+    <form class="cadas" id="remover" method="post" th:action="@{/itens}" style="display: none;" >
+        <div class="popup">
+            <h2>Tem certeza que deseja excluir?</h2>
+            <p>Todo o histórico de movimentações deste item será excluído</p>
+            <input type="hidden" name="remove" id="remove">
+            <div>
+                <button type="button" onclick= fecharModal() style="background-color: #0069AD;">Voltar</button>
+                <button type="submit" style="background-color: rgb(241, 33, 33);" > Excluir</button>
+            </div>
+        </div>
+    </form>
+    
 
-    <div class="historico">
+    <div class="item">
         <div>
             <table>
                 
-                <tr th:if="${!itemEstoque.empty}"
+                <tr th:if="${!itensExistentes.empty}"
                     class="cabecalho-table">
-                    <th>Item</th>
-                    <th>Local</th>
-                    <th>Quantidade</th>
-                </tr>
-                <tr th:if="${!itemEstoque.empty}"
-                    class="conteudo-table"
-                    th:each="i : ${itemEstoque}">
+                    <th>Nome Fantasia</th>
+                    <th>Código RM</th>
+                    <th>Total</th>
+                    <th>Em uso</th>
+                    <th>Disponível</th>
+                    <th>Faltando</th>
+                    <th>Ações</th>
 
-                    <th th:text="${i.item.nome}">item</th>
-                    <th th:text="${i.estoque.nome}">local</th>
-                    <th th:text="${i.quantidade}">quantidade</th>
+                </tr>
+
+                
+                <tr th:if="${!itensExistentes.empty}"
+                    class="conteudo-table"
+                    th:each="item : ${itensExistentes}">
+
+                    <th th:text="${item.nomeFantasia}">item</th>
+                    <th th:text="${item.codigoRMFormatado}">codigoRm</th>
+                    <th th:text="${item.total}">totalEmEstoque</th>
+                    <th th:text="${item.emUso}">totalEmUso</th>
+                    <th th:text="${item.disponivel}">totalDisponivel</th>
+                <form th:action="@{/itens}" method="post">
+                    <th>
+                        <button type="submit" 
+                                th:text="${item.faltando} ? 'Em falta' : 'Em estoque'"
+                                th:value="${item.id}"
+                                name="faltando"
+                                id="faltando"
+                                class="card-label-detalhe"
+                                th:classappend="${item.faltando} ? 'card-label-cancelado' : 'card-label-concluido'">
+                                faltando
+                        </button>
+                    </th>
+                </form>
+                    <th>
+                        <button type="button" th:onclick="'window.location.href=\'/itens/projetos/' + ${item.id} + '\''">Detalhes</button>
+
+                        <button type="button" th:onclick="'window.location.href=\'/itens/' + ${item.id} + '\''">Editar</button>
+                        
+                        <button type="button" th:onclick = "'abrirModal(' + ${item.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
+                    </th>
+                
                 </tr>
             </table>
-            <h3 th:if="${itemEstoque.empty}">Nenhum item associado a local ainda</h3>
+            
+            <h3 th:if="${itensExistentes.empty}">Nenhum item cadastrado ainda</h3>
         </div>
 
     </div>
 
+    <script>
+        function abrirModal(id) {
+            document.getElementById("remove").value = id;
+            document.getElementById("remover").style.display = "flex";
+        }
+
+        function fecharModal() {
+            document.getElementById("remover").style.display = "none";
+        }
+    </script>
 </body>
 </html>

@@ -32,7 +32,7 @@
             <div class="formulario">
                 <label for="cargo">Cargo: </label>
                 <select name="cargo" id="cargo">
-                    <option th:value="${funcionario.cargo}" th:text="${funcionario.clero.descricao}">cleroAtual</option>
+                    <option th:value="${funcionario.cargo}" th:text="${funcionario.cargo.descricao}">cargoAtual</option>
                     <option th:each="cargo : ${cargosExistentes}"
                             th:value="${cargo}"
                             th:text="${cargo.descricao}">

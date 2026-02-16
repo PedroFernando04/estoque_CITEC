@@ -26,16 +26,12 @@ public class ItemEstoque {
     @Column(nullable = false)
     private Integer quantidade;
 
-    @Column(nullable = false)
-    private Boolean faltando = false;
-
     //Construtores
     public ItemEstoque() {}
 
-    public ItemEstoque(Estoque estoque, Item item, Integer quantidade, Boolean faltando) {
+    public ItemEstoque(Estoque estoque, Item item, Integer quantidade) {
         this.estoque = estoque;
         this.item = item;
         this.quantidade = quantidade;
-        this.faltando = faltando;
     }
 }

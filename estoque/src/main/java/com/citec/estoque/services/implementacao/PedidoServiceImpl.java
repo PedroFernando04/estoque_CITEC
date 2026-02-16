@@ -1,6 +1,6 @@
 package com.citec.estoque.services.implementacao;
 
-import com.citec.estoque.dtos.pedidos.PedidoComItensDTO;
+import com.citec.estoque.dtos.PedidoComItensDTO;
 import com.citec.estoque.entities.enums.EnumStatusPedido;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemPedido;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

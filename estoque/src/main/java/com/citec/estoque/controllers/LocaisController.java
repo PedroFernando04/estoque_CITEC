@@ -194,18 +194,7 @@ public class LocaisController {
         return  "redirect:/local/{id}";
     }
 
-    @PostMapping(value = "/local/{id}", params = "faltando")
-    public String localFaltando(Model model, Long faltando){
 
-        try {
-            estoqueService.atualizarItemEstoqueFaltando(faltando);
-
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Erro ao registrar falta do item no estoque: " +e.getMessage());
-        }
-
-        return "redirect:/local/{id}";
-    }
 
     @PostMapping(value = "/local/{id}", params = "remove")
     public String removerItemLocal(Model model, Long remove){

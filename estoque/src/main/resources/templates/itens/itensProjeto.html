@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itens</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="sub">
+
+        <div class="titulo" th:text="${item.nome}" >
+            Itens
+        </div> 
+
+    </div>  
+
+    
+
+
+    <div class="container-detalhe">
+        <div class="item">
+
+            <div class="paginacao">
+                <a  th:if="${pagina.hasPrevious()}"
+                    th:href="@{/itens/projetos(page=${pagina.number - 1}, size=${pagina.size})}">
+                    ◀ Anterior
+                </a>
+
+                <span th:if="${pagina.hasPrevious() ||pagina.hasNext() }">
+                    Página <span th:text="${pagina.number + 1}"></span>
+                    de <span th:text="${pagina.totalPages}"></span>
+                </span>
+
+                <a  th:if="${pagina.hasNext()}"
+                    th:href="@{/itens/projetos(page=${pagina.number + 1}, size=${pagina.size})}">
+                    Próxima ▶
+                </a>
+            </div>
+
+
+            <table>
+                <tr th:if="${!itemEstoque.empty}"
+                    class="cabecalho-table">
+                    <th>Local</th>
+                    <th>Quantidade</th>
+                </tr>
+                <tr th:if="${!itemEstoque.empty}"
+                    class="conteudo-table"
+                    th:each="i : ${itemEstoque}">
+
+                    <th th:text="${i.estoque.nome}">local</th>
+                    <th th:text="${i.quantidade}">quantidade</th>
+                </tr>
+            </table>
+
+            <h3 th:if="${itemEstoque.empty}">Nenhum item associado a local ainda</h3>
+
+        </div>
+
+        <div class="historico">
+            <img th:src="@{'/' + ${item.imagePath}}" alt="fotoDoItem" style="max-width: 750px; max-height: 850px;">
+
+            <div class="formulario">
+                <label for="">Nome Fantasia:</label>
+                <span for="" th:text="${item.nomeFantasia}">nomeFantasia</span>
+            </div>
+
+            <div class="formulario">
+                <label for="">Código RM:</label>
+                <span for="" th:text="${item.codigoRM}">codigoRM</span>
+            </div>
+
+            <div class="formulario">
+                <label for="">Total:</label>
+                <span for="" th:text="${item.total}">emUso</span>
+            </div>
+
+            <div class="formulario">
+                <label for="">Disponível:</label>
+                <span for="" th:text="${item.disponivel}">emUso</span>
+            </div>
+
+            <div class="formulario">
+                <label for="">Total (Em Uso):</label>
+                <span for="" th:text="${item.emUso}">emUso</span>
+            </div>
+        </div>
+
+    </div>
+
+    
+
+</body>
+</html>

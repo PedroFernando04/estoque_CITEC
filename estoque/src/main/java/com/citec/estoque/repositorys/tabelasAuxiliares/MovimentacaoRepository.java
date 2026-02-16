@@ -12,9 +12,9 @@ import java.util.List;
 @Repository
 public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long>, JpaSpecificationExecutor<Movimentacao> {
 
-    List<Movimentacao> findByOrigemId(Long id);
+    List<Movimentacao> findByDestinoIdAndItemId(Long id, Long itemId);
 
-    List<Movimentacao> findByDestinoId(Long id);
+    List<Movimentacao> findByItemId(Long id);
 
     @Query("SELECT m FROM movimentacoes m WHERE m.origem.id = :id OR m.destino.id = :id ORDER BY m.data DESC")
     List<Movimentacao> findTop15ByOrigemOrDestino(Long id, Pageable pageable);

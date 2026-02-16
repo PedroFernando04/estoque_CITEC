@@ -73,7 +73,7 @@
     
     <div class="container-detalhe">
 
-        <div class="item" style="width: 550px;">
+        <div class="item" >
             <div class="titulo-item">
                 <h3>Itens</h3>
                 <button onclick="abrirModal()">Adicionar +</button>
@@ -116,6 +116,7 @@
                         <th>Fantasia</th>
                         <th>RM</th>
                         <th>Quantidade</th>
+                        <th>Ações</th>
                     </tr>
                     <tr th:if="${!itensLocal.empty}"
                         th:each="itemPedido : ${itensLocal}">
@@ -124,10 +125,10 @@
                         <th th:text="${itemPedido.item.codigoRMFormatado}">rm</th>
                         <th th:text="${itemPedido.quantidade}">quantidade</th>
                         <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
-                            <th >
+                            <th>
                                 <button type="submit" name="remove" id="remove" th:value="${itemPedido.id}">X</button>
-                                <button type="submit" name="more" id="more" th:value="${itemPedido.id}">+</button>
-                                <button type="submit" name="less" id="less" th:value="${itemPedido.id}">-</button>
+                                <button type="submit" name="more" id="more" th:value="${itemPedido.id}" >+</button>
+                                <button type="submit" name="less" id="less" th:value="${itemPedido.id}" >-</button>
                             </th>
                         </form>
                     </tr>
@@ -144,7 +145,7 @@
                     <label for="" style="font-weight: bold;">
                         Categoria: 
                     </label> 
-                    <label class="label-detalhe" 
+                    <label class="card-label-detalhe" 
                             th:text="${pedido.categoria.descricao}" 
                             th:classappend="${pedido.classeLabelCategoria}"
                            style="border-radius: 20px; padding: 5px;">

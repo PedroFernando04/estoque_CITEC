@@ -21,9 +21,9 @@
         <div class="filtros">
             <select name="status" id="filtroStatus">
                 <option value="">Status</option>
-                <option th:each="categoria : ${status}"
-                        th:value="${categoria}"
-                        th:text="${categoria.descricao}">
+                <option th:each="s : ${status}"
+                        th:value="${s}"
+                        th:text="${s.descricao}">
                 </option>
             </select>
 
@@ -93,8 +93,8 @@
     </form>
     <div class="historico">
 
-            <div>
-                <table >
+            <form th:action="@{/pedidos}" method="post" >
+                <table>
                     <tr th:if="${!pedidos.empty}"
                         class="cabecalho-table">
                         <th>Título</th>
@@ -106,21 +106,29 @@
                     </tr>
                     <tr class="linha-historico"
                         th:if="${!pedidos.empty}"
-                        th:each="pedido : ${pedidos}">
+                        th:each="pedido : ${pedidos}"
+                        >
                          
                         <th th:text="${pedido.titulo}">titulo</th>
                         <th>
-                            <div class="label-detalhe" 
-                                 th:text="${pedido.status != null} ? ${pedido.status.descricao} : ''" 
-                                 th:classappend="${pedido.classeLabelStatus}">
-                                    status
+                            <div  >
+                                <select name="novoStatus"
+                                        class="card-label-detalhe"
+                                        th:classappend="${pedido.classeLabelStatus}">
+                                    <option th:each="s : ${status}"
+                                            th:value="${s}"
+                                            th:text="${s.descricao}"
+                                            th:selected="${s == pedido.status}"
+                                            classappend="none">
+                                    </option>
+                                </select>
                             </div>
                         </th>
                         <th>
                             <div class="label-detalhe" 
                                 th:text="${pedido.categoria.descricao}" 
                                 th:classappend="${pedido.classeLabelCategoria}">
-                                descricao
+                                categoria
                             </div>
                         </th>
                         <th>
@@ -135,13 +143,14 @@
                         <th th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy HH:mm')}">data</th>
                         
                         <th>
-                            <button th:onclick = "'window.location.href=\'/pedidos/' + ${pedido.id} + '\''" th:if="${pedido.status.name() != 'RECEBIDO'}">Editar</button>
-                            <button th:onclick = "'abrirModal(' + ${pedido.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
+                            <button type="submit" name="update" id="update" style="background-color: #0069AD; " th:value="${pedido.id}">Atualizar status</button>
+                            <button type="button" th:onclick = "'window.location.href=\'/pedidos/' + ${pedido.id} + '\''" th:if="${pedido.status.name() != 'RECEBIDO'}" id="botaoForm">Editar</button>
+                            <button type="button" th:onclick = "'abrirModal(' + ${pedido.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
                         </th>
                     </tr>
                 </table>
                 <h3 th:if="${pedidos.empty}">Nenhum pedido registrado!</h3>
-            </div>
+            </form>
         </div>
 
         <script>

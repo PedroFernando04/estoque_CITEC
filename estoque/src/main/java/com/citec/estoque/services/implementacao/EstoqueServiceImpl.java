@@ -99,18 +99,6 @@ public class EstoqueServiceImpl implements EstoqueService {
 
     }
 
-    public void atualizarItemEstoqueFaltando(Long itemEstoqueId){
-        Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemEstoqueId);
-
-        if (itemEstoque.isPresent()) {
-            if (itemEstoque.get().getFaltando())
-                itemEstoque.get().setFaltando(false);
-            else
-                itemEstoque.get().setFaltando(true);
-
-            itemEstoqueRepository.save(itemEstoque.get());
-        } else throw new IllegalArgumentException("Relação ItemEstoque não encontrada");
-    }
 
     public void deletarItemEstoque(Long itemEstoqueId, Integer quantidade) {
 

@@ -12,8 +12,7 @@ public class ItemEstoqueSpecification {
             }
             return cb.or(
                     cb.like(cb.lower(root.get("item").get("nome")), "%" + nome.toLowerCase() + "%"),
-                    cb.like((root.get("item").get("codigoRM")), "%" +  nome + "%"),
-                    cb.like((root.get("item").get("codigoPatrimonio")), "%" +  nome + "%")
+                    cb.like((root.get("item").get("codigoRM")), "%" +  nome + "%")
             );
         };
     }
@@ -27,15 +26,14 @@ public class ItemEstoqueSpecification {
         };
     }
 
-    public static Specification<ItemEstoque> comFaltando(Boolean faltando) {
+    public static Specification<ItemEstoque> comItem(Long itemId) {
         return (root, query, cb) -> {
-            if (faltando == null) {
+            if (itemId == null) {
                 return null;
             }
-            return cb.equal(root.get("faltando"), faltando);
+            return cb.equal(root.get("item").get("id"), itemId);
         };
     }
-
 }
 
 

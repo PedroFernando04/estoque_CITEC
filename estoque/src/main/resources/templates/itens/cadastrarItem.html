@@ -22,7 +22,12 @@
 
     <div class="containerCadastrar">
 
-        <form th:action="@{/itens/cadastrar}" method="post" >
+        <form th:action="@{/itens/cadastrar}" method="post" enctype="multipart/form-data">
+
+            <div class="formulario">
+                <label for="nomeFantasia">Nome Fantasia:</label>
+                <input type="text" name="nomeFantasia" id="nomeFantasia" placeholder="  Nome Fantasia do item">
+            </div>
 
             <div class="formulario">
                 <label for="nome">Nome: </label>
@@ -32,6 +37,20 @@
             <div class="formulario">
                 <label for="rm">Código RM: </label>
                 <input type="text" name="rm" id="rm" maxlength="9" pattern="\d{2}\.\d{2}\.\d{3}" placeholder="  00.00.000"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+
+            <div class="formulario">
+                <label for="quantidade">Quantidade: </label>
+                <input type="number" name="quantidade" id="quantidade" placeholder="  Quantidade estocada">
+            </div>
+
+            <div class="formulario">
+                <input type="file" name="foto" id="foto" class="input-hidden" accept="image/*" onchange=mostrarPreViewFoto()>
+                <label for="foto" class="custom-upload-label">
+                    <span class="icon"></span>
+                    <img src="" id="preview" alt="">
+                    <strong>Escolha uma foto</strong>
+                </label>
             </div>
 
 
@@ -58,6 +77,31 @@
 
         e.target.value = value;
     });
+
+
+    function mostrarPreViewFoto() {
+        // 1. Capturamos o input pelo ID
+        const input = document.getElementById('foto');
+        const preview = document.getElementById('preview');
+
+        // 2. Verificamos se há um arquivo selecionado
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                // 3. Atribuímos o resultado da leitura ao src da imagem
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                
+                // Opcional: Esconde o ícone ou texto de "Escolha uma foto" para não sobrepor
+                const labelText = document.querySelector('.custom-upload-label strong');
+                if(labelText) labelText.style.display = 'none';
+            }
+
+            // 4. Lê o arquivo como uma URL de dados (Base64)
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
     </script>
 </body>
 </html>

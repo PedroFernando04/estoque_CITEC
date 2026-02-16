@@ -71,12 +71,14 @@ header ul ol a {
     box-shadow: 0 2px 4px rgba(0,0,0,0.5);
 
 }
+
 input{
     border-radius: 20px;
     border-style: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 
     height: 25px;
+    width: 180px
 
 }
 
@@ -105,6 +107,11 @@ select{
     
 }
 
+.filtros select{
+    margin-right: 10px;
+}
+
+
 .filtros select option {
     background-color: #fff;
     color: #000;
@@ -113,12 +120,11 @@ select{
 
 
 /* HOVER PADRÃO */
-.popup button,
-table button,
-.historico button,
+.popup button:hover,
+table button:hover,
+.historico button:hover,
 .cadastrar button:hover,
-.filtros select:hover,
-.sub-head input:hover{
+.filtros select:hover{
     transform: scale(1.05); 
     background-color: #e2e2e2;
     cursor: pointer;
@@ -218,7 +224,9 @@ table button,
     border-radius: 10px;
     font-size: 15px;
     font-weight: bold;
-    text-transform: uppercase;
+
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .labels{
@@ -277,7 +285,7 @@ table button,
 
 /* ----------- TELA DE CADASTRO DE ESTOQUE ------------*/
 .containerCadastrar{
-    margin-top: 5em;
+    margin-bottom: 100px;
 }
 
 .formulario{
@@ -339,7 +347,10 @@ select[multiple] option {
     line-height: 1.4;
 }
 
-
+#botaoForm{
+    background-color: white;
+    color: black;
+}
 
 form button{
     border-radius: 10px;
@@ -355,7 +366,10 @@ form button{
     color: white;
 }
 
-form button:hover{
+form button:hover,
+#more:hover,
+#less:hover,
+#update:hover{
     background-color: #0a84d4;
     transform: scale(1.05);
 }
@@ -412,7 +426,6 @@ form button:hover{
 .label-detalhe{
     border-radius: 15px;
 
-    margin-left: 10px;
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -453,6 +466,8 @@ th{
 
     margin-bottom: 50px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+
+    min-width: 550px;
 }
 
 
@@ -578,6 +593,11 @@ li{
     color: rgb(255, 255, 255);
 }
 
+#remove:hover{
+    transform: scale(1.05);
+    background-color: red;
+}
+
 .botaoEditar{
     display: flex;
     justify-content: space-around;
@@ -613,6 +633,8 @@ th button{
 
 }
 
+
+
 .popup{
     display: flex;
     justify-content: center;
@@ -640,7 +662,10 @@ th button{
 #detalhes{
     li{
         margin-top: 10px;
+        gap: 10px;
     }
+
+    
 }
 
 .fundo-branco{
@@ -648,4 +673,65 @@ th button{
     padding: 20px; 
     border-radius: 10px;
 }
+
+/* Esconde o input feio */
+.input-hidden {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* Estiliza o "Quadrado" */
+.custom-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 200px;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: 0.3s;
+    
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+
+}
+
+.custom-upload-label:hover {
+    background-color: #e2e6ea;
+}
+
+.icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+#preview {
+    display: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a foto preencher o quadrado sem distorcer */
+    border-radius: 8px;
+    position: absolute; /* Para ficar por cima do texto, se necessário */
+    top: 0;
+    left: 0;
+}
+
+.custom-upload-label {
+    position: relative; /* Necessário para o absolute do preview funcionar */
+    overflow: hidden;
+    
+}
+
+#more,
+#less{
+    background-color: #0069AD; 
+    color: white;
+}
+
+
 
