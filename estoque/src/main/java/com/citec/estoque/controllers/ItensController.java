@@ -77,7 +77,7 @@ public class ItensController {
 
     @PostMapping("/itens/cadastrar")
     public String cadastrarItem(@RequestParam(required = false) String nome,
-                                @RequestParam String rm,
+                                @RequestParam(required = false) String rm,
                                 @RequestParam String nomeFantasia,
                                 @RequestParam Integer quantidade,
                                 @RequestParam(required = false )MultipartFile foto) {

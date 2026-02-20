@@ -120,6 +120,7 @@ select{
 
 
 /* HOVER PADRÃO */
+.editar,
 .popup button:hover,
 table button:hover,
 .historico button:hover,
@@ -446,6 +447,9 @@ form button:hover,
     align-items: center;
     display: flex;
     flex-direction: column;
+
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 .funcionarios-detalhe,
 .solicitante-detalhe,
@@ -530,7 +534,6 @@ th{
     display: flex;
     align-items: center;
     flex-direction: column;
-    gap: 1em;
 }
 
 .modal-content-input-content{
@@ -748,6 +751,18 @@ th button{
 #less{
     background-color: #0069AD; 
     color: white;
+}
+
+.descricao{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    label{                 
+        word-break: break-word;      
+    }
 }
 
 

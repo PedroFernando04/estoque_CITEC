@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
     public void salvarItem(Item item){
         Optional<Item> nomeDuplicado = itemRepository.findByNomeIgnoreCase(item.getNome());
         Optional<Item> rmDuplicado = itemRepository.findByCodigoRM(item.getCodigoRM());
-        Optional<Item> nomeFantasiaDuplicado = itemRepository.findByNomeIgnoreCase(item.getNomeFantasia());
+        Optional<Item> nomeFantasiaDuplicado = itemRepository.findByNomeFantasiaIgnoreCase(item.getNomeFantasia());
 
         if(nomeDuplicado.isPresent() && !item.getNome().equals("")){
             throw new IllegalArgumentException("Nome já cadastrado");

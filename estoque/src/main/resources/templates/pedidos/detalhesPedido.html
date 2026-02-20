@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedido</title>
 
-    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,8 +23,6 @@
             
 
             <div class="label-detalhe">
-
-                <div>
 
                     <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
 
@@ -46,21 +44,15 @@
                         </button>
 
                     </form>
-                    
-                </div>
 
             </div>
             
         </div>
 
-        
 
         <div >
             <div class="detalhes-detalhe">
-                <h2>Data da Solicitação:  </h2>
-                <h2 
-                    th:text="${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy HH:mm')}"> 11/22/3333
-                </h2>
+                <h2 th:text="|Data de Solicitação: ${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy HH:mm')}|">Data da Solicitação: 11/22/3333 </h2>
             </div>
         </div>
     </div>
@@ -170,10 +162,10 @@
                         tipoTransporte
                     </label>
                 </li>
-                <li>
-                    <h2 style="font-weight: bold;">
+                <li class="descricao">
+                    <h4 style="font-weight: bold;">
                         Descrição:
-                    </h2>
+                    </h4>
                     <label class="label-detalhe"
                            th:text="${pedido.descricao}">
                         descricao

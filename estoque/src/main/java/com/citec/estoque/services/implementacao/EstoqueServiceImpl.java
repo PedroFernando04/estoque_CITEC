@@ -81,11 +81,6 @@ public class EstoqueServiceImpl implements EstoqueService {
 
         itemEstoqueRepository.save(itemEstoque);
 
-        Optional<ItemEstoque> itemEstoqueCITEC = itemEstoqueRepository.findByEstoqueIdAndItemId(1L, item.get().getId());
-        itemEstoqueCITEC.get().setQuantidade(itemEstoqueCITEC.get().getQuantidade() - quantidade);
-
-        itemEstoqueRepository.save(itemEstoqueCITEC.get());
-
         Movimentacao movimentacao = new Movimentacao();
         movimentacao.setData(LocalDateTime.now());
         movimentacao.setItem(item.get());
@@ -94,8 +89,10 @@ public class EstoqueServiceImpl implements EstoqueService {
         if(itemOrigem == null || itemOrigem.isBlank()) {
             movimentacao.setOrigem(null);
             movimentacao.setStatus(EnumStatusMovimentacao.ENTRADA);
-        }
-        else {
+        } else if (itemOrigem.equals("CITEC")) {
+            movimentacao.setOrigem(estoqueOrigem.get());
+            movimentacao.setStatus(EnumStatusMovimentacao.SAIDA);
+        } else {
             movimentacao.setOrigem(estoqueOrigem.get());
             movimentacao.setStatus(EnumStatusMovimentacao.MOVIMENTACAO);
         }

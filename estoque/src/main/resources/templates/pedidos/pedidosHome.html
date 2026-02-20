@@ -132,18 +132,28 @@
                             </div>
                         </th>
                         <th>
-                            <ul>
+                            <ul th:if="${pedido.itens.size() < 4}">
                                 <li th:each = "item : ${pedido.itens}">
                                     <span th:text = ${item.item.nome} - >nomeItem</span>
 
                                     <span th:text = "| - ${item.quantidade}x|">qntItem</span>
                                 </li>
                             </ul>
+
+                            <ul th:if="${pedido.itens.size() > 3}">
+                                <li th:each = "item, stat : ${pedido.itens}"
+                                    th:if="${stat.index < 3}">
+                                    <span th:text = ${item.item.nome} - >nomeItem</span>
+
+                                    <span th:text = "| - ${item.quantidade}x|">qntItem</span>
+                                </li>
+                            </ul>
+                            <span th:if="${pedido.itens.size() > 3}">...</span>
                         </th>
                         <th th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy HH:mm')}">data</th>
                         
                         <th>
-                            <button type="submit" name="update" id="update" style="background-color: #0069AD; " th:value="${pedido.id}">Atualizar status</button>
+                            <button type="submit" name="update" id="more"  th:value="${pedido.id}">Atualizar status</button>
                             <button type="button" th:onclick = "'window.location.href=\'/pedidos/' + ${pedido.id} + '\''" th:if="${pedido.status.name() != 'RECEBIDO'}" id="botaoForm">Editar</button>
                             <button type="button" th:onclick = "'abrirModal(' + ${pedido.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
                         </th>

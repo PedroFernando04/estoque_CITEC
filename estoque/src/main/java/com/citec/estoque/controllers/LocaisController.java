@@ -180,7 +180,7 @@ public class LocaisController {
     public String local(@PathVariable Long id,
                         @RequestParam String itemNome,
                         @RequestParam Integer quantidade,
-                        @RequestParam(required = false) String itemOrigem){
+                        @RequestParam(required = false, defaultValue = "CITEC") String itemOrigem){
         try {
             estoqueService.inserirItem(itemNome, quantidade, id, itemOrigem);
         } catch (Exception e) {

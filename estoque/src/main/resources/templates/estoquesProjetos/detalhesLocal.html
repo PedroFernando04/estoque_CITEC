@@ -42,7 +42,7 @@
 
         </div>
 
-        <div class="detalhes-detalhe" >
+        <div class="detalhes-detalhe" style="max-width: 550px;">
             <div class="solicitante-detalhe">
                 <h2>Solicitante:  </h2>
                 <h2 
@@ -61,10 +61,10 @@
                 </div>
             </div>
 
-            <div style="width: 550px;">
-                <label style="font-weight: bold;">
+            <div class="descricao">
+                <h4 style="font-weight: bold;">
                     Descrição:
-                </label>
+                </h4>
                 <label class="label-detalhe"
                         th:text="${local.descricao}">
                     descricao
@@ -76,11 +76,11 @@
     </div>
 
     <div id="botaoEditar">
-        <a th:href="@{/locais}" >
+        <a th:href="@{/locais}">
             <button class="voltar">Voltar</button>
         </a>
-
-        <a  th:href="@{/local/{id}/editar(id=${local.id})}" >
+        
+        <a th:href="@{/local/{id}/editar(id=${local.id})}">
             <button class="editar">Editar</button>
         </a>
     </div>
@@ -122,7 +122,7 @@
                             
                             <div class="modal-content-input-content">
                                 <h4>Origem:</h4>
-                                <input list="lista-locais" name="itemOrigem" placeholder="  Digite ou Selecione">
+                                <input list="lista-locais" name="itemOrigem" placeholder="  Deixe em branco para utilizar o estoque">
                                 <datalist id="lista-locais">
                                     <option th:each="local : ${locaisExistentes}"
                                             th:value="${local.nome.toString()}">
@@ -149,6 +149,7 @@
                         <th>Nome Fantasia</th>
                         <th>RM</th>
                         <th>Quantidade</th>
+                        <th>Ações</th>
                     </tr>
                     <tr th:if="${!itensLocal.empty}"
                         th:each="itemEstoque : ${itensLocal}">
@@ -156,6 +157,9 @@
                         <th th:text="${itemEstoque.item.nomeFantasia}">nomeFantasia</th>
                         <th th:text="${itemEstoque.item.codigoRMFormatado}">rm</th>
                         <th th:text="${itemEstoque.quantidade}">quantidade</th>
+                        <th>
+                            <button>X</button>
+                        </th>
                     </tr>
                 </table>
                 
@@ -163,34 +167,7 @@
             </div>
         </div>
 
-        <div class="historico">
-            <div class="titulo-historico">
-                <h3>Histórico</h3>
-            </div>
-
-            <div>
-                <table >
-                    <tr class="cabecalho-table">
-                        <th>Movimento</th>
-                        <th>Origem</th>
-                        <th>Destino</th>
-                        <th>Item</th>
-                        <th>Quantidade</th>
-                        <th>Data</th>
-                    </tr>
-                    <tr th:if="${!movimentacoesLocal.empty}"
-                        th:each="movimento : ${movimentacoesLocal}">
-                        <th th:text="${movimento.status.descricao}">movimento</th>
-                        <th th:text="${movimento.origem} ? ${movimento.origem.nome} : ''">origem</th>
-                        <th th:text="${movimento.destino} ? ${movimento.destino.nome} : ''">destino</th>
-                        <th th:text="${movimento.item.nome}">item</th>
-                        <th th:text="${movimento.quantidade}">quantidade</th>
-                        <th th:text="${#temporals.format(movimento.data, 'dd/MM/yyyy HH:mm')}">data</th>
-                    </tr>
-                </table>
-                <h3 th:if="${movimentacoesLocal.empty}">Nenhuma movimentação registrada!</h3>
-            </div>
-        </div>
+        
     </div>
 
     <script>

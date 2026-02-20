@@ -85,7 +85,7 @@
                     <th th:text="${funcionario.cargo.descricao}">categoria</th>
                     <form th:action="@{/funcionarios/cadastrados}" method="post">
                         <th style="max-width: 40px;">
-                            <button type="button" th:onclick="'window.location.href=\'/funcionarios/projetos/' + ${funcionario.id} + '\''">Detalhes</button>
+                            <button type="button" th:onclick="'window.location.href=\'/funcionarios/projetos/' + ${funcionario.id} + '\''"  id="more">Detalhes</button>
 
                             <button type="button" th:onclick="'window.location.href=\'/funcionarios/' + ${funcionario.id} + '\''">Editar</button>
                             
