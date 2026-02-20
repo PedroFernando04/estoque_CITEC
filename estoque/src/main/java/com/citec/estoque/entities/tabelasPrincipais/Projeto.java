@@ -46,4 +46,13 @@ public class Projeto extends Estoque {
             case CANCELADO -> "card-label-cancelado";
             };
         }
+
+        public String getClasseLabelCategoria(){
+            return switch (getCategoria()) {
+                case MPP -> "card-label-rm";
+                case AULA -> "card-label-aula";
+                case CITEC -> "card-label-os";
+                case PROJETO -> "card-label-projeto";
+            };
+        }
     }

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedido</title>
 
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,7 @@
         
 
         <div >
-            <div class="sub-head-detalhes">
+            <div class="detalhes-detalhe">
                 <h2>Data da Solicitação:  </h2>
                 <h2 
                     th:text="${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy HH:mm')}"> 11/22/3333
@@ -171,9 +171,9 @@
                     </label>
                 </li>
                 <li>
-                    <label style="font-weight: bold;">
+                    <h2 style="font-weight: bold;">
                         Descrição:
-                    </label>
+                    </h2>
                     <label class="label-detalhe"
                            th:text="${pedido.descricao}">
                         descricao

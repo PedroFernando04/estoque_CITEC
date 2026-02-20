@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Funcionarios</title>
+    <title>Funcionários</title>
 
     <link href="/css/style.css" rel="stylesheet">
 
@@ -18,22 +18,14 @@
 
     <form th:action="@{/funcionarios}" method="get" class="sub-head">
 
-        <input name="nome" type="text" placeholder="  Pesquisar">
+        <input name="nome" type="text" placeholder="  Pesquisar ">
 
         <div class="filtros">
-            <select name="cargo" id="filtroClero" >
+            <select name="cargo">
                 <option value="">Cargo</option>
                 <option th:each="cargo : ${cargosExistentes}"
                         th:value="${cargo}"
                         th:text="${cargo.descricao}">
-                </option>
-            </select>
-
-            <select name="projeto" id="filtroProjeto">
-                <option value="">Projeto</option>
-                <option th:each="p : ${projetosExistentes}"
-                        th:value="${p.id}"
-                        th:text="${p.nome}">
                 </option>
             </select>
 
@@ -42,22 +34,18 @@
             </button>
 
         </div>
-
     </form>
+    
 
     <div class="sub">
 
-        <div class="titulo">Funcionários</div>
+        <div class="titulo">Funcionários</div> 
 
-        <div class="cadastrar" >
-            <a th:href="@{/funcionarios/cadastrados}">
-                <button>Editar</button>
-            </a>
-
-            <a th:href="@{/funcionarios/cadastrar}">
-                <button>Cadastrar +</button>
-            </a>
-        </div>
+            <div class="cadastrar" >
+                <a th:href="@{/funcionarios/cadastrar}">
+                    <button>Cadastrar +</button>
+                </a>
+            </div>
 
     </div>
 
@@ -78,28 +66,35 @@
         </a>
     </div>
 
-    <div class="historico">
 
+    <div class="historico">
         <div>
             <table>
-                <tr th:if="${!funcionarioProjetos.empty}"
+                
+                <tr th:if="${!funcionariosExistentes.empty}"
                     class="cabecalho-table">
                     <th>Nome</th>
-                    <th>Clero</th>
-                    <th>Projeto</th>
+                    <th>Cargo</th>
+                    <th>Ações</th>
                 </tr>
-                <tr th:if="${!funcionarioProjetos.empty}"
+                <tr th:if="${!funcionariosExistentes.empty}"
                     class="conteudo-table"
-                    th:each="f : ${funcionarioProjetos}">
+                    th:each="funcionario : ${funcionariosExistentes}">
 
-                    <th th:text="${f.funcionario.nome}">nome</th>
-                    <th th:text="${f.funcionario.cargo.descricao}">cargo</th>
-                    <th th:text="${f.projeto.nome}">projeto</th>
+                    <th th:text="${funcionario.nome}">item</th>
+                    <th th:text="${funcionario.cargo.descricao}">categoria</th>
+                    <form th:action="@{/funcionarios/cadastrados}" method="post">
+                        <th style="max-width: 40px;">
+                            <button type="button" th:onclick="'window.location.href=\'/funcionarios/projetos/' + ${funcionario.id} + '\''">Detalhes</button>
+
+                            <button type="button" th:onclick="'window.location.href=\'/funcionarios/' + ${funcionario.id} + '\''">Editar</button>
+                            
+                            <button type="submit" name="remove" id="remove" th:value="${funcionario.id}">X</button>
+                        </th>
+                    </form>
                 </tr>
             </table>
-
-            <h3 th:if="${funcionarioProjetos.empty}">Nenhum funcionário associado a projeto </h3>
-
+            <h3 th:if="${funcionariosExistentes.empty}">Nenhum item cadastrado ainda</h3>
         </div>
 
     </div>

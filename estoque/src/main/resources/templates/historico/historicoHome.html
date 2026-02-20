@@ -101,7 +101,13 @@
                         th:if="${!movimentacoes.empty}"
                         th:each="movimento : ${movimentacoes}">
                          
-                        <th th:text="${movimento.status.descricao}">movimento</th>
+                        <th >
+                            <label  th:text="${movimento.status.descricao}" 
+                                    class="card-label-detalhe" 
+                                    th:classappend="${movimento.labelMovimentacao}">
+                                    movimento
+                            </label>
+                        </th>
                         <th th:text="${movimento.origem != null} ? ${movimento.origem.nome} : ''">origem</th>
                         <th th:text="${movimento.destino != null} ? ${movimento.destino.nome} : ''">destino</th>
                         <th th:text="${movimento.item.nome}">item</th>

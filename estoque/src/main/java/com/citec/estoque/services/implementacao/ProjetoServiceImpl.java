@@ -1,5 +1,6 @@
 package com.citec.estoque.services.implementacao;
 
+import com.citec.estoque.entities.enums.EnumCategoriaProjeto;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasPrincipais.Estoque;
@@ -55,7 +56,7 @@ public class ProjetoServiceImpl implements ProjetoService {
         }
     }
 
-    public void atualizarProjeto(Long id, String nome, String solicitante, EnumStatusProjeto status, List<Long> funcionariosId) {
+    public void atualizarProjeto(Long id, String nome, String solicitante, EnumStatusProjeto status, List<Long> funcionariosId, String descricao, EnumCategoriaProjeto categoria) {
         Optional<Projeto> projeto= projetoRepository.findById(id);
 
         List<FuncionarioProjeto> funcionarioProjetoRetorno = funcionarioProjetoRepository.findByProjetoId(id);
@@ -82,6 +83,10 @@ public class ProjetoServiceImpl implements ProjetoService {
                     funcionarioProjetoRepository.save(funcionarioProjetolLoop);
                 }
             }
+            if (!descricao.isBlank())
+                projeto.get().setDescricao(descricao);
+            if (categoria != null)
+                projeto.get().setCategoria(categoria);
 
             projetoRepository.save(projeto.get());
 

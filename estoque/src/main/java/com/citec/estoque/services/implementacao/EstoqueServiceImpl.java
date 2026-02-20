@@ -70,7 +70,7 @@ public class EstoqueServiceImpl implements EstoqueService {
 
             if (itemEstoqueBuscado.isPresent()){
                 deletarItemEstoque(itemEstoqueBuscado.get().getId(), quantidade);
-            } else throw new IllegalArgumentException("O item seleciando não está presente na origem informada");
+            } else throw new IllegalArgumentException("O item selecionado não está presente na origem informada");
         }
 
         ItemEstoque itemEstoque = new ItemEstoque();
@@ -80,6 +80,11 @@ public class EstoqueServiceImpl implements EstoqueService {
         itemEstoque.setItem(item.get());
 
         itemEstoqueRepository.save(itemEstoque);
+
+        Optional<ItemEstoque> itemEstoqueCITEC = itemEstoqueRepository.findByEstoqueIdAndItemId(1L, item.get().getId());
+        itemEstoqueCITEC.get().setQuantidade(itemEstoqueCITEC.get().getQuantidade() - quantidade);
+
+        itemEstoqueRepository.save(itemEstoqueCITEC.get());
 
         Movimentacao movimentacao = new Movimentacao();
         movimentacao.setData(LocalDateTime.now());
@@ -95,8 +100,6 @@ public class EstoqueServiceImpl implements EstoqueService {
             movimentacao.setStatus(EnumStatusMovimentacao.MOVIMENTACAO);
         }
         movimentacaoRepository.save(movimentacao);
-
-
     }
 
 

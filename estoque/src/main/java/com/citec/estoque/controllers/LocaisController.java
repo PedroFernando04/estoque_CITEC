@@ -1,5 +1,6 @@
 package com.citec.estoque.controllers;
 
+import com.citec.estoque.entities.enums.EnumCategoriaProjeto;
 import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
@@ -18,7 +19,7 @@ import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
 import com.citec.estoque.services.EstoqueService;
 import com.citec.estoque.services.ProjetoService;
-import com.citec.estoque.specification.tabelasPrincipais.EstoqueSpecification;
+import com.citec.estoque.specification.tabelasPrincipais.ProjetoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -68,20 +69,19 @@ public class LocaisController {
                          @RequestParam(required = false) String nome,
                          @RequestParam(required = false) String solicitante,
                          @RequestParam(required = false) EnumStatusProjeto status,
-                         @RequestParam(required = false) String tipo) {
+                         @RequestParam(required = false) EnumCategoriaProjeto categoria) {
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
-        Specification<Estoque> spec =
-                Specification.where(EstoqueSpecification.comNome(nome)
-                        .and(EstoqueSpecification.comSolicitante(solicitante))
-                        .and(EstoqueSpecification.comTipo(tipo))
-                        .and(EstoqueSpecification.comStatus(status)));
+        Specification<Projeto> spec =
+                Specification.where(ProjetoSpecification.comNome(nome)
+                        .and(ProjetoSpecification.comSolicitante(solicitante))
+                        .and(ProjetoSpecification.comStatus(status))
+                        .and(ProjetoSpecification.comCategoria(categoria)));
 
-        Page<Estoque> pagina = estoqueRepository.findAll(spec, pageRequest);
+        Page<Projeto> pagina = projetoRepository.findAll(spec, pageRequest);
 
-        List<Estoque> estoques = pagina.getContent();
-        List<Projeto> projetos = projetoRepository.findAll();
+        List<Projeto> projetos = pagina.getContent();
 
         List<String> solicitantesExistentes = projetos.stream()
                         .map(Projeto::getNomeSolicitante)
@@ -91,10 +91,12 @@ public class LocaisController {
 
 
         List<EnumStatusProjeto> statusExistentes = Arrays.asList(EnumStatusProjeto.values());
+        List<EnumCategoriaProjeto>  categoriaExistentes = Arrays.asList(EnumCategoriaProjeto.values());
 
         model.addAttribute("statusExistentes", statusExistentes);
+        model.addAttribute("categoriasExistentes", categoriaExistentes);
         model.addAttribute("solicitantesExistentes", solicitantesExistentes);
-        model.addAttribute("locais", estoques);
+        model.addAttribute("locais", projetos);
         model.addAttribute("pagina", pagina);
 
         return "estoquesProjetos/locais";
@@ -109,43 +111,37 @@ public class LocaisController {
         List<Funcionario> funcionariosExistentes = funcionarioRepository.findAll();
         model.addAttribute("funcionariosExistentes", funcionariosExistentes);
 
+
+        List<EnumCategoriaProjeto>  categoriaExistentes = Arrays.asList(EnumCategoriaProjeto.values());
+        model.addAttribute("categoriasExistentes", categoriaExistentes);
+
         return "estoquesProjetos/cadastrarLocal";
     }
 
     @PostMapping("/locais/cadastrar")
-    public String cadastrarLocal(@RequestParam String tipo,
+    public String cadastrarLocal(
                                  @RequestParam String nome,
-                                 @RequestParam(value = "solicitante", required = false) String nomeSolicitante,
-                                 @RequestParam(value = "status", required = false) EnumStatusProjeto status,
-                                 @RequestParam(value = "funcionario", required = false) List<Long> funcionariosIds,
-                                 Model model) {
-
-        model.addAttribute("tipo", tipo);
+                                 @RequestParam(value = "solicitante") String nomeSolicitante,
+                                 @RequestParam(value = "status") EnumStatusProjeto status,
+                                 @RequestParam(value = "funcionario") List<Long> funcionariosIds,
+                                 @RequestParam(value = "descricao", required = false) String descricaoProjeto,
+                                 @RequestParam(value = "categoria") EnumCategoriaProjeto categoriaProjeto) {
 
         try {
-            if (tipo.equals("estoque")) {
-                Estoque estoque = new Estoque();
-                estoque.setNome(nome);
-
-                estoqueService.salvarEstoque(estoque);
-            }
-
-            else if (tipo.equals("projeto")){
                 Projeto projeto = new Projeto();
                 projeto.setNome(nome);
                 projeto.setNomeSolicitante(nomeSolicitante);
                 projeto.setStatusProjeto(status);
+                projeto.setDescricao(descricaoProjeto);
+                projeto.setCategoria(categoriaProjeto);
 
                 projetoService.salvarProjeto(projeto, funcionariosIds);
+
+                return "redirect:/local/" + projeto.getId();
+
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Erro ao cadastrar Local:  " + e.getMessage());
             }
-            else
-                throw new IllegalArgumentException("Problema no tipo do local");
-
-            return "redirect:/locais";
-
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Erro ao cadastrar Local:  " + e.getMessage());
-        }
     }
 
     @GetMapping("/local/{id}")
@@ -231,6 +227,9 @@ public class LocaisController {
         List<Funcionario> funcionariosExistentes = funcionarioRepository.findAll();
         model.addAttribute("funcionariosExistentes", funcionariosExistentes);
 
+        List<EnumCategoriaProjeto>  categoriasExistentes = Arrays.asList(EnumCategoriaProjeto.values());
+        model.addAttribute("categoriasExistentes", categoriasExistentes);
+
         return "estoquesProjetos/editarLocal";
     }
 
@@ -240,7 +239,9 @@ public class LocaisController {
                          @RequestParam(required = false) String nome,
                          @RequestParam(required = false) String solicitante,
                          @RequestParam(required = false) EnumStatusProjeto status,
-                         @RequestParam(required = false) List<Long> funcionario){
+                         @RequestParam(required = false) List<Long> funcionario,
+                         @RequestParam(required = false) EnumCategoriaProjeto categoria,
+                         @RequestParam(required = false) String descricao){
 
         try {
             Optional<Estoque> local = estoqueRepository.findById(id);
@@ -251,7 +252,7 @@ public class LocaisController {
 
             }
             if (local.get().getTipo().equals("Projeto")) {
-                projetoService.atualizarProjeto(id, nome, solicitante, status, funcionario);
+                projetoService.atualizarProjeto(id, nome, solicitante, status, funcionario, descricao, categoria);
             }
 
             estoqueRepository.save(local.get());

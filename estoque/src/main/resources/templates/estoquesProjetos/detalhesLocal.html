@@ -17,21 +17,20 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <div class="sub-head-detalhes">
+
         <div  class="titulo-detalhe">
 
-            <h1 th:text="${local.nome}">Nome Local</h1>
-
-            <div class="label-detalhe">
+            <h1 th:text="${local.nome}" >Nome Local</h1>
+            
+            <div class="label-detalhe" style="margin-left: 10px;">
 
                 <div class="card-label-detalhe"
-                    th:if="${local.tipo}"
-                    th:text="${local.tipo}"
-                    th:classappend="${#strings.containsIgnoreCase(local.tipo, 'Estoque')} ? ' card-label-estoque' : ' card-label-projeto'">
-                    Tipo local
+                    th:text="${local.categoria.descricao}"
+                    th:classappend="${local.classeLabelCategoria}">
+                    Categoria local
                 </div>
 
                 <div class="card-label-detalhe"
-                    th:if="${local.tipo == 'Projeto'}"
                     th:text="${local.statusProjeto.descricao}"
                     th:classappend="${local.classeLabelStatus}"
                     >
@@ -43,7 +42,7 @@
 
         </div>
 
-        <div class="detalhes-detalhe" th:if="${local.tipo == 'Projeto'}">
+        <div class="detalhes-detalhe" >
             <div class="solicitante-detalhe">
                 <h2>Solicitante:  </h2>
                 <h2 
@@ -55,22 +54,34 @@
                 <h2 th:text="${funcionariosLocal.size() > 1 ? 'Responsáveis:' : 'Responsável:' }">Responsáveis: </h2>
                 <div class="funcionario-detalhe">
                     <table class="table-responsavel">
-                        <tr th:each="f : ${funcionariosLocal}">
-                            <th 
-                                th:text="${f.funcionario.nome + ' (' + f.funcionario.cargo.descricao + ')' }"> funcionario
-                            </th>
-                        </tr>
+                        <th th:each="f : ${funcionariosLocal}" th:text="${f.funcionario.nome + ' (' + f.funcionario.cargo.descricao + ')' }">
+
+                        </th>
                     </table>
                 </div>
+            </div>
+
+            <div style="width: 550px;">
+                <label style="font-weight: bold;">
+                    Descrição:
+                </label>
+                <label class="label-detalhe"
+                        th:text="${local.descricao}">
+                    descricao
+                </label>
             </div>
 
         </div>
 
     </div>
 
-    <div class="cadastrar" id="botaoEditar">
-        <a  th:href="@{/local/{id}/editar(id=${local.id})}">
-            <button>Editar</button>
+    <div id="botaoEditar">
+        <a th:href="@{/locais}" >
+            <button class="voltar">Voltar</button>
+        </a>
+
+        <a  th:href="@{/local/{id}/editar(id=${local.id})}" >
+            <button class="editar">Editar</button>
         </a>
     </div>
     
@@ -135,41 +146,16 @@
                 <table >
                     <tr class="cabecalho-table">
                         <th>Nome</th>
-                        <th>Categoria</th>
+                        <th>Nome Fantasia</th>
                         <th>RM</th>
-                        <th>Patrimonio</th>
                         <th>Quantidade</th>
-                        <th th:if="${local.tipo == 'Estoque'}">Faltando</th>
                     </tr>
                     <tr th:if="${!itensLocal.empty}"
                         th:each="itemEstoque : ${itensLocal}">
                         <th th:text="${itemEstoque.item.nome}">nome</th>
-                        <th th:text="${itemEstoque.item.categoriaItem.descricao}">categoria</th>
+                        <th th:text="${itemEstoque.item.nomeFantasia}">nomeFantasia</th>
                         <th th:text="${itemEstoque.item.codigoRMFormatado}">rm</th>
-                        <th th:text="${itemEstoque.item.codigoPatrimonio}">patrimonio</th>
                         <th th:text="${itemEstoque.quantidade}">quantidade</th>
-                        <th th:if="${local.tipo == 'Estoque'}"
-                            th:text="${itemEstoque.faltando} ? '❌ Faltando ❌' : '✅ OK ✅'">faltando</th>
-                        <form th:action="@{/local/{id}(id=${local.id})}" method="post">
-                            <th th:if="${local.tipo == 'Estoque'}">
-                                <button type="submit" 
-                                        th:text="${itemEstoque.faltando} ? '✅' : '❌'"
-                                        th:value="${itemEstoque.id}"
-                                        name="faltando"
-                                        id="faltando">
-                                        faltando
-                                </button>
-                            </th>
-
-                            <th>
-                                <button type="submit"
-                                        th:value="${itemEstoque.id}"
-                                        name="remove"
-                                        id="remove">
-                                        X
-                                </button>
-                            </th>
-                        </form>
                     </tr>
                 </table>
                 

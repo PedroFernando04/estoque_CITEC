@@ -1,5 +1,6 @@
 package com.citec.estoque.services;
 
+import com.citec.estoque.entities.enums.EnumCategoriaProjeto;
 import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasPrincipais.Projeto;
 
@@ -9,5 +10,5 @@ public interface ProjetoService {
 
     public void salvarProjeto(Projeto projeto,  List<Long> funcionariosIds);
 
-    public void atualizarProjeto(Long id, String nome, String solicitante, EnumStatusProjeto status, List<Long> funcionariosId);
+    public void atualizarProjeto(Long id, String nome, String solicitante, EnumStatusProjeto status, List<Long> funcionariosId, String descricao, EnumCategoriaProjeto  categoria);
 }

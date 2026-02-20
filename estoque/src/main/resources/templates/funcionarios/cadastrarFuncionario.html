@@ -20,24 +20,27 @@
 
     <form th:action="@{/funcionarios/cadastrar}" method="post">
 
-        <div class="formulario">
-            <label for="nome">Nome:</label>
-            <input type="text" name="nome" id="nome">
-        </div>
+        <div class="containerCadastrar">
+            <div class="formulario">
+                <label for="nome">Nome:</label>
+                <input type="text" name="nome" id="nome" required>
+            </div>
 
-        <div class="formulario">
-            <label for="cargo">Cargo: </label>
-            <select name="cargo" id="clero">
-                <option th:each="cargo : ${cargosExistentes}"
-                        th:value="${cargo}"
-                        th:text="${cargo.descricao}">
-                </option>
-            </select>
-        </div>
+            <div class="formulario">
+                <label for="cargo">Cargo: </label>
+                <select name="cargo" id="clero" required>
+                    <option th:each="cargo : ${cargosExistentes}"
+                            th:value="${cargo}"
+                            th:text="${cargo.descricao}">
+                    </option>
+                </select>
+            </div>
 
-        <div class="formulario">
-            <button type="submit" id="botaoEnviar">Registrar</button>
+            <div class="formulario">
+                <button type="submit" id="botaoEnviar">Registrar</button>
+            </div>
         </div>
+        
     </form>
 </body>
 </html>

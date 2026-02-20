@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Local</title>
+    <title>Cadastro de Projeto</title>
 
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,95 +17,65 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <main>
-        <div class="titulo">Cadastro de Estoque/Projeto</div>
+        <div class="titulo" style="margin-top: 40px;">Cadastro de Projeto</div>
+        
+        <a th:href="@{/locais}">
+            <button class="voltar" style="margin-left: 30px;">Voltar</button>
+        </a>
 
         <div class="containerCadastrar">
-            <div class="formulario">
-                <label for="tipo" id="selecioneTipo">Selecione o tipo:</label>
-                <select id="tipo" onchange="trocarFormulario()">
-                    <option value="">Selecione</option>
-                    <option value="estoque">Estoque</option>
-                    <option value="projeto">Projeto</option>
-                </select>
-            </div>
 
-            <form th:action="@{/locais/cadastrar}" method="post" id="registrarForm" style="display: none;" >
-
-                <input type="hidden" id="tipoHidden" name="tipo">
+            <form th:action="@{/locais/cadastrar}" method="post" id="registrarForm">
 
                 <div class="formulario">
-                    <label for="nome">Nome:</label>
+                    <label for="nome">Título:</label>
                     <input type="text" name="nome" id="nome" required>
-                </div>
-
-                <div id="camposProjeto" style="display: none;">
-                    <div class="formulario">
-                        <label for="solicitante">Solicitante:</label>
-                        <input type="text" name="solicitante" id="solicitante">
-                    </div>
-
-                    <div class="formulario">
-                        <label for="status">Status:</label>
-                        <select name="status" id="status">
-                            <option 
-                                th:each="status : ${statusExistentes}"
-                                th:value="${status}"
-                                th:text="${status.descricao}">
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="formulario">
-                        <label for="funcionario">Responsável(is): </label>
-                        <select multiple name="funcionario" id="funcionario" class="select-multiple">
-                            <option th:each="funcionario : ${funcionariosExistentes}"
-                                    th:value="${funcionario.id}"
-                                    th:text="${funcionario.nome}">
-                            </option>
-                        </select>
-                    </div>
-
-                </div>
                 
+                    <label for="solicitante">Solicitante:</label>
+                    <input type="text" name="solicitante" id="solicitante" required>
+                </div>
+
                 <div class="formulario">
-                    <button type="submit" id="botaoEnviar" disabled>Registrar</button>
+                    <label for="descricao">Descrição: </label>
+                    <textarea type="text" name="descricao" id="descricao"> </textarea>
+                </div>
+
+                <div class="formulario">
+                    <label for="status">Status:</label>
+                    <select name="status" id="status" required>
+                        <option 
+                            th:each="status : ${statusExistentes}"
+                            th:value="${status}"
+                            th:text="${status.descricao}">
+                        </option>
+                    </select>
+
+                    <label for="categoria">Categoria:</label>
+                    <select name="categoria" id="categoria" required>
+                        <option
+                            th:each="categoria : ${categoriasExistentes}" 
+                            th:value="${categoria}"
+                            th:text="${categoria.descricao}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="formulario">
+                    <label for="funcionario">Responsável(is): </label>
+                    <select multiple name="funcionario" id="funcionario" class="select-multiple" required>
+                        <option th:each="funcionario : ${funcionariosExistentes}"
+                                th:value="${funcionario.id}"
+                                th:text="${funcionario.nome}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="formulario">
+                    <button type="submit" id="botaoEnviar" >Registrar</button>
                 </div>
         </form>
     </div>
     </main>
-
-    <script>
-        function trocarFormulario(){
-            const tipo = document.getElementById('tipo').value;
-            const camposProjeto = document.getElementById('camposProjeto');
-            const registrarForm = document.getElementById('registrarForm');
-            const botaoEnviar = document.getElementById('botaoEnviar');
-
-            const tipoHidden = document.getElementById('tipoHidden');
-            tipoHidden.value = tipo;
-
-            document.getElementById('solicitante').required = false;
-            document.getElementById('status').required = false;
-
-            if (tipo === 'projeto'){
-                camposProjeto.style.display = 'block';
-                registrarForm.style.display = 'block';
-                botaoEnviar.disabled = false;
-
-                document.getElementById('solicitante').required = true;
-                document.getElementById('status').required = true;
-            } else if (tipo === 'estoque'){
-                camposProjeto.style.display = 'none';
-                registrarForm.style.display = 'block';
-                botaoEnviar.disabled = false;
-            } else {
-                registrarForm.style.display = 'none';
-                botaoEnviar.disabled = true;
-            }
-
-            document.getElementById('nome').required = true;
-        }
-    </script>
 
 </body>
 </html>

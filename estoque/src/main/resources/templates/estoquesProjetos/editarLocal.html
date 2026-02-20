@@ -17,9 +17,13 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <main>
-        <div class="titulo"><h2 th:text="${local.tipo == 'Projeto' ? 'Editar Projeto' : 'Editar Estoque'}">editar</h2></div>
+        <div class="titulo">Editar Projeto</div>
 
-            <form th:action="@{/local/{id}/editar(id=${local.id})}" method="post" id="update" name="update">
+        <a th:href="@{/local/{id}(id=${local.id})}">
+            <button class="voltar" style="margin-left: 30px;">Voltar</button>
+        </a>
+
+            <form th:action="@{/local/{id}/editar(id=${local.id})}" method="post" name="update">
 
                 <input type="hidden" id="tipoHidden" name="tipo">
 
@@ -28,35 +32,49 @@
                     <input type="text" name="nome" id="nome" th:placeholder="${local.nome}">
                 </div>
 
-                <div id="camposProjeto" th:if="${local.tipo == 'Projeto'}">
-                    <div class="formulario">
-                        <label for="solicitante">Solicitante:</label>
-                        <input type="text" name="solicitante" id="solicitante" th:placeholder="${local.nomeSolicitante}">
-                    </div>
+                <div class="formulario">
+                    <label for="solicitante">Solicitante:</label>
+                    <input type="text" name="solicitante" id="solicitante" th:placeholder="${local.nomeSolicitante}">
+                </div>
 
-                    <div class="formulario">
-                        <label for="status">Status:</label>
-                        <select name="status" id="status" >
-                            <option th:value="${local.statusProjeto}" th:text="${local.statusProjeto.descricao}"></option>
-                            <option 
-                                th:each="status : ${statusExistentes}"
-                                th:value="${status}"
-                                th:text="${status.descricao}"
-                                >
-                            </option>
-                        </select>
-                    </div>
+                <div class="formulario">
+                    <label for="descricao">Descrição: </label>
+                    <textarea type="text" name="descricao" id="descricao" th:placholder="${local.descricao}"> </textarea>
+                </div>
 
-                    <div class="formulario">
-                        <label for="funcionario">Responsável(is): </label>
-                        <select multiple name="funcionario" id="funcionario" class="select-multiple">
-                            <option th:each="funcionario : ${funcionariosExistentes}"
-                                    th:value="${funcionario.id}"
-                                    th:text="${funcionario.nome}">
-                            </option>
-                        </select>
-                    </div>
+                <div class="formulario">
+                    <label for="status">Status:</label>
+                    <select name="status" id="status" >
+                        <option th:value="${local.statusProjeto}" th:text="${local.statusProjeto.descricao}"></option>
+                        <option 
+                            th:each="status : ${statusExistentes}"
+                            th:value="${status}"
+                            th:text="${status.descricao}"
+                            >
+                        </option>
+                    </select>
+                </div>
 
+                <div class="formulario">
+                    <label for="categoria">Categoria:</label>
+                    <select name="categoria" id="categoria" required>
+                        <option th:value="${local.categoria}" th:text="${local.categoria.descricao}"></option>
+                        <option
+                            th:each="categoria : ${categoriasExistentes}" 
+                            th:value="${categoria}"
+                            th:text="${categoria.descricao}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="formulario">
+                    <label for="funcionario">Responsável(is): </label>
+                    <select multiple name="funcionario" id="funcionario" class="select-multiple">
+                        <option th:each="funcionario : ${funcionariosExistentes}"
+                                th:value="${funcionario.id}"
+                                th:text="${funcionario.nome}">
+                        </option>
+                    </select>
                 </div>
                 
                 <div class="formulario">

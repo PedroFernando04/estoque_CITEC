@@ -52,4 +52,14 @@ public class Movimentacao {
         this.quantidade = quantidade;
         this.data = data;
     }
+
+    //Getter
+
+    public String getLabelMovimentacao() {
+        return switch (getStatus()) {
+            case ENTRADA -> "card-label-concluido";
+            case MOVIMENTACAO -> "card-label-planejado";
+            case SAIDA -> "card-label-cancelado";
+        };
+    }
 }

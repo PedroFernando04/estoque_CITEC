@@ -1,6 +1,7 @@
 package com.citec.estoque.controllers;
 
 import com.citec.estoque.entities.enums.EnumCargoFuncionario;
+import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.entities.tabelasPrincipais.Projeto;
@@ -36,24 +37,25 @@ public class FuncionariosController {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
-    @GetMapping("/funcionarios")
+    @GetMapping("/funcionarios/projetos/{id}")
     public String funcionarios(Model model,
+                               @PathVariable Long id,
                                @RequestParam(defaultValue = "0") Integer page,
                                @RequestParam(defaultValue = "15") Integer size,
-                               @RequestParam(required = false) String nome,
-                               @RequestParam(required = false) EnumCargoFuncionario clero,
-                               @RequestParam(required = false) Long projeto) {
+                               @RequestParam(required = false) Long projeto,
+                               @RequestParam(required = false) EnumStatusProjeto status) {
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
         Specification<FuncionarioProjeto> spec =
-            Specification.where(FuncionarioProjetoSpecification.comNome(nome))
-                    .and(FuncionarioProjetoSpecification.comClero(clero))
-                    .and(FuncionarioProjetoSpecification.comProjeto(projeto));
+            Specification.where(FuncionarioProjetoSpecification.comFuncionarioId(id)
+                .and(FuncionarioProjetoSpecification.comProjeto(projeto)))
+                    .and(FuncionarioProjetoSpecification.comStatus(status));
 
         Page<FuncionarioProjeto> pagina = funcionarioProjetoRepository.findAll(spec, pageRequest);
         model.addAttribute("pagina", pagina);
         model.addAttribute("funcionarioProjetos", pagina.getContent());
+        model.addAttribute("funcionario", funcionarioRepository.findById(id).get());
 
         List<Projeto> projetosExistentes = pagina.getContent().stream()
                 .map(FuncionarioProjeto::getProjeto)
@@ -62,10 +64,10 @@ public class FuncionariosController {
                             .toList();
         model.addAttribute("projetosExistentes", projetosExistentes);
 
-        List<EnumCargoFuncionario> cargosExistentes = Arrays.asList(EnumCargoFuncionario.values());
-        model.addAttribute("cargosExistentes", cargosExistentes);
+        List<EnumStatusProjeto> statusProjetosExistentes = Arrays.asList(EnumStatusProjeto.values());
+        model.addAttribute("statusProjetosExistentes", statusProjetosExistentes);
 
-        return "funcionarios/funcionariosHome";
+        return "funcionarios/funcionariosProjetos";
     }
 
     @GetMapping("/funcionarios/cadastrar")
@@ -96,7 +98,7 @@ public class FuncionariosController {
         return "redirect:/funcionarios";
     }
 
-    @GetMapping("/funcionarios/cadastrados")
+    @GetMapping("/funcionarios")
     public String funcionariosCadastrados(Model model,
                                           @RequestParam(defaultValue = "0") Integer page,
                                           @RequestParam(defaultValue = "3") Integer size,
@@ -117,10 +119,10 @@ public class FuncionariosController {
         List<EnumCargoFuncionario> cargosExistentes = Arrays.asList(EnumCargoFuncionario.values());
         model.addAttribute("cargosExistentes", cargosExistentes);
 
-        return "funcionarios/funcionariosCadastrados";
+        return "funcionarios/funcionariosHome";
     }
 
-    @PostMapping(value = "/funcionarios/cadastrados", params = "remove")
+    @PostMapping(value = "/funcionarios", params = "remove")
     public String removerFuncionario(Model model, @RequestParam Long remove) {
 
         try{
@@ -129,7 +131,7 @@ public class FuncionariosController {
             throw new IllegalArgumentException("Não é possível excluir um funcionário associado a algum projeto");
         }
 
-        return  "redirect:/funcionarios/cadastrados";
+        return  "redirect:/funcionarios";
     }
 
     @GetMapping("/funcionarios/{id}")
@@ -153,6 +155,6 @@ public class FuncionariosController {
             throw new IllegalArgumentException("Erro ao atualizar Funcionário:  " + e.getMessage());
         }
 
-        return "redirect:/funcionarios/cadastrados";
+        return "redirect:/funcionarios";
     }
 }

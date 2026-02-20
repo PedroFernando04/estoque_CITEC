@@ -24,7 +24,7 @@ public class ItemEstoque {
     private Item item;
 
     @Column(nullable = false)
-    private Integer quantidade;
+    private Integer quantidade = 0;
 
     //Construtores
     public ItemEstoque() {}

@@ -1,25 +1,26 @@
 package com.citec.estoque.specification.tabelasAuxiliares;
 
 import com.citec.estoque.entities.enums.EnumCargoFuncionario;
+import com.citec.estoque.entities.enums.EnumStatusProjeto;
 import com.citec.estoque.entities.tabelasAuxiliares.FuncionarioProjeto;
 import org.springframework.data.jpa.domain.Specification;
 
 public class FuncionarioProjetoSpecification {
-    public static Specification<FuncionarioProjeto> comNome(String nome) {
+    public static Specification<FuncionarioProjeto> comFuncionarioId(Long idFuncionario) {
         return (root, query, cb) -> {
-            if (nome == null || nome.isBlank()) {
+            if (idFuncionario == null) {
                 return null;
             }
-            return cb.like(cb.lower(root.get("funcionario").get("nome")), "%" + nome + "%");
+            return cb.equal(root.get("funcionario").get("id"), idFuncionario);
         };
     }
 
-    public static Specification<FuncionarioProjeto> comClero(EnumCargoFuncionario clero) {
+    public static Specification<FuncionarioProjeto> comStatus(EnumStatusProjeto status) {
         return (root, query, cb) -> {
-            if (clero == null) {
+            if (status == null) {
                 return null;
             }
-            return cb.equal(root.get("funcionario").get("clero"), clero);
+            return cb.equal(root.get("projeto").get("statusProjeto"), status);
         };
     }
 

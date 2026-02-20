@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Locais</title>
+    <title>Projetos</title>
 
     <link href="/css/style.css" rel="stylesheet">
 
@@ -38,10 +38,12 @@
                     </option>
                 </select>
 
-                <select name="tipo">
-                    <option value="">Tipo</option>
-                    <option value="ESTOQUE">Estoque</option>
-                    <option value="PROJETO">Projeto</option>
+                <select name="categoria">
+                    <option value="">Categoria</option>
+                    <option th:each="categoria : ${categoriasExistentes}" 
+                            th:value="${categoria}"
+                            th:text="${categoria.descricao}">
+                    </option>
                 </select>
 
                 <button type="submit">
@@ -52,7 +54,7 @@
     </form>
 
     <div class="sub">
-        <div class="titulo">Locais</div> 
+        <div class="titulo">Projetos</div> 
 
         <div class="cadastrar" > 
             <a th:href="@{/locais/cadastrar}">
@@ -92,14 +94,12 @@
 
                  <div class="labels">
                     <div class="card-label"
-                        th:if="${l.tipo}"
-                        th:text="${l.tipo}"
-                        th:classappend="${#strings.containsIgnoreCase(l.tipo, 'ESTOQUE')} ? ' card-label-estoque' : ' card-label-projeto'">
-                        Tipo local
+                        th:text="${l.categoria.descricao}"
+                        th:classappend="${l.classeLabelCategoria}">
+                        Categoria local
                     </div>
 
                     <div class="card-label"
-                        th:if="${l.tipo == 'Projeto'}"
                         th:text="${l.statusProjeto.descricao}"
                         th:classappend="${l.classeLabelStatus}"
                         >

@@ -17,74 +17,78 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
      <form th:action="@{/pedidos/cadastrar}" method="post" id="registrarForm" class="containerCadastrar" >
+        
+        <div class="containerCadastrar">
+            
+            <div class="formulario">
+                <label for="destino">Destino:</label>
+                <select name="destino" id="destino" required>
+                    <option 
+                        th:each="destino : ${destinos}"
+                        th:value="${destino.id}"
+                        th:text="${destino.nome}">
+                    </option>
+                </select>
+            </div>
 
-        <div class="formulario">
-            <label for="destino">Destino:</label>
-            <select name="destino" id="destino">
-                <option 
-                    th:each="destino : ${destinos}"
-                    th:value="${destino.id}"
-                    th:text="${destino.nome}">
-                </option>
-            </select>
-        </div>
+            <div class="formulario">
+                <label for="status">Status:</label>
+                <select name="status" id="status" required>
+                    <option 
+                        th:each="status : ${statusExistentes}"
+                        th:value="${status}"
+                        th:text="${status.descricao}"
+                        th:if="${status.descricao == 'Solicitado'}">
+                    </option>
+                </select>
+            </div>
 
-        <div class="formulario">
-            <label for="status">Status:</label>
-            <select name="status" id="status">
-                <option 
-                    th:each="status : ${statusExistentes}"
-                    th:value="${status}"
-                    th:text="${status.descricao}"
-                    th:if="${status.descricao == 'Solicitado'}">
-                </option>
-            </select>
-        </div>
+            <div class="formulario">
+                <label for="titulo">Título: </label>
+                <input type="text" name="titulo" id="" placeholder="  Título do pedido" required>     
+            </div>
+            
+            <div class="formulario">
+                <label for="descricao">Descrição: </label>
+                <textarea type="text" name="descricao" id=""> </textarea>
+            </div>
 
-        <div class="formulario">
-            <label for="titulo">Título: </label>
-            <input type="text" name="titulo" id="" placeholder="  Título do pedido">     
+            <div class="formulario">
+                <label for="categoria">Categoria:</label>
+                <select name="categoria" id="categoria" onchange = trocarSelectTipo() required>
+                    <option th:each="categoria : ${categoriasExistentes}"
+                            th:value="${categoria}"
+                            th:text="${categoria.descricao}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="formulario" id="tipoOS" style="display: none;">
+                <label for="tipoOS">Tipo OS:</label>
+                <select name="tipoOS" id="tipoOS">
+                    <option th:each="tipoOs : ${tiposOsExistentes}"
+                            th:value="${tipoOs}"
+                            th:text="${tipoOs.descricao}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="formulario" id="tipoTransporte" style="display: none;">
+                <label for="tipoTransporte">Tipo Transporte:</label>
+                <select name="tipoTransporte" id="tipoTransporte">
+                    <option th:each="tipoTransporte : ${tiposTransporteExistentes}"
+                            th:value="${tipoTransporte}"
+                            th:text="${tipoTransporte.descricao}">
+                    </option>
+                </select>
+            </div>
+            
+
+            <div class="formulario">
+                <button type="submit" id="botaoEnviar" >Registrar</button>
+            </div>
         </div>
         
-        <div class="formulario">
-            <label for="descricao">Descrição: </label>
-            <textarea type="text" name="descricao" id=""> </textarea>
-        </div>
-
-        <div class="formulario">
-            <label for="categoria">Categoria:</label>
-            <select name="categoria" id="categoria" onchange = trocarSelectTipo()>
-                <option th:each="categoria : ${categoriasExistentes}"
-                        th:value="${categoria}"
-                        th:text="${categoria.descricao}">
-                </option>
-            </select>
-        </div>
-
-        <div class="formulario" id="tipoOS" style="display: none;">
-            <label for="tipoOS">Tipo OS:</label>
-            <select name="tipoOS" id="tipoOS">
-                <option th:each="tipoOs : ${tiposOsExistentes}"
-                        th:value="${tipoOs}"
-                        th:text="${tipoOs.descricao}">
-                </option>
-            </select>
-        </div>
-
-        <div class="formulario" id="tipoTransporte" style="display: none;">
-            <label for="tipoTransporte">Tipo Transporte:</label>
-            <select name="tipoTransporte" id="tipoTransporte">
-                <option th:each="tipoTransporte : ${tiposTransporteExistentes}"
-                        th:value="${tipoTransporte}"
-                        th:text="${tipoTransporte.descricao}">
-                </option>
-            </select>
-        </div>
-          
-
-        <div class="formulario">
-            <button type="submit" id="botaoEnviar" >Registrar</button>
-        </div>
     
     </form>
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionário Projetos</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <form th:action="@{/funcionarios/projetos/{id}(id=${funcionario.id})}" method="get" class="sub-head">
+
+        <input name="nome" type="text" placeholder="  Pesquisar">
+
+        <div class="filtros">
+            <select name="status" id="filtroStatus" >
+                <option value="">Status</option>
+                <option th:each="status : ${statusProjetosExistentes}"
+                        th:value="${status}"
+                        th:text="${status.descricao}">
+                </option>
+            </select>
+
+            <select name="projeto" id="filtroProjeto">
+                <option value="">Projeto</option>
+                <option th:each="p : ${projetosExistentes}"
+                        th:value="${p.id}"
+                        th:text="${p.nome}">
+                </option>
+            </select>
+
+            <button type="submit">
+                Filtrar
+            </button>
+
+        </div>
+
+    </form>
+
+    <div class="sub">
+
+        <div class="titulo" th:text="|${funcionario.nome} (${funcionario.cargo.descricao})|">nomeFuncionario (cargo)</div>
+
+    </div>
+
+    <div class="paginacao">
+        <a th:if="${pagina.hasPrevious()}"
+        th:href="@{/funcionarios/projetos/{id}(page=${pagina.number - 1}, size=${pagina.size}, id=${funcionario.id})}">
+            ◀ Anterior
+        </a>
+
+        <span th:if="${pagina.hasPrevious() ||pagina.hasNext() }">
+            Página <span th:text="${pagina.number + 1}"></span>
+            de <span th:text="${pagina.totalPages}"></span>
+        </span>
+
+        <a th:if="${pagina.hasNext()}"
+        th:href="@{/funcionarios/projetos{id}(page=${pagina.number + 1}, size=${pagina.size}, id=${funcionario.id})}">
+            Próxima ▶
+        </a>
+    </div>
+
+    <div class="historico">
+
+        <div>
+            <table>
+                <tr th:if="${!funcionarioProjetos.empty}"
+                    class="cabecalho-table">
+                    <th>Projeto</th>
+                    <th>Status</th>
+                </tr>
+                <tr th:if="${!funcionarioProjetos.empty}"
+                    class="conteudo-table"
+                    th:each="f : ${funcionarioProjetos}">
+
+                    <th th:text="${f.projeto.nome}">projeto</th>
+                    <th >
+                        <label  th:text="${f.projeto.statusProjeto}"
+                                class="card-label-detalhe"
+                                th:classappend="f.projeto.statusProjeto">
+                                status
+                        </label>
+                    </th>
+                </tr>
+            </table>
+
+            <h3 th:if="${funcionarioProjetos.empty}">Nenhum funcionário associado a projeto </h3>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -4,7 +4,7 @@ public enum EnumCategoriaProjeto {
     AULA("Aula"),
     MPP("MPPs"),
     PROJETO("Projeto"),
-    CITEC("");
+    CITEC("CITEC");
 
     private String descricao;
 
