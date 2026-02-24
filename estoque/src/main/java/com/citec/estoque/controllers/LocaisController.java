@@ -193,7 +193,7 @@ public class LocaisController {
 
 
     @PostMapping(value = "/local/{id}", params = "remove")
-    public String removerItemLocal(Model model, Long remove){
+    public String removerItemLocal(Long remove){
 
         Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(remove);
 
@@ -211,6 +211,14 @@ public class LocaisController {
         } catch (Exception e) {
             throw new IllegalArgumentException("Erro ao deletar item do local: " +e.getMessage());
         }
+
+        return "redirect:/local/{id}";
+    }
+
+    @PostMapping(value = "/local/{id}", params = "estoque")
+    public String devolverAoEstoque(@PathVariable Long id){
+
+
 
         return "redirect:/local/{id}";
     }

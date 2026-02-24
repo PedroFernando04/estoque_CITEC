@@ -39,7 +39,7 @@
 
     <div class="sub">
 
-        <div class="titulo">Itens</div> 
+        <div class="titulo">Itens (Estoque)</div> 
 
             <div class="cadastrar" >
                 <a th:href="@{/itens/cadastrar}">
@@ -119,7 +119,7 @@
                     </th>
                 </form>
                     <th>
-                        <button type="button" th:onclick="'window.location.href=\'/itens/projetos/' + ${item.id} + '\''" class="voltar">Detalhes</button>
+                        <button type="button" th:onclick="'window.location.href=\'/itens/projetos/' + ${item.id} + '\''" id="more">Detalhes</button>
 
                         <button type="button" th:onclick="'window.location.href=\'/itens/' + ${item.id} + '\''">Editar</button>
                         

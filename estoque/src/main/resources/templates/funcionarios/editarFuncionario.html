@@ -20,13 +20,17 @@
         <div class="titulo">Editar Item</div>
     </div>
 
+    <div style="margin: 0px 0px 10px 30px;">
+        <button th:onclick="'window.location.href=\'/funcionarios' + '\''" class="voltar">Voltar</button>
+    </div>
+
     <div class="containerCadastrar">
 
         <form th:action="@{/funcionarios/{id}(id=${funcionario.id})}" method="post" >
 
             <div class="formulario">
                 <label for="nome">Nome: </label>
-                <input type="text" name="nome" id="nome" th:placeholder="${funcionario.nome}">
+                <input type="text" name="nome" id="nome" th:placeholder="|  ${funcionario.nome}|">
             </div>
 
             <div class="formulario">

@@ -1,8 +1,12 @@
 package com.citec.estoque.services.implementacao;
 
 import com.citec.estoque.dtos.PedidoComItensDTO;
+import com.citec.estoque.entities.enums.EnumCategoriaPedido;
 import com.citec.estoque.entities.enums.EnumStatusPedido;
+import com.citec.estoque.entities.enums.tipoPedido.EnumTipoOsPedido;
+import com.citec.estoque.entities.enums.tipoPedido.EnumTipoTransportePedido;
 import com.citec.estoque.entities.tabelasAuxiliares.ItemPedido;
+import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Item;
 import com.citec.estoque.entities.tabelasPrincipais.Pedido;
 import com.citec.estoque.repositorys.tabelasAuxiliares.ItemPedidoRepository;
@@ -97,5 +101,33 @@ public class PedidoServiceImpl implements PedidoService {
 
         }
 
+    }
+
+    public void atualizarPedido(Long idPedido, Estoque destino, EnumStatusPedido statusPedido, String titulo, String descricao, EnumCategoriaPedido categoria, EnumTipoOsPedido tipoOs, EnumTipoTransportePedido transporte){
+        Optional<Pedido> pedido = pedidoRepository.findById(idPedido);
+
+        if (destino != null) {
+            pedido.get().setDestino(destino);
+        }
+        if (statusPedido != null) {
+            pedido.get().setStatusPedido(statusPedido);
+        }
+        if (titulo != null && !titulo.isBlank()) {
+            pedido.get().setTitulo(titulo);
+        }
+        if (descricao != null && !descricao.isBlank()) {
+            pedido.get().setDescricao(descricao);
+        }
+        if (categoria != null) {
+            pedido.get().setCategoria(categoria);
+        }
+        if (tipoOs != null) {
+            pedido.get().setTipoOs(tipoOs);
+        }
+        if (transporte != null) {
+            pedido.get().setTipoTransporte(transporte);
+        }
+
+        pedidoRepository.save(pedido.get());
     }
 }

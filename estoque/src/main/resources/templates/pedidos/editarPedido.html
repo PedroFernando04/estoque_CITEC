@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Pedido</title>
+    <title>Editar Pedido</title>
 
     <link href="/css/style.css" rel="stylesheet">
 
@@ -16,55 +16,57 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="titulo" style="margin-top: 40px;">Cadasatro de Pedido</div>
+        <div class="titulo" style="margin-top: 40px;">Editar Pedido</div>
         
-    <a th:href="@{/pedidos}">
-        <button class="voltar" style="margin-left: 30px;">Voltar</button>
-    </a>
+        <a th:href="@{/pedidos/{id}(id=${pedido.id})}">
+            <button class="voltar" style="margin-left: 30px;">Voltar</button>
+        </a>
 
-     <form th:action="@{/pedidos/cadastrar}" method="post" id="registrarForm" class="containerCadastrar" >
+     <form th:action="@{/pedidos/{id}/editar(id = ${pedido.id})}" method="post" id="registrarForm">
         
         <div class="containerCadastrar">
             
             <div class="formulario">
                 <label for="destino">Destino:</label>
-                <select name="destino" id="destino" required>
+                <select name="destino" id="destino">
                     <option 
                         th:each="destino : ${destinos}"
                         th:value="${destino.id}"
-                        th:text="${destino.nome}">
+                        th:text="${destino.nome}"
+                        th:selected="${destino.id == pedido.destino.id}">
                     </option>
                 </select>
             </div>
 
             <div class="formulario">
                 <label for="status">Status:</label>
-                <select name="status" id="status" required>
+                <select name="status" id="status" >
                     <option 
                         th:each="status : ${statusExistentes}"
                         th:value="${status}"
                         th:text="${status.descricao}"
-                        th:if="${status.descricao == 'Solicitado'}">
+                        th:selected="${status == pedido.statusPedido}">
                     </option>
                 </select>
             </div>
 
             <div class="formulario">
                 <label for="titulo">Título: </label>
-                <input type="text" name="titulo" id="" placeholder="  Título do pedido" required>     
+                <input type="text" name="titulo" id="" th:placeholder="|  ${pedido.titulo}|" >     
             </div>
             
             <div class="formulario">
                 <label for="descricao">Descrição: </label>
-                <textarea type="text" name="descricao" id=""> </textarea>
+                <textarea type="text" name="descricao" id="" th:placeholder="|  ${pedido.descricao}|"> </textarea>
             </div>
 
             <div class="formulario">
                 <label for="categoria">Categoria:</label>
-                <select name="categoria" id="categoria" onchange = trocarSelectTipo() required>
+                <select name="categoria" id="categoria" onblur = trocarSelectTipo() >
                     <option th:each="categoria : ${categoriasExistentes}"
                             th:value="${categoria}"
-                            th:text="${categoria.descricao}">
+                            th:text="${categoria.descricao}"
+                            th:selected="${categoria == pedido.categoria}">
                     </option>
                 </select>
             </div>
@@ -74,7 +76,8 @@
                 <select name="tipoOS" id="tipoOS">
                     <option th:each="tipoOs : ${tiposOsExistentes}"
                             th:value="${tipoOs}"
-                            th:text="${tipoOs.descricao}">
+                            th:text="${tipoOs.descricao}"
+                            th:selected="${tipoOs == pedido.tipoOs}">
                     </option>
                 </select>
             </div>
@@ -84,7 +87,8 @@
                 <select name="tipoTransporte" id="tipoTransporte">
                     <option th:each="tipoTransporte : ${tiposTransporteExistentes}"
                             th:value="${tipoTransporte}"
-                            th:text="${tipoTransporte.descricao}">
+                            th:text="${tipoTransporte.descricao}"
+                            th.selected="${tipoTransporte == pedido.tipoTransporte}">
                     </option>
                 </select>
             </div>

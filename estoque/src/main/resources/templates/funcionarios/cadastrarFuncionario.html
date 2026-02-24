@@ -18,6 +18,10 @@
 
     <div class="titulo">Funcionários</div>
 
+    <div style="margin: 0px 0px 30px 30px;">
+        <button th:onclick="'window.location.href=\'/funcionarios' + '\''" class="voltar">Voltar</button>
+    </div>
+
     <form th:action="@{/funcionarios/cadastrar}" method="post">
 
         <div class="containerCadastrar">

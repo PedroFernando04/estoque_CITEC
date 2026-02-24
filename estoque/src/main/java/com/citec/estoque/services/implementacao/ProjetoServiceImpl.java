@@ -92,4 +92,8 @@ public class ProjetoServiceImpl implements ProjetoService {
 
         }
     }
+
+    public void devolverAoEstoque(Long idItemProjeto){
+
+    }
 }

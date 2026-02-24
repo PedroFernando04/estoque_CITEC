@@ -110,9 +110,6 @@ public class PedidosController {
     @GetMapping("/pedidos/cadastrar")
     public String cadastrarPedidos(Model model){
 
-        List<Item> itens = itemRepository.findAll();
-        model.addAttribute("itens", itens);
-
         List<EnumStatusPedido> status = Arrays.asList(EnumStatusPedido.values());
         model.addAttribute("statusExistentes", status);
 
@@ -244,6 +241,49 @@ public class PedidosController {
         try{
             itemService.removerUmItemPedido(less);
         } catch (Exception e){throw new IllegalArgumentException("Erro ao inserir item no pedido: " + e.getMessage());}
+
+        return "redirect:/pedidos/{id}";
+    }
+
+    @GetMapping("pedidos/{id}/editar")
+    public String editarPedido(@PathVariable Long id, Model model){
+        Optional<Pedido> pedido = pedidoRepository.findById(id);
+
+        model.addAttribute("pedido", pedido.get());
+
+        List<EnumStatusPedido> status = Arrays.asList(EnumStatusPedido.values());
+        model.addAttribute("statusExistentes", status);
+
+        List<Estoque> destinos = estoqueRepository.findAll();
+        model.addAttribute("destinos", destinos);
+
+        List<EnumCategoriaPedido>  categoriasExistentes = Arrays.asList(EnumCategoriaPedido.values());
+        model.addAttribute("categoriasExistentes", categoriasExistentes);
+
+        List<EnumTipoOsPedido>  tiposOsExistentes = Arrays.asList(EnumTipoOsPedido.values());
+        model.addAttribute("tiposOsExistentes", tiposOsExistentes);
+
+        List<EnumTipoTransportePedido>  tiposTransporteExistentes = Arrays.asList(EnumTipoTransportePedido.values());
+        model.addAttribute("tiposTransporteExistentes", tiposTransporteExistentes);
+
+        return "pedidos/editarPedido";
+    }
+
+    @PostMapping("pedidos/{id}/editar")
+    public String editarPedidos(@PathVariable Long id,
+                                @RequestParam(required = false) Estoque destino,
+                                @RequestParam(required = false) EnumStatusPedido statusPedido,
+                                @RequestParam(required = false) String titulo,
+                                @RequestParam(required = false) String descricao,
+                                @RequestParam(required = false) EnumCategoriaPedido categoria,
+                                @RequestParam(required = false) EnumTipoOsPedido tipoOs,
+                                @RequestParam(required = false) EnumTipoTransportePedido tipoTransporte){
+
+        try{
+            pedidoService.atualizarPedido(id, destino, statusPedido, titulo, descricao, categoria, tipoOs, tipoTransporte);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Erro ao atualizar pedido: " + e.getMessage());
+        }
 
         return "redirect:/pedidos/{id}";
     }

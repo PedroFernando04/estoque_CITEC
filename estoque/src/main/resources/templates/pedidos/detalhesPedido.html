@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedido</title>
 
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,40 +17,52 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <div class="sub-head-detalhes">
-        <div  class="titulo-detalhe">
+        
+        <div  class="titulo-detalhe" style="flex-direction: column;">
 
-            <h1 th:text="|${pedido.titulo}|" >titulo</h1>
-            
+            <div style="flex-direction: row; display: flex; align-items: center;">
 
-            <div class="label-detalhe">
+                <h1 th:text="|${pedido.titulo}|" >titulo</h1>
+                
+                <div th:if="${pedido.statusPedido.name() == 'RECEBIDO'}">
+                    <label for="" class="card-label-detalhe" th:text="${pedido.statusPedido.descricao}" th:classappend="${pedido.classeLabelStatus}" style="margin-left: 10px;">recebido</label>
+                </div>
+                <div class="label-detalhe" th:if="${pedido.statusPedido.name() != 'RECEBIDO'}">
 
-                    <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
+                        <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
 
-                        <select name="novoStatus"
-                                class="card-label-detalhe"
-                                th:classappend="${pedido.classeLabelStatus}">
+                            <select name="novoStatus"
+                                    class="card-label-detalhe"
+                                    th:classappend="${pedido.classeLabelStatus}">
 
-                            <option th:each="status : ${statusExistentes}"
-                                    th:value="${status.name()}"
-                                    th:text="${status.descricao}"
-                                    th:selected="${status == pedido.statusPedido}"
-                                    classappend="none">
-                            </option>
+                                <option th:each="status : ${statusExistentes}"
+                                        th:value="${status.name()}"
+                                        th:text="${status.descricao}"
+                                        th:selected="${status == pedido.statusPedido}"
+                                        classappend="none">
+                                </option>
 
-                        </select>
+                            </select>
 
-                        <button type="submit" name="update">
-                            Atualizar status
-                        </button>
+                            <button type="submit" name="update">
+                                Atualizar status
+                            </button>
 
-                    </form>
+                        </form>
+                </div>        
+            </div>
 
+            <div style="margin-right: 120px;">
+                <button th:onclick="'window.location.href=\'/pedidos' + '\''" class="voltar">Voltar</button>
+
+                <button th:onclick="'window.location.href=\'/pedidos/' + ${pedido.id} + '/' + 'editar' + '\''" class="editar" th:if="${pedido.statusPedido.name() != 'RECEBIDO'}">Editar</button>
             </div>
             
         </div>
 
 
         <div >
+            
             <div class="detalhes-detalhe">
                 <h2 th:text="|Data de Solicitação: ${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy HH:mm')}|">Data da Solicitação: 11/22/3333 </h2>
             </div>
@@ -65,7 +77,7 @@
     
     <div class="container-detalhe">
 
-        <div class="item" >
+        <div class="item" th:if="${pedido.categoria.descricao == 'Requisição de Material'}">
             <div class="titulo-item">
                 <h3>Itens</h3>
                 <button onclick="abrirModal()">Adicionar +</button>
@@ -82,16 +94,24 @@
                             <button type="button" onclick="fecharModal()">&times;</button>
                         </div>
                         <div class="modal-content-input">
-                            <input list="lista-item" name="itemNome" placeholder="  Digite ou Selecione">
-                            <datalist id="lista-item">
-                                <option th:each="item : ${itensExistentes}"
-                                        th:value="${item.nome.toString()}">
-                                </option>
-                            </datalist>
-                            <input type="number" name="quantidade" id="quantidade" placeholder="  Quantidade">
+                            <div class="modal-content-input-content">
+                                <h4>Item: </h4>
+                                <input list="lista-item" name="itemNome" autocomplete="off" placeholder="  Digite ou Selecione">
+                                <datalist id="lista-item">
+                                    <option th:each="item : ${itensExistentes}"
+                                            th:value="${item.nome.toString()}">
+                                    </option>
+                                </datalist>
+                            </div>
+
+                            <div class="modal-content-input-content">
+                                <h4>Quantidade:</h4>
+                                <input type="number" name="quantidade" id="quantidade" placeholder="  Digite a quantidade">
+                            </div>
+                            
 
                             <div class="formulario">
-                                <button type="submit" id="botaoEnviar" name="add">Registrar</button>
+                                <button type="submit" id="botaoEnviar" name="botaoEnviar">Registrar</button>
                             </div>
                         </div>
                         
@@ -118,9 +138,9 @@
                         <th th:text="${itemPedido.quantidade}">quantidade</th>
                         <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
                             <th>
-                                <button type="submit" name="remove" id="remove" th:value="${itemPedido.id}">X</button>
                                 <button type="submit" name="more" id="more" th:value="${itemPedido.id}" >+</button>
                                 <button type="submit" name="less" id="less" th:value="${itemPedido.id}" >-</button>
+                                <button type="submit" name="remove" id="remove" th:value="${itemPedido.id}">X</button>
                             </th>
                         </form>
                     </tr>

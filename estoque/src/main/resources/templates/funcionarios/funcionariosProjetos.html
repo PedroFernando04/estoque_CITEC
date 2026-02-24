@@ -51,6 +51,12 @@
 
     </div>
 
+    <div style="margin: 0px 0px 30px 30px;">
+        <button th:onclick="'window.location.href=\'/funcionarios' + '\''" class="voltar">Voltar</button>
+        
+        <button th:onclick="'window.location.href=\'/funcionarios/' + ${funcionario.id} + '\''" class="editar">Editar</button>
+    </div>
+
     <div class="paginacao">
         <a th:if="${pagina.hasPrevious()}"
         th:href="@{/funcionarios/projetos/{id}(page=${pagina.number - 1}, size=${pagina.size}, id=${funcionario.id})}">

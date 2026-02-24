@@ -120,7 +120,7 @@ select{
 
 
 /* HOVER PADRÃO */
-.editar,
+.editar:hover,
 .popup button:hover,
 table button:hover,
 .historico button:hover,
@@ -294,6 +294,7 @@ table button,
 /* ----------- TELA DE CADASTRO DE ESTOQUE ------------*/
 .containerCadastrar{
     margin-bottom: 100px;
+
 }
 
 .formulario{
@@ -764,6 +765,3 @@ th button{
         word-break: break-word;      
     }
 }
-
-
-

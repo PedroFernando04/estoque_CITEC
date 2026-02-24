@@ -21,10 +21,13 @@
         <div class="titulo" th:text="${item.nome}" >
             Itens
         </div> 
-
     </div>  
 
-    
+    <div style="margin: 0px 0px 30px 30px;">
+        <button th:onclick="'window.location.href=\'/itens' + '\''" class="voltar">Voltar</button>
+        
+        <button th:onclick="'window.location.href=\'/itens/' + ${item.id} + '\''" class="editar">Editar</button>
+    </div>
 
 
     <div class="container-detalhe">

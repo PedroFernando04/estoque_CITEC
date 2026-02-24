@@ -89,9 +89,6 @@ public class EstoqueServiceImpl implements EstoqueService {
         if(itemOrigem == null || itemOrigem.isBlank()) {
             movimentacao.setOrigem(null);
             movimentacao.setStatus(EnumStatusMovimentacao.ENTRADA);
-        } else if (itemOrigem.equals("CITEC")) {
-            movimentacao.setOrigem(estoqueOrigem.get());
-            movimentacao.setStatus(EnumStatusMovimentacao.SAIDA);
         } else {
             movimentacao.setOrigem(estoqueOrigem.get());
             movimentacao.setStatus(EnumStatusMovimentacao.MOVIMENTACAO);
