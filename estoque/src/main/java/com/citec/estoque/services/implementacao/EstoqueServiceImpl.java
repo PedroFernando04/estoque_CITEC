@@ -56,10 +56,6 @@ public class EstoqueServiceImpl implements EstoqueService {
 
         Optional<ItemEstoque> itemEstoqueLocal = itemEstoqueRepository.findByEstoqueIdAndItemId(id, item.get().getId());
 
-        if (itemEstoqueLocal.isPresent()) {
-            throw new IllegalArgumentException("Item já cadastrado neste local");
-        }
-
         if(quantidade < 0){
             throw new IllegalArgumentException("O item não pode ser inserido com quantidade negativa");
         }
@@ -73,13 +69,20 @@ public class EstoqueServiceImpl implements EstoqueService {
             } else throw new IllegalArgumentException("O item selecionado não está presente na origem informada");
         }
 
-        ItemEstoque itemEstoque = new ItemEstoque();
+        if (itemEstoqueLocal.isPresent()) {
+            itemEstoqueLocal.get().setQuantidade(itemEstoqueLocal.get().getQuantidade() + quantidade);
+            itemEstoqueRepository.save(itemEstoqueLocal.get());
 
-        itemEstoque.setQuantidade(quantidade);
-        itemEstoque.setEstoque(estoque.get());
-        itemEstoque.setItem(item.get());
+        } else {
 
-        itemEstoqueRepository.save(itemEstoque);
+            ItemEstoque itemEstoque = new ItemEstoque();
+
+            itemEstoque.setQuantidade(quantidade);
+            itemEstoque.setEstoque(estoque.get());
+            itemEstoque.setItem(item.get());
+
+            itemEstoqueRepository.save(itemEstoque);
+        }
 
         Movimentacao movimentacao = new Movimentacao();
         movimentacao.setData(LocalDateTime.now());

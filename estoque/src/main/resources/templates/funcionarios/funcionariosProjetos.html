@@ -45,16 +45,14 @@
 
     </form>
 
-    <div class="sub">
+    <div class="titulo" style="margin-bottom: 30px;">
+        <h4 th:text="|${funcionario.nome} (${funcionario.cargo.descricao})|">nomeFuncionario (cargo)</h4>
 
-        <div class="titulo" th:text="|${funcionario.nome} (${funcionario.cargo.descricao})|">nomeFuncionario (cargo)</div>
-
-    </div>
-
-    <div style="margin: 0px 0px 30px 30px;">
-        <button th:onclick="'window.location.href=\'/funcionarios' + '\''" class="voltar">Voltar</button>
-        
-        <button th:onclick="'window.location.href=\'/funcionarios/' + ${funcionario.id} + '\''" class="editar">Editar</button>
+        <div>
+            <button th:onclick="'window.location.href=\'/funcionarios' + '\''" class="voltar">Voltar</button>
+            
+            <button th:onclick="'window.location.href=\'/funcionarios/' + ${funcionario.id} + '\''" class="editar">Editar</button>
+        </div>
     </div>
 
     <div class="paginacao">

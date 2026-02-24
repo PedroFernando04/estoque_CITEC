@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Local</title>
 
-    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,16 +82,16 @@
     </div>
     
 
-    <form class="cadas"  method="post" th:action="@{/local/{id}(id = ${local.id})}" style="display: none;" >
+    <form class="cadas"  method="post" id="remover" th:action="@{/local/{id}(id = ${local.id})}" style="display: none;" >
         <div class="popup" >
             <div style="margin-left: 80%; margin-top: -40px; margin-bottom: 20px;">
                 <button style="background-color: #0069AD;" type="button" onclick="fecharModalDeletar()">&times;</button>
             </div>
             <h2>Como deseja remover este item?</h2>
-            <input type="hidden" name="remove" id="remove">
+            <input type="hidden" name="itemProjetoId" id="itemProjetoId">
             <div>
-                <button type="submit" id="estoque" style="background-color: #0069AD;">Devolver ao Estoque</button>
-                <button type="submit" id="remover" style="background-color: rgb(241, 33, 33);" > Excluir</button>
+                <button type="submit" name="estoque" id="estoque" style="background-color: #0069AD;">Devolver ao Estoque</button>
+                <button type="submit" name="remove" id="remove" style="background-color: rgb(241, 33, 33);" >Excluir</button>
             </div>
         </div>
     </form>
@@ -168,11 +168,7 @@
                         <th th:text="${itemEstoque.item.codigoRMFormatado}">rm</th>
                         <th th:text="${itemEstoque.quantidade}">quantidade</th>
                         <th>
-                            <form th:action="@{/local/{id}(id=${local.id})}" method="post">
-                                <button type="submit" name="more" id="more" th:value="${itemPedido.id}" >+</button>
-                                <button type="submit" name="less" id="less" th:value="${itemPedido.id}" >-</button>
-                                <button type="button" th:onclick="'abrirModal(' + ${pedido.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
-                            </form>
+                            <button type="button" th:onclick="'abrirModalDeletar(' + ${itemEstoque.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
                         </th>
                     </tr>
                 </table>
@@ -194,7 +190,7 @@
         }
 
         function abrirModalDeletar(id) {
-                document.getElementById("remove").value = id;
+                document.getElementById("itemProjetoId").value = id;
                 document.getElementById("remover").style.display = "flex";
             }
 

@@ -160,23 +160,6 @@ public class ItemServiceImpl implements ItemService {
         } else throw new IllegalArgumentException("O item não pode ficar com quantidade negativa");
     }
 
-    public void adicionarUmItemEstoque(Long itemEstoqueId){
-        ItemEstoque item = itemEstoqueRepository.findById(itemEstoqueId).orElse(null);
-
-        item.setQuantidade(item.getQuantidade() + 1);
-
-        itemEstoqueRepository.save(item);
-    }
-
-    public void removerUmItemEstoque(Long itemEstoqueId){
-        ItemEstoque item = itemEstoqueRepository.findById(itemEstoqueId).orElse(null);
-
-        if(item.getQuantidade() > 0){
-            item.setQuantidade(item.getQuantidade() - 1);
-
-            itemEstoqueRepository.save(item);
-        } else throw new IllegalArgumentException("O item não pode ficar com quantidade negativa");
-    }
 
     public String salvarFoto(MultipartFile file){
         final String DIRETORIO_UPLOAD = "uploads/";

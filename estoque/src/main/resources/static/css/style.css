@@ -16,11 +16,6 @@ body{
     color: #202042;
 }
 
-.sub{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 40px;
-}
 
 
 /* HEADER */
@@ -136,12 +131,21 @@ table button:hover,
 .cadastrar{
     display: flex;
     justify-content: end;
-
-    
-    margin-top: 10px;
 }
 
-.editar,
+.editar{
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    
+    padding: 0 20px;
+    height: 30px;
+
+    font-weight: bold;
+    background-color: white;
+}
+
+
 .popup button,
 table button,
 .historico button,
@@ -161,13 +165,44 @@ table button,
 }
 
 
+.cadastrarLocal{
+
+
+    background-color: rgba(255, 255, 255, 0.729);
+
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 20px;
+    width: fit-content;
+    padding:30px;
+
+}
+
+
 .titulo{
     font-size: 22px;
-    margin: 10px 0 20px 25px;
     font-weight: bold;
     color: #333;
     font-size: xx-large;
+
+    background-color: rgba(255, 255, 255, 0.729);
+    padding:30px;
+
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
+
 
 /* CARDS */
 
@@ -180,7 +215,7 @@ table button,
 }
 
 .card {
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     border-radius: 15px;
     padding: 20px;
     height: 140px;
@@ -293,9 +328,15 @@ table button,
 
 /* ----------- TELA DE CADASTRO DE ESTOQUE ------------*/
 .containerCadastrar{
+    margin-top: 30px;
     margin-bottom: 100px;
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
+
 
 .formulario{
     display: flex;
@@ -361,7 +402,20 @@ select[multiple] option {
     background-color: white;
     color: black;
 }
-.voltar,
+
+.voltar{
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    
+    padding: 0 20px;
+    height: 30px;
+
+    font-weight: bold;
+    background-color: #0069AD;
+    color: white;
+}
+
 form button{
     border-radius: 10px;
     border: none;

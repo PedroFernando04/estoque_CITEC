@@ -193,12 +193,12 @@ public class LocaisController {
 
 
     @PostMapping(value = "/local/{id}", params = "remove")
-    public String removerItemLocal(Long remove){
+    public String removerItemLocal(Long itemProjetoId){
 
-        Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(remove);
+        Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemProjetoId);
 
         try {
-            estoqueService.deletarItemEstoque(remove, itemEstoque.get().getQuantidade());
+            estoqueService.deletarItemEstoque(itemProjetoId, itemEstoque.get().getQuantidade());
 
             Movimentacao movimentacao = new Movimentacao();
             movimentacao.setData(LocalDateTime.now());
@@ -216,9 +216,20 @@ public class LocaisController {
     }
 
     @PostMapping(value = "/local/{id}", params = "estoque")
-    public String devolverAoEstoque(@PathVariable Long id){
+    public String devolverAoEstoque(@PathVariable Long id, @RequestParam Long itemProjetoId){
+        Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemProjetoId);
+        ItemEstoque ie =  itemEstoque.get();
 
-
+        try{
+            if (itemEstoque.isPresent()) {
+                estoqueService.inserirItem(
+                        ie.getItem().getNome(),
+                        ie.getQuantidade(),
+                        1L,
+                        ie.getEstoque().getNome()
+                );
+            } else throw new IllegalArgumentException("ID de itemEstoque não encontrado");
+        } catch (Exception e) { throw new  IllegalArgumentException("Erro ao devolver item para o Estoque:  " + e.getMessage()); }
 
         return "redirect:/local/{id}";
     }

@@ -7,7 +7,7 @@ public interface EstoqueService {
 
     public void salvarEstoque(Estoque estoque);
 
-    public void inserirItem(String itemNome, Integer quantidade, Long id, String itemOrigem);
+    public void inserirItem(String itemNome, Integer quantidade, Long destinoId, String nomeOrigem);
 
     public void deletarItemEstoque(Long itemEstoqueId, Integer quantidade);
 

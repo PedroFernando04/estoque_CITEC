@@ -17,11 +17,13 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <main>
-        <div class="titulo" style="margin-top: 40px;">Cadastro de Projeto</div>
-        
-        <a th:href="@{/locais}">
-            <button class="voltar" style="margin-left: 30px;">Voltar</button>
-        </a>
+        <div class="titulo">
+            Cadastro de Projeto
+
+            <a th:href="@{/locais}">
+                <button class="voltar">Voltar</button>
+            </a>
+        </div>
 
         <div class="containerCadastrar">
 
@@ -29,10 +31,10 @@
 
                 <div class="formulario">
                     <label for="nome">Título:</label>
-                    <input type="text" name="nome" id="nome" required>
+                    <input type="text" name="nome" id="nome" placeholder="  Título do Projeto" required>
                 
                     <label for="solicitante">Solicitante:</label>
-                    <input type="text" name="solicitante" id="solicitante" required>
+                    <input type="text" name="solicitante" id="solicitante" placeholder="  Nome do Solicitante" required>
                 </div>
 
                 <div class="formulario">

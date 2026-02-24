@@ -16,17 +16,18 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="sub"> 
-        <div class="titulo">Cadastro de Item</div>
-    </div>
+    <div class="titulo">
+        Cadastro de Item
 
-    <div style="margin: 0px 0px 30px 30px;">
-        <button th:onclick="'window.location.href=\'/itens' + '\''" class="voltar">Voltar</button>
+        <a th:href="@{/itens}">
+            <button class="voltar">Voltar</button>
+        </a>
     </div>
+        
 
     <div class="containerCadastrar">
 
-        <form th:action="@{/itens/cadastrar}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/itens/cadastrar}" method="post" enctype="multipart/form-data" class="cadastrarLocal">
 
             <div class="formulario">
                 <label for="nomeFantasia">Nome Fantasia:</label>

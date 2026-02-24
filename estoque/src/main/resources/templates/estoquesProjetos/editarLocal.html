@@ -17,13 +17,17 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <main>
-        <div class="titulo">Editar Projeto</div>
+        <div class="titulo">
+            Editar Projeto
 
-        <a th:href="@{/local/{id}(id=${local.id})}">
-            <button class="voltar" style="margin-left: 30px;">Voltar</button>
-        </a>
+            <a th:href="@{/local/{id}(id=${local.id})}">
+                <button class="voltar" >Voltar</button>
+            </a>
+        </div>
 
-            <form th:action="@{/local/{id}/editar(id=${local.id})}" method="post" name="update">
+        <div class="containerCadastrar">
+
+            <form th:action="@{/local/{id}/editar(id=${local.id})}" method="post" name="update" class="cadastrarLocal">
 
                 <input type="hidden" id="tipoHidden" name="tipo">
 
@@ -80,7 +84,9 @@
                 <div class="formulario">
                     <button type="submit" id="update" name="update" >Registrar</button>
                 </div>
-        </form>
+            </form>
+
+        </div>
     </div>
     </main>
 </body>

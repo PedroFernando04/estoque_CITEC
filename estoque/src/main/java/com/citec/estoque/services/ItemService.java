@@ -17,10 +17,6 @@ public interface ItemService {
 
     public void updateItem(Long id, String nomeFantasia, String nome,  String rm, Integer quantidade, MultipartFile foto);
 
-    public void adicionarUmItemEstoque(Long item);
-
-    public void removerUmItemEstoque(Long item);
-
     public void adicionarUmItemPedido(Long item);
 
     public void removerUmItemPedido(Long item);

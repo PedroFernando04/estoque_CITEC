@@ -51,16 +51,14 @@
 
     </form>
 
-    <div class="sub">
+    <div class="titulo">
+        <div >Pedidos</div> 
 
-        <div class="titulo">Pedidos</div> 
-
-            <div class="cadastrar" >
-                <a th:href="@{/pedidos/cadastrar}">
-                    <button>Cadastrar +</button>
-                </a>
-            </div>
-
+        <div class="cadastrar" >
+            <a th:href="@{/pedidos/cadastrar}">
+                <button>Cadastrar +</button>
+            </a>
+        </div>
     </div>
 
     <div class="paginacao">
@@ -111,7 +109,7 @@
                          
                             <th th:text="${pedido.titulo}">titulo</th>
                             <th>
-                                <div  >
+                                <div>
                                     <label for="" class="card-label-detalhe" th:text="${pedido.status.descricao}" th:classappend="${pedido.classeLabelStatus}" th:if="${pedido.status.descricao == 'Recebido'}">recebido</label>
                                     <select name="novoStatus"
                                             class="card-label-detalhe"

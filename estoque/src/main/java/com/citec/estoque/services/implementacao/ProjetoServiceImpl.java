@@ -7,6 +7,7 @@ import com.citec.estoque.entities.tabelasPrincipais.Estoque;
 import com.citec.estoque.entities.tabelasPrincipais.Funcionario;
 import com.citec.estoque.entities.tabelasPrincipais.Projeto;
 import com.citec.estoque.repositorys.tabelasAuxiliares.FuncionarioProjetoRepository;
+import com.citec.estoque.repositorys.tabelasAuxiliares.ItemEstoqueRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.EstoqueRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
@@ -14,7 +15,6 @@ import com.citec.estoque.services.ProjetoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +32,9 @@ public class ProjetoServiceImpl implements ProjetoService {
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
+    private ItemEstoqueRepository itemEstoqueRepository;
 
 
     public void salvarProjeto(Projeto projeto, List<Long> funcionariosIds) {
@@ -91,9 +94,5 @@ public class ProjetoServiceImpl implements ProjetoService {
             projetoRepository.save(projeto.get());
 
         }
-    }
-
-    public void devolverAoEstoque(Long idItemProjeto){
-
     }
 }

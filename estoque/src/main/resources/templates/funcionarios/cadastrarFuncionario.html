@@ -16,15 +16,17 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="titulo">Funcionários</div>
-
-    <div style="margin: 0px 0px 30px 30px;">
-        <button th:onclick="'window.location.href=\'/funcionarios' + '\''" class="voltar">Voltar</button>
+    <div class="titulo">
+        Funcionários
+    
+        <a th:href="@{/funcionarios}">
+            <button class="voltar">Voltar</button>
+        </a>
     </div>
 
-    <form th:action="@{/funcionarios/cadastrar}" method="post">
+    <form th:action="@{/funcionarios/cadastrar}" method="post" class="containerCadastrar" style="margin-top: 30px;">
 
-        <div class="containerCadastrar">
+        <div class="cadastrarLocal">
             <div class="formulario">
                 <label for="nome">Nome:</label>
                 <input type="text" name="nome" id="nome" required>

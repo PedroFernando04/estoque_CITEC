@@ -16,15 +16,19 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="titulo" style="margin-top: 40px;">Cadasatro de Pedido</div>
+    <div class="titulo">
+        Cadastro de Pedido
+
+        <a th:href="@{/pedidos}">
+            <button class="voltar">Voltar</button>
+        </a>
+    </div>
         
-    <a th:href="@{/pedidos}">
-        <button class="voltar" style="margin-left: 30px;">Voltar</button>
-    </a>
+    
 
      <form th:action="@{/pedidos/cadastrar}" method="post" id="registrarForm" class="containerCadastrar" >
         
-        <div class="containerCadastrar">
+        <div class="cadastrarLocal">
             
             <div class="formulario">
                 <label for="destino">Destino:</label>

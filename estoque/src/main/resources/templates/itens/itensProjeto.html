@@ -16,21 +16,20 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="sub">
+    <div class="titulo">
+        <h4 th:text="${item.nome}" >item</h4>
 
-        <div class="titulo" th:text="${item.nome}" >
-            Itens
-        </div> 
-    </div>  
-
-    <div style="margin: 0px 0px 30px 30px;">
+        <div >
         <button th:onclick="'window.location.href=\'/itens' + '\''" class="voltar">Voltar</button>
         
         <button th:onclick="'window.location.href=\'/itens/' + ${item.id} + '\''" class="editar">Editar</button>
     </div>
+    </div> 
+
+    
 
 
-    <div class="container-detalhe">
+    <div class="container-detalhe" style="margin-top: 30px;">
         <div class="item">
 
             <div class="paginacao">
@@ -71,7 +70,9 @@
         </div>
 
         <div class="historico">
-            <img th:src="@{'/' + ${item.imagePath}}" alt="fotoDoItem" style="max-width: 750px; max-height: 850px;">
+            <div class="formulario">
+                <img th:src="@{'/' + ${item.imagePath}}" alt="fotoDoItem" style="max-width: 350px; max-height: 450px;">
+            </div>
 
             <div class="formulario">
                 <label for="">Nome Fantasia:</label>
