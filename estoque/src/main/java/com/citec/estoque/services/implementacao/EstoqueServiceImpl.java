@@ -104,12 +104,27 @@ public class EstoqueServiceImpl implements EstoqueService {
 
         Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemEstoqueId);
 
+        Movimentacao movimentacao = new Movimentacao();
+
+        if (quantidade < 0)
+            throw new IllegalArgumentException("Quantidade não pode ser negativa");
+        if (quantidade > itemEstoque.get().getQuantidade())
+            throw new IllegalArgumentException("Quantidade removida não pode ser maior que a estocada");
+
         if (quantidade.equals(itemEstoque.get().getQuantidade())) {
+            movimentacao.setQuantidade(itemEstoque.get().getQuantidade());
             itemEstoqueRepository.deleteById(itemEstoqueId);
         } else {
             itemEstoque.get().setQuantidade(itemEstoque.get().getQuantidade() - quantidade);
+            movimentacao.setQuantidade(quantidade);
             itemEstoqueRepository.save(itemEstoque.get());
         }
+
+        movimentacao.setData(LocalDateTime.now());
+        movimentacao.setItem(itemEstoque.get().getItem());
+        movimentacao.setOrigem(itemEstoque.get().getEstoque());
+        movimentacao.setStatus(EnumStatusMovimentacao.SAIDA);
+        movimentacaoRepository.save(movimentacao);
 
     }
 

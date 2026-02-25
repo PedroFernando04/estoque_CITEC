@@ -193,20 +193,15 @@ public class LocaisController {
 
 
     @PostMapping(value = "/local/{id}", params = "remove")
-    public String removerItemLocal(Long itemProjetoId){
+    public String removerItemLocal(@RequestParam Long itemProjetoId, @RequestParam(required = false) Integer quantidadeRemovida){
 
         Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemProjetoId);
-
         try {
-            estoqueService.deletarItemEstoque(itemProjetoId, itemEstoque.get().getQuantidade());
-
-            Movimentacao movimentacao = new Movimentacao();
-            movimentacao.setData(LocalDateTime.now());
-            movimentacao.setItem(itemEstoque.get().getItem());
-            movimentacao.setQuantidade(itemEstoque.get().getQuantidade());
-            movimentacao.setOrigem(itemEstoque.get().getEstoque());
-            movimentacao.setStatus(EnumStatusMovimentacao.SAIDA);
-            movimentacaoRepository.save(movimentacao);
+            if (quantidadeRemovida != null){
+                estoqueService.deletarItemEstoque(itemProjetoId, quantidadeRemovida);
+            } else {
+                estoqueService.deletarItemEstoque(itemProjetoId, itemEstoque.get().getQuantidade());
+            }
 
         } catch (Exception e) {
             throw new IllegalArgumentException("Erro ao deletar item do local: " +e.getMessage());
@@ -216,19 +211,26 @@ public class LocaisController {
     }
 
     @PostMapping(value = "/local/{id}", params = "estoque")
-    public String devolverAoEstoque(@PathVariable Long id, @RequestParam Long itemProjetoId){
+    public String devolverAoEstoque(@PathVariable Long id, @RequestParam Long itemProjetoId, @RequestParam(required = false) Integer quantidadeRemovida){
         Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemProjetoId);
         ItemEstoque ie =  itemEstoque.get();
 
         try{
-            if (itemEstoque.isPresent()) {
+            if (quantidadeRemovida != null) {
+                estoqueService.inserirItem(
+                        ie.getItem().getNome(),
+                        quantidadeRemovida,
+                        1L,
+                        ie.getEstoque().getNome()
+                );
+            } else {
                 estoqueService.inserirItem(
                         ie.getItem().getNome(),
                         ie.getQuantidade(),
                         1L,
                         ie.getEstoque().getNome()
                 );
-            } else throw new IllegalArgumentException("ID de itemEstoque não encontrado");
+            }
         } catch (Exception e) { throw new  IllegalArgumentException("Erro ao devolver item para o Estoque:  " + e.getMessage()); }
 
         return "redirect:/local/{id}";

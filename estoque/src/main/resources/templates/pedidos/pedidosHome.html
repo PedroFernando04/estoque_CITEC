@@ -96,6 +96,7 @@
                         class="cabecalho-table">
                         <th>Título</th>
                         <th>Status</th>
+                        <th>Descrição</th>
                         <th>Categoria</th>
                         <th>Item</th>
                         <th>Data</th>
@@ -124,6 +125,7 @@
                                     </select>
                                 </div>
                             </th>
+                            <th th:text="${pedido.descricao}">descricao</th>
                             <th>
                                 <div class="label-detalhe" 
                                     th:text="${pedido.categoria.descricao}" 
