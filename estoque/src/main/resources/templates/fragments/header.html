@@ -18,7 +18,7 @@
 <header>
     <img src="/imgs/Campus-PMM-2410Thumbnail_cesmac-1920w.png" alt="logo-cesmac" style="width: 200px;">
 
-    <ul>
+    <ul sec:authorize="isAuthenticated()">
         <ol>
             <a th:href="@{/locais}">Projetos</a>
         </ol>
@@ -34,7 +34,7 @@
         <ol>
            <a th:href="@{/funcionarios}">Funcionários</a> 
         </ol>
-        <ol sec:authorize="isAuthenticated()">
+        <ol >
             <form th:action="@{/logout}" method="post" style="margin-top: -10px;">
                 <button id="remove" type="submit">Sair</button>
             </form>

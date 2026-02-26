@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<footer th:fragment="footer">
+    <div th:if="${quantidadeFaltando > 0}"
+         class="alerta-faltando"
+         onclick="window.location.href='/itens?nome=&faltando=true'">
+
+        <button class="fechar-alerta"
+                onclick="event.stopPropagation(); fecharAlerta(this)">
+            ✖
+        </button>
+
+        <strong>⚠ Atenção</strong>
+
+        <p th:text="|Exist${quantidadeFaltando < 2 ? 'e' : 'em'} 
+                    ${quantidadeFaltando} 
+                    item${quantidadeFaltando < 2 ? '' : 's'} 
+                    faltando!|">
+        </p>
+
+    </div>
+
+        <script>
+            function fecharAlerta(botao) {
+                const alerta = botao.parentElement;
+                alerta.style.opacity = '0';
+                alerta.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    alerta.style.display = 'none';
+                }, 300);
+            }
+        </script>
+
+</footer>
+</body>
+</html>

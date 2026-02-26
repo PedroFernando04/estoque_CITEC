@@ -546,6 +546,9 @@ th{
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 
     min-width: 550px;
+
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 
@@ -821,4 +824,62 @@ th button{
     label{                 
         word-break: break-word;      
     }
+}
+
+/* NOTIFICAÇÃO DE ITENS FALTANDO */
+
+.alerta-faltando {
+    position: fixed;              
+    bottom: 20px;                 
+    right: 20px;                 
+    
+    width: 220px;
+    padding: 15px;
+
+    background-color: #fff3cd;    
+    color: #856404;              
+
+    border: 1px solid #ffeeba;
+    border-radius: 10px;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+
+    z-index: 9999;                
+
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.alerta-faltando strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alerta-faltando:hover {
+    opacity: 0.5; 
+    cursor: pointer;
+}
+
+.fechar-alerta {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
 }

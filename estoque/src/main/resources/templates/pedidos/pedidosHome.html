@@ -91,80 +91,82 @@
 
     <div class="historico">
 
-                <table>
-                    <tr th:if="${!pedidos.empty}"
-                        class="cabecalho-table">
-                        <th>Título</th>
-                        <th>Status</th>
-                        <th>Descrição</th>
-                        <th>Categoria</th>
-                        <th>Item</th>
-                        <th>Data</th>
-                        <th>Ações</th>
-                    </tr>
-                    <tr class="linha-historico"
-                        th:if="${!pedidos.empty}"
-                        th:each="pedido : ${pedidos}"
-                        >
-                        <form th:action="@{/pedidos}" method="post" >
-                         
-                            <th th:text="${pedido.titulo}">titulo</th>
-                            <th>
-                                <div>
-                                    <label for="" class="card-label-detalhe" th:text="${pedido.status.descricao}" th:classappend="${pedido.classeLabelStatus}" th:if="${pedido.status.descricao == 'Recebido'}">recebido</label>
-                                    <select name="novoStatus"
-                                            class="card-label-detalhe"
-                                            th:classappend="${pedido.classeLabelStatus}"
-                                            th:if="${pedido.status.descricao != 'Recebido'}">
-                                        <option th:each="s : ${status}"
-                                                th:value="${s}"
-                                                th:text="${s.descricao}"
-                                                th:selected="${s == pedido.status}"
-                                                classappend="none">
-                                        </option>
-                                    </select>
-                                </div>
-                            </th>
-                            <th th:text="${pedido.descricao}">descricao</th>
-                            <th>
-                                <div class="label-detalhe" 
-                                    th:text="${pedido.categoria.descricao}" 
-                                    th:classappend="${pedido.classeLabelCategoria}">
-                                    categoria
-                                </div>
-                            </th>
-                            <th>
-                                <ul th:if="${pedido.itens.size() < 4}">
-                                    <li th:each = "item : ${pedido.itens}">
-                                        <span th:text = ${item.item.nome} - >nomeItem</span>
+        <table>
+            <tr th:if="${!pedidos.empty}"
+                class="cabecalho-table">
+                <th>Título</th>
+                <th>Status</th>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Item</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+            <tr class="linha-historico"
+                th:if="${!pedidos.empty}"
+                th:each="pedido : ${pedidos}"
+                >
+                <form th:action="@{/pedidos}" method="post" >
+                    
+                    <th th:text="${pedido.titulo}">titulo</th>
+                    <th>
+                        <div>
+                            <label for="" class="card-label-detalhe" th:text="${pedido.status.descricao}" th:classappend="${pedido.classeLabelStatus}" th:if="${pedido.status.descricao == 'Recebido'}">recebido</label>
+                            <select name="novoStatus"
+                                    class="card-label-detalhe"
+                                    th:classappend="${pedido.classeLabelStatus}"
+                                    th:if="${pedido.status.descricao != 'Recebido'}">
+                                <option th:each="s : ${status}"
+                                        th:value="${s}"
+                                        th:text="${s.descricao}"
+                                        th:selected="${s == pedido.status}"
+                                        classappend="none">
+                                </option>
+                            </select>
+                        </div>
+                    </th>
+                    <th th:text="${pedido.descricao}">descricao</th>
+                    <th>
+                        <div class="label-detalhe" 
+                            th:text="${pedido.categoria.descricao}" 
+                            th:classappend="${pedido.classeLabelCategoria}">
+                            categoria
+                        </div>
+                    </th>
+                    <th>
+                        <ul th:if="${pedido.itens.size() < 4}">
+                            <li th:each = "item : ${pedido.itens}">
+                                <span th:text = ${item.item.nome} - >nomeItem</span>
 
-                                        <span th:text = "| - ${item.quantidade}x|">qntItem</span>
-                                    </li>
-                                </ul>
+                                <span th:text = "| - ${item.quantidade}x|">qntItem</span>
+                            </li>
+                        </ul>
 
-                                <ul th:if="${pedido.itens.size() > 3}">
-                                    <li th:each = "item, stat : ${pedido.itens}"
-                                        th:if="${stat.index < 3}">
-                                        <span th:text = ${item.item.nome} - >nomeItem</span>
+                        <ul th:if="${pedido.itens.size() > 3}">
+                            <li th:each = "item, stat : ${pedido.itens}"
+                                th:if="${stat.index < 3}">
+                                <span th:text = ${item.item.nome} - >nomeItem</span>
 
-                                        <span th:text = "| - ${item.quantidade}x|">qntItem</span>
-                                    </li>
-                                </ul>
-                                <span th:if="${pedido.itens.size() > 3}">...</span>
-                            </th>
-                            <th th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy HH:mm')}">data</th>
-                            
-                            <th>
-                                <button type="submit" name="update" id="more"  th:value="${pedido.id}" th:if="${pedido.status.descricao != 'Recebido'}">Atualizar status</button>
-                                <button type="button" th:onclick = "'window.location.href=\'/pedidos/' + ${pedido.id} + '\''" id="botaoForm">Detalhes</button>
-                                <button type="button" th:onclick = "'abrirModal(' + ${pedido.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
-                            </th>
-                        </form>
-                    </tr>
-                </table>
-                <h3 th:if="${pedidos.empty}">Nenhum pedido registrado!</h3>
-            
-        </div>
+                                <span th:text = "| - ${item.quantidade}x|">qntItem</span>
+                            </li>
+                        </ul>
+                        <span th:if="${pedido.itens.size() > 3}">...</span>
+                    </th>
+                    <th th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy HH:mm')}">data</th>
+                    
+                    <th>
+                        <button type="submit" name="update" id="more"  th:value="${pedido.id}" th:if="${pedido.status.descricao != 'Recebido'}">Atualizar status</button>
+                        <button type="button" th:onclick = "'window.location.href=\'/pedidos/' + ${pedido.id} + '\''" id="botaoForm">Detalhes</button>
+                        <button type="button" th:onclick = "'abrirModal(' + ${pedido.id} + ')'" style="background-color: rgb(241, 33, 33); color: white;">X</button>
+                    </th>
+                </form>
+            </tr>
+        </table>
+        <h3 th:if="${pedidos.empty}">Nenhum pedido registrado!</h3>
+        
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 
         <script>
             function abrirModal(id) {

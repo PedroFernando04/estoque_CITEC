@@ -75,13 +75,6 @@
 
     </div>
 
-    <div id="botaoEditar">
-        <button th:onclick="'window.location.href=\'/locais' + '\''" class="voltar">Voltar</button>
-        
-        <button th:onclick="'window.location.href=\'/local/' + ${local.id} + '/' + 'editar' + '\''" class="editar">Editar</button>
-    </div>
-    
-
     <form class="cadas"  method="post" id="remover" th:action="@{/local/{id}(id = ${local.id})}" style="display: none;" >
         <div class="popup" >
             <div style="margin-left: 80%; margin-top: -40px; margin-bottom: 20px;">
@@ -99,6 +92,13 @@
             </div>
         </div>
     </form>
+
+    <div id="botaoEditar">
+        <button th:onclick="'window.location.href=\'/locais' + '\''" class="voltar">Voltar</button>
+        
+        <button th:onclick="'window.location.href=\'/local/' + ${local.id} + '/' + 'editar' + '\''" class="editar">Editar</button>
+    </div>
+    
 
     <div class="container-detalhe">
 
@@ -222,7 +222,6 @@
 
         
     </div>
-
     <script>
         function abrirModal(){
             document.getElementById("modal-adicionar").style.display = "block";

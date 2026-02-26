@@ -169,7 +169,7 @@ public class LocaisController {
         List<Item> itensExistentes = itemRepository.findAll();
         model.addAttribute("itensExistentes", itensExistentes);
 
-        List<Movimentacao> movimentacaosLocal = movimentacaoRepository.findTop15ByOrigemOrDestino(id, PageRequest.of(0, 15));
+        List<Movimentacao> movimentacaosLocal = movimentacaoRepository.findTop10ByOrigemOrDestino(id, PageRequest.of(0, 10));
         model.addAttribute("movimentacoesLocal", movimentacaosLocal);
 
         List<Estoque> locais = estoqueRepository.findAll();

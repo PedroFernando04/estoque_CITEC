@@ -17,5 +17,5 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long
     List<Movimentacao> findByItemId(Long id);
 
     @Query("SELECT m FROM movimentacoes m WHERE m.origem.id = :id OR m.destino.id = :id ORDER BY m.data DESC")
-    List<Movimentacao> findTop15ByOrigemOrDestino(Long id, Pageable pageable);
+    List<Movimentacao> findTop10ByOrigemOrDestino(Long id, Pageable pageable);
 }
