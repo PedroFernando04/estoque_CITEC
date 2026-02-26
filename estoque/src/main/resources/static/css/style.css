@@ -210,7 +210,7 @@ table button,
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 65px;
+    gap: 30px;
     margin-left: 12px;
     margin-right: 12px;
 }
@@ -218,9 +218,8 @@ table button,
 .card {
     background-color: rgb(255, 255, 255);
     border-radius: 15px;
-    padding: 30px;
+    padding: 20px;
     height: 140px;
-    width: 200px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
     display: flex;
@@ -483,7 +482,7 @@ form button:hover,
     justify-content: space-between;
 }
 
-
+ol button,
 .titulo-item button{
     padding: 4px 12px;
     border-radius: 10px;
