@@ -10,11 +10,18 @@ import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.services.FuncionarioService;
 import com.citec.estoque.specification.tabelasAuxiliares.FuncionarioProjetoSpecification;
 import com.citec.estoque.specification.tabelasPrincipais.FuncionarioSpecification;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -82,14 +89,17 @@ public class FuncionariosController {
 
     @PostMapping("/funcionarios/cadastrar")
     public String cadastrarFuncionario(@RequestParam String nome,
-                                       @RequestParam EnumCargoFuncionario cargo) {
+                                       @RequestParam EnumCargoFuncionario cargo,
+                                       @RequestParam String login,
+                                       @RequestParam String senha) {
 
         try {
             Funcionario funcionario = new Funcionario();
             funcionario.setNome(nome);
             funcionario.setCargo(cargo);
+            funcionario.setLogin(login);
 
-            funcionarioService.salvarFuncionario(funcionario);
+            funcionarioService.salvarFuncionario(funcionario, senha);
 
         } catch (Exception e) {
             throw new  RuntimeException("Erro ao cadastrar funcionario:  " + e.getMessage());
@@ -147,14 +157,47 @@ public class FuncionariosController {
     }
 
     @PostMapping(value = "/funcionarios/{id}", params = "update")
-    public String updateFuncionario(@PathVariable Long id, @RequestParam String nome, @RequestParam EnumCargoFuncionario clero) {
+    public String updateFuncionario(@PathVariable Long id,
+                                    @RequestParam String nome,
+                                    @RequestParam EnumCargoFuncionario clero,
+                                    @RequestParam String login,
+                                    @RequestParam String senha) {
 
         try {
-            funcionarioService.updateFuncionario(id, nome, clero);
+            funcionarioService.updateFuncionario(id, nome, clero, login, senha);
         } catch (Exception e) {
             throw new IllegalArgumentException("Erro ao atualizar Funcionário:  " + e.getMessage());
         }
 
         return "redirect:/funcionarios";
+    }
+
+    @GetMapping("/entrar")
+    public String login() { return "login"; }
+
+    @PostMapping("/entrar")
+    public String entrar(@RequestParam String login,
+                         @RequestParam String senha,
+                         SecurityContext currentContext,
+                         HttpServletRequest request,
+                         HttpServletResponse response) {
+
+        Funcionario funcionario = funcionarioService.getFuncionarioByLogin(login);
+
+        if (funcionario == null || !funcionarioService.verifyPassword(senha, funcionario.getSenha())) {
+           return "redirect:/login?error=true";
+        }
+
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(funcionario, null, authorities);
+
+        currentContext.setAuthentication(authentication);
+
+        SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+        securityContextRepository.saveContext(currentContext, request, response);
+
+        return "redirect:/";
     }
 }

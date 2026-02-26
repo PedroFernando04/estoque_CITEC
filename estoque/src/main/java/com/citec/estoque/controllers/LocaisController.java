@@ -25,6 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -194,14 +196,25 @@ public class LocaisController {
 
     @PostMapping(value = "/local/{id}", params = "remove")
     public String removerItemLocal(@RequestParam Long itemProjetoId, @RequestParam(required = false) Integer quantidadeRemovida){
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemProjetoId);
         try {
+            Movimentacao movimentacao = new Movimentacao();
+
             if (quantidadeRemovida != null){
+                movimentacao.setQuantidade(quantidadeRemovida);
                 estoqueService.deletarItemEstoque(itemProjetoId, quantidadeRemovida);
             } else {
+                movimentacao.setQuantidade(itemEstoque.get().getQuantidade());
                 estoqueService.deletarItemEstoque(itemProjetoId, itemEstoque.get().getQuantidade());
             }
+
+            movimentacao.setData(LocalDateTime.now());
+            movimentacao.setItem(itemEstoque.get().getItem());
+            movimentacao.setOrigem(itemEstoque.get().getEstoque());
+            movimentacao.setStatus(EnumStatusMovimentacao.SAIDA);
+            movimentacao.setUsuario(authentication.getName());
+            movimentacaoRepository.save(movimentacao);
 
         } catch (Exception e) {
             throw new IllegalArgumentException("Erro ao deletar item do local: " +e.getMessage());

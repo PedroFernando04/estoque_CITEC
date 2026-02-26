@@ -12,8 +12,6 @@ import com.citec.estoque.repositorys.tabelasAuxiliares.ItemPedidoRepository;
 import com.citec.estoque.repositorys.tabelasAuxiliares.MovimentacaoRepository;
 import com.citec.estoque.repositorys.tabelasPrincipais.ItemRepository;
 import com.citec.estoque.services.ItemService;
-import com.citec.estoque.specification.tabelasAuxiliares.ItemEstoqueSpecification;
-import com.citec.estoque.specification.tabelasPrincipais.ItemSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

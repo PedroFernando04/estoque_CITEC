@@ -181,6 +181,45 @@
             </div>
         </div>
 
+            <div class="historico">
+                <div class="titulo-historico">
+                    <h3>Histórico</h3>
+                </div>
+
+                <div>
+                    <table >
+                        <tr class="cabecalho-table">
+                            <th>Movimento</th>
+                            <th>Origem</th>
+                            <th>Destino</th>
+                            <th>Item</th>
+                            <th>Quantidade</th>
+                            <th>Data</th>
+                            <th>Usuário</th>
+                        </tr>
+                        <tr class="linha-historico"
+                        th:if="${!movimentacoesLocal.empty}"
+                        th:each="movimento : ${movimentacoesLocal}">
+                         
+                        <th >
+                            <label  th:text="${movimento.status.descricao}" 
+                                    class="card-label-detalhe" 
+                                    th:classappend="${movimento.labelMovimentacao}">
+                                    movimento
+                            </label>
+                        </th>
+                        <th th:text="${movimento.origem != null} ? ${movimento.origem.nome} : ''">origem</th>
+                        <th th:text="${movimento.destino != null} ? ${movimento.destino.nome} : ''">destino</th>
+                        <th th:text="${movimento.item.nome}">item</th>
+                        <th th:text="${movimento.quantidade}">quantidade</th>
+                        <th th:text="${#temporals.format(movimento.data, 'dd/MM/yyyy HH:mm')}">data</th>
+                        <th th:text="${movimento.usuario}">usuario</th>
+                    </tr>
+                    </table>
+                    <h3 th:if="${movimentacoesLocal.empty}">Nenhuma movimentação registrada!</h3>
+                </div>
+            </div>
+
         
     </div>
 

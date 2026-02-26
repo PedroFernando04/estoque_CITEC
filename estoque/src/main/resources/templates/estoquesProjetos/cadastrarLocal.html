@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Projeto</title>
 
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,7 +37,7 @@
                     <input type="text" name="solicitante" id="solicitante" placeholder="  Nome do Solicitante" required>
                 </div>
 
-                <div class="formulario">
+                <div class="formulario" style="flex-direction: column;  margin-top: 10px;">
                     <label for="descricao">Descrição: </label>
                     <textarea type="text" name="descricao" id="descricao"> </textarea>
                 </div>
@@ -62,7 +62,7 @@
                     </select>
                 </div>
 
-                <div class="formulario">
+                <div class="formulario" style="flex-direction: column; margin-top: 10px;">
                     <label for="funcionario">Responsável(is): </label>
                     <select multiple name="funcionario" id="funcionario" class="select-multiple" required>
                         <option th:each="funcionario : ${funcionariosExistentes}"

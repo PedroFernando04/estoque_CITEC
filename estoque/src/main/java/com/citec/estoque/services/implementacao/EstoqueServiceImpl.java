@@ -13,6 +13,8 @@ import com.citec.estoque.repositorys.tabelasPrincipais.ProjetoRepository;
 import com.citec.estoque.services.EstoqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,6 +51,8 @@ public class EstoqueServiceImpl implements EstoqueService {
 
     //INSERT
     public void inserirItem(String itemNome, Integer quantidade, Long id, String itemOrigem) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Optional<Item> item = itemRepository.findByNomeIgnoreCase(itemNome);
         Optional<Estoque> estoque = estoqueRepository.findById(id);
@@ -96,6 +100,7 @@ public class EstoqueServiceImpl implements EstoqueService {
             movimentacao.setOrigem(estoqueOrigem.get());
             movimentacao.setStatus(EnumStatusMovimentacao.MOVIMENTACAO);
         }
+        movimentacao.setUsuario(authentication.getName());
         movimentacaoRepository.save(movimentacao);
     }
 
@@ -104,27 +109,17 @@ public class EstoqueServiceImpl implements EstoqueService {
 
         Optional<ItemEstoque> itemEstoque = itemEstoqueRepository.findById(itemEstoqueId);
 
-        Movimentacao movimentacao = new Movimentacao();
-
         if (quantidade < 0)
             throw new IllegalArgumentException("Quantidade não pode ser negativa");
         if (quantidade > itemEstoque.get().getQuantidade())
             throw new IllegalArgumentException("Quantidade removida não pode ser maior que a estocada");
 
         if (quantidade.equals(itemEstoque.get().getQuantidade())) {
-            movimentacao.setQuantidade(itemEstoque.get().getQuantidade());
             itemEstoqueRepository.deleteById(itemEstoqueId);
         } else {
             itemEstoque.get().setQuantidade(itemEstoque.get().getQuantidade() - quantidade);
-            movimentacao.setQuantidade(quantidade);
             itemEstoqueRepository.save(itemEstoque.get());
         }
-
-        movimentacao.setData(LocalDateTime.now());
-        movimentacao.setItem(itemEstoque.get().getItem());
-        movimentacao.setOrigem(itemEstoque.get().getEstoque());
-        movimentacao.setStatus(EnumStatusMovimentacao.SAIDA);
-        movimentacaoRepository.save(movimentacao);
 
     }
 

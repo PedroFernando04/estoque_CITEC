@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Funcionario</title>
+    <title>Login</title>
 
     <link href="/css/style.css" rel="stylesheet">
 
@@ -17,30 +17,16 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <div class="titulo">
-        Cadastrar Funcionário
+        Login
     
-        <a th:href="@{/funcionarios}">
-            <button class="voltar">Voltar</button>
+        <a th:href="@{/funcionarios/cadastrar}">
+            <button class="voltar">Cadastrar</button>
         </a>
     </div>
 
-    <form th:action="@{/funcionarios/cadastrar}" method="post" class="containerCadastrar" style="margin-top: 30px;">
+    <form th:action="@{/entrar}" method="post" class="containerCadastrar" style="margin-top: 30px;">
 
         <div class="cadastrarLocal">
-            <div class="formulario">
-                <label for="nome">Nome:</label>
-                <input type="text" name="nome" id="nome" required>
-            </div>
-
-            <div class="formulario">
-                <label for="cargo">Cargo: </label>
-                <select name="cargo" id="clero" required>
-                    <option th:each="cargo : ${cargosExistentes}"
-                            th:value="${cargo}"
-                            th:text="${cargo.descricao}">
-                    </option>
-                </select>
-            </div>
 
             <div class="formulario">
                 <label for="login">Login: </label>

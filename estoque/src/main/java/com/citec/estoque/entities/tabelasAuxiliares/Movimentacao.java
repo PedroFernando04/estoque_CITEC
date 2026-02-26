@@ -42,15 +42,19 @@ public class Movimentacao {
     @Enumerated(EnumType.STRING)
     private EnumStatusMovimentacao status;
 
+    @Column
+    private String usuario;
+
     //Construtores
     public Movimentacao() {}
 
-    public Movimentacao(Estoque origem, Estoque destino, Item item, Integer quantidade, LocalDateTime data) {
+    public Movimentacao(Estoque origem, Estoque destino, Item item, Integer quantidade, LocalDateTime data, String usuario) {
         this.origem = origem;
         this.destino = destino;
         this.item = item;
         this.quantidade = quantidade;
         this.data = data;
+        this.usuario = usuario;
     }
 
     //Getter

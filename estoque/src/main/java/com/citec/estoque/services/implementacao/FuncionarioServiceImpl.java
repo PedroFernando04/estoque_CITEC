@@ -7,6 +7,7 @@ import com.citec.estoque.repositorys.tabelasAuxiliares.FuncionarioProjetoReposit
 import com.citec.estoque.repositorys.tabelasPrincipais.FuncionarioRepository;
 import com.citec.estoque.services.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,13 +22,27 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Autowired
     private FuncionarioProjetoRepository funcionarioProjetoRepository;
 
-    public void salvarFuncionario(Funcionario funcionario) {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public void salvarFuncionario(Funcionario funcionario, String senha) {
         Optional<Funcionario> nomeDuplicado = funcionarioRepository.findByNomeIgnoreCase(funcionario.getNome());
 
         if (nomeDuplicado.isPresent()) {
             throw new IllegalArgumentException("Nome já cadastrado");
-        } else
+        } else{
+            funcionario.setSenha(passwordEncoder.encode(senha));
             funcionarioRepository.save(funcionario);
+        }
+
+    }
+
+    public boolean verifyPassword(String senhaDigitada, String senhaCriptografada) {
+        return passwordEncoder.matches(senhaDigitada,senhaCriptografada);
+    }
+
+    public Funcionario getFuncionarioByLogin(String login) {
+        return funcionarioRepository.findByLoginIgnoreCase(login).orElse(null);
     }
 
     public void deletarFuncionario(Long funcionarioId) {
@@ -38,7 +53,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         } else throw new IllegalArgumentException("Funcionário atribuído a algum projeto");
     }
 
-    public void updateFuncionario(Long id, String nome, EnumCargoFuncionario cargo) {
+    public void updateFuncionario(Long id, String nome, EnumCargoFuncionario cargo, String login, String senha) {
         Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
 
         if (funcionario.isPresent()) {
@@ -46,6 +61,10 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                 funcionario.get().setNome(nome);
             if(cargo != null)
                 funcionario.get().setCargo(cargo);
+            if(login != null)
+                funcionario.get().setLogin(login);
+            if(senha != null)
+                funcionario.get().setSenha(passwordEncoder.encode(senha));
 
             funcionarioRepository.save(funcionario.get());
         } else throw new IllegalArgumentException("Funcionário não encontrado");

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -32,6 +33,11 @@
         </ol>
         <ol>
            <a th:href="@{/funcionarios}">Funcionários</a> 
+        </ol>
+        <ol sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post" style="margin-top: -10px;">
+                <button id="remove" type="submit">Sair</button>
+            </form>
         </ol>
     </ul>
 </header>
