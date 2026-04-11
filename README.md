@@ -3,7 +3,7 @@
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge\&logo=java\&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge\&logo=springboot\&logoColor=white)
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge)
-![Status](https://img.shields.io/badge/status-em%20completo-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-completo-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-Acadêmico-blue?style=for-the-badge)
 
 ---
