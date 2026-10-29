@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="cabecalho-pagina">
+            <div>
+                <h1 th:text="${item.nome}">Item</h1>
+                <p class="subtitulo">Onde este item está e quanto há de cada.</p>
+            </div>
+
+            <div class="acoes">
+                <button type="button" th:onclick="'window.location.href=\'/itens' + '\''" class="btn voltar">Voltar</button>
+                <button type="button" th:onclick="'window.location.href=\'/itens/' + ${item.id} + '\''" class="btn btn-primario editar">Editar item</button>
+            </div>
+        </div>
+
+        <div class="grade-detalhe">
+
+            <section class="painel item">
+                <div class="painel-topo">
+                    <h3>Locais com este item</h3>
+                </div>
+
+                <div class="paginacao">
+                    <a th:if="${pagina.hasPrevious()}"
+                       th:href="@{/itens/projetos(page=${pagina.number - 1}, size=${pagina.size})}">
+                        ‹ Anterior
+                    </a>
+
+                    <span th:if="${pagina.hasPrevious() || pagina.hasNext()}">
+                        Página <span th:text="${pagina.number + 1}"></span>
+                        de <span th:text="${pagina.totalPages}"></span>
+                    </span>
+
+                    <a th:if="${pagina.hasNext()}"
+                       th:href="@{/itens/projetos(page=${pagina.number + 1}, size=${pagina.size})}">
+                        Próxima ›
+                    </a>
+                </div>
+
+                <div class="tabela-wrap" th:if="${!itemEstoque.empty}">
+                    <table>
+                        <thead>
+                            <tr class="cabecalho-table">
+                                <th>Local</th>
+                                <th class="num">Quantidade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="conteudo-table" th:each="i : ${itemEstoque}">
+                                <td class="forte" th:text="${i.estoque.nome}">local</td>
+                                <td class="num" th:text="${i.quantidade}">quantidade</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="vazio" th:if="${itemEstoque.empty}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                    <h4>Nenhum local associado</h4>
+                    <p>Este item ainda não foi enviado a nenhum projeto.</p>
+                </div>
+            </section>
+
+            <aside class="painel historico">
+                <img class="foto-item" th:src="@{'/' + ${item.imagePath}}" alt="Foto do item" onerror="this.style.display='none'">
+
+                <div class="numeros">
+                    <div class="numero">
+                        <span>Total</span>
+                        <strong th:text="${item.total}">0</strong>
+                    </div>
+                    <div class="numero destaque">
+                        <span>Disponível</span>
+                        <strong th:text="${item.disponivel}">0</strong>
+                    </div>
+                    <div class="numero">
+                        <span>Em uso</span>
+                        <strong th:text="${item.emUso}">0</strong>
+                    </div>
+                </div>
+
+                <dl class="dados">
+                    <dt>Nome fantasia</dt>
+                    <dd th:text="${item.nomeFantasia}">nomeFantasia</dd>
+
+                    <dt>Código RM</dt>
+                    <dd th:text="${item.codigoRM}">codigoRM</dd>
+                </dl>
+            </aside>
+
+        </div>
+    </main>
+
+</body>
+</html>

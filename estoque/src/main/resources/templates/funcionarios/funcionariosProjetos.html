@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projetos do funcionário · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="cabecalho-pagina">
+            <div>
+                <h1 th:text="${funcionario.nome}">Nome do funcionário</h1>
+                <p class="subtitulo" th:text="${funcionario.cargo.descricao}">Cargo</p>
+            </div>
+
+            <div class="acoes">
+                <button type="button" th:onclick="'window.location.href=\'/funcionarios' + '\''" class="btn voltar">Voltar</button>
+                <button type="button" th:onclick="'window.location.href=\'/funcionarios/' + ${funcionario.id} + '\''" class="btn btn-primario editar">Editar funcionário</button>
+            </div>
+        </div>
+
+        <form th:action="@{/funcionarios/projetos/{id}(id=${funcionario.id})}" method="get" class="filtros-barra">
+            <div class="busca">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input name="nome" type="text" placeholder="Pesquisar projeto" aria-label="Pesquisar projeto">
+            </div>
+
+            <div class="filtros">
+                <select name="status" id="filtroStatus" aria-label="Status">
+                    <option value="">Status</option>
+                    <option th:each="status : ${statusProjetosExistentes}"
+                            th:value="${status}"
+                            th:text="${status.descricao}">
+                    </option>
+                </select>
+
+                <select name="projeto" id="filtroProjeto" aria-label="Projeto">
+                    <option value="">Projeto</option>
+                    <option th:each="p : ${projetosExistentes}"
+                            th:value="${p.id}"
+                            th:text="${p.nome}">
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-primario">Filtrar</button>
+            </div>
+        </form>
+
+        <div class="paginacao">
+            <a th:if="${pagina.hasPrevious()}"
+               th:href="@{/funcionarios/projetos/{id}(page=${pagina.number - 1}, size=${pagina.size}, id=${funcionario.id})}">
+                ‹ Anterior
+            </a>
+
+            <span th:if="${pagina.hasPrevious() || pagina.hasNext()}">
+                Página <span th:text="${pagina.number + 1}"></span>
+                de <span th:text="${pagina.totalPages}"></span>
+            </span>
+
+            <a th:if="${pagina.hasNext()}"
+               th:href="@{/funcionarios/projetos/{id}(page=${pagina.number + 1}, size=${pagina.size}, id=${funcionario.id})}">
+                Próxima ›
+            </a>
+        </div>
+
+        <section class="painel historico">
+            <div class="tabela-wrap" th:if="${!funcionarioProjetos.empty}">
+                <table>
+                    <thead>
+                        <tr class="cabecalho-table">
+                            <th>Projeto</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="conteudo-table" th:each="f : ${funcionarioProjetos}">
+                            <td class="forte" th:text="${f.projeto.nome}">projeto</td>
+                            <td>
+                                <span th:text="${f.projeto.statusProjeto.descricao}"
+                                      class="card-label-detalhe"
+                                      th:classappend="${f.projeto.classeLabelStatus}">
+                                    status
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vazio" th:if="${funcionarioProjetos.empty}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <h3>Nenhum projeto associado</h3>
+                <p>Este funcionário ainda não responde por nenhum projeto.</p>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>

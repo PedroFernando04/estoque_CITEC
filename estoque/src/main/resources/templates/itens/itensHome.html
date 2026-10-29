@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itens · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="cabecalho-pagina">
+            <div>
+                <h1>Itens</h1>
+                <p class="subtitulo">Tudo o que está no estoque do CITEC e quanto está disponível.</p>
+            </div>
+
+            <div class="acoes">
+                <a class="btn btn-primario" th:href="@{/itens/cadastrar}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    Novo item
+                </a>
+            </div>
+        </div>
+
+        <form th:action="@{/itens}" method="get" class="filtros-barra">
+            <div class="busca">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input name="nome" type="text" placeholder="Pesquisar por nome ou RM" aria-label="Pesquisar por nome ou RM">
+            </div>
+
+            <div class="filtros">
+                <select name="faltando" aria-label="Em falta">
+                    <option value="">Em falta</option>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
+
+                <button type="submit" class="btn btn-primario">Filtrar</button>
+            </div>
+        </form>
+
+        <div class="paginacao">
+            <a th:if="${pagina.hasPrevious()}"
+               th:href="@{/itens(page=${pagina.number - 1}, size=${pagina.size})}">
+                ‹ Anterior
+            </a>
+
+            <span th:if="${pagina.hasPrevious() || pagina.hasNext()}">
+                Página <span th:text="${pagina.number + 1}"></span>
+                de <span th:text="${pagina.totalPages}"></span>
+            </span>
+
+            <a th:if="${pagina.hasNext()}"
+               th:href="@{/itens(page=${pagina.number + 1}, size=${pagina.size})}">
+                Próxima ›
+            </a>
+        </div>
+
+        <section class="painel item">
+            <div class="tabela-wrap" th:if="${!itensExistentes.empty}">
+                <table>
+                    <thead>
+                        <tr class="cabecalho-table">
+                            <th>Nome fantasia</th>
+                            <th>Código RM</th>
+                            <th class="num">Total</th>
+                            <th class="num">Em uso</th>
+                            <th class="num">Disponível</th>
+                            <th>Situação</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="conteudo-table" th:each="item : ${itensExistentes}">
+
+                            <td class="forte" th:text="${item.nomeFantasia}">item</td>
+                            <td class="mono suave" th:text="${item.codigoRMFormatado}">codigoRm</td>
+                            <td class="num" th:text="${item.total}">total</td>
+                            <td class="num" th:text="${item.emUso}">em uso</td>
+                            <td class="num forte" th:text="${item.disponivel}">disponível</td>
+
+                            <td>
+                                <form th:action="@{/itens}" method="post">
+                                    <button type="submit"
+                                            th:text="${item.faltando} ? 'Em falta' : 'Em estoque'"
+                                            th:value="${item.id}"
+                                            name="faltando"
+                                            title="Clique para alternar a situação"
+                                            class="card-label-detalhe"
+                                            th:classappend="${item.faltando} ? 'card-label-cancelado' : 'card-label-concluido'">
+                                        faltando
+                                    </button>
+                                </form>
+                            </td>
+
+                            <td class="acoes-celula">
+                                <div class="acoes">
+                                    <button type="button" class="btn btn-pequeno"
+                                            th:onclick="'window.location.href=\'/itens/projetos/' + ${item.id} + '\''">Detalhes</button>
+
+                                    <button type="button" class="btn btn-pequeno"
+                                            th:onclick="'window.location.href=\'/itens/' + ${item.id} + '\''">Editar</button>
+
+                                    <button type="button" class="btn btn-pequeno btn-perigo-suave"
+                                            th:onclick="'abrirModal(' + ${item.id} + ')'">Excluir</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vazio" th:if="${itensExistentes.empty}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 8-9-5-9 5v8l9 5 9-5z"/><path d="m3.3 7.5 8.7 5 8.7-5M12 22V12.5"/></svg>
+                <h3>Nenhum item cadastrado</h3>
+                <p>Cadastre o primeiro item para começar a controlar o estoque.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <form class="modal-fundo cadas" id="remover" method="post" th:action="@{/itens}">
+        <div class="modal-caixa popup" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-exc">
+            <h2 id="titulo-modal-exc">Excluir este item?</h2>
+            <p class="modal-texto">Todo o histórico de movimentações deste item também será excluído.</p>
+            <input type="hidden" name="remove" id="remove">
+            <div class="modal-rodape">
+                <button type="button" class="btn" onclick="fecharModal()">Voltar</button>
+                <button type="submit" class="btn btn-perigo">Excluir</button>
+            </div>
+        </div>
+    </form>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+        function abrirModal(id) {
+            document.getElementById("remove").value = id;
+            document.getElementById("remover").style.display = "flex";
+        }
+
+        function fecharModal() {
+            document.getElementById("remover").style.display = "none";
+        }
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") { fecharModal(); }
+        });
+
+        document.getElementById("remover").addEventListener("mousedown", function (e) {
+            if (e.target === this) { fecharModal(); }
+        });
+    </script>
+</body>
+</html>

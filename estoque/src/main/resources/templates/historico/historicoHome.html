@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="cabecalho-pagina">
+            <div>
+                <h1>Histórico</h1>
+                <p class="subtitulo">Toda entrada, saída e transferência de itens.</p>
+            </div>
+        </div>
+
+        <form th:action="@{/historico}" method="get" class="filtros-barra" id="sub-head-movimentacao">
+            <div class="filtros">
+                <select name="status" id="filtroMovimento" aria-label="Movimento">
+                    <option value="">Movimento</option>
+                    <option th:each="status : ${statusExistentes}"
+                            th:value="${status}"
+                            th:text="${status.descricao}">
+                    </option>
+                </select>
+
+                <select name="origemId" id="filtroOrigem" aria-label="Origem">
+                    <option value="">Origem</option>
+                    <option th:each="o : ${origensExistentes}"
+                            th:if="${o != null}"
+                            th:value="${o.id}"
+                            th:text="${o.nome}">
+                    </option>
+                </select>
+
+                <select name="destinoId" id="filtroDestino" aria-label="Destino">
+                    <option value="">Destino</option>
+                    <option th:each="d : ${destinosExistentes}"
+                            th:if="${d != null}"
+                            th:value="${d.id}"
+                            th:text="${d.nome}">
+                    </option>
+                </select>
+
+                <select name="itemId" id="filtroItem" aria-label="Item">
+                    <option value="">Item</option>
+                    <option th:each="i : ${itensExistentes}"
+                            th:value="${i.id}"
+                            th:text="${i.nome}">
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-primario">Filtrar</button>
+            </div>
+        </form>
+
+        <div class="paginacao">
+            <a th:if="${pagina.hasPrevious()}"
+               th:href="@{/historico(page=${pagina.number - 1}, size=${pagina.size})}">
+                ‹ Anterior
+            </a>
+
+            <span th:if="${pagina.hasPrevious() || pagina.hasNext()}">
+                Página <span th:text="${pagina.number + 1}"></span>
+                de <span th:text="${pagina.totalPages}"></span>
+            </span>
+
+            <a th:if="${pagina.hasNext()}"
+               th:href="@{/historico(page=${pagina.number + 1}, size=${pagina.size})}">
+                Próxima ›
+            </a>
+        </div>
+
+        <section class="painel historico">
+            <div class="tabela-wrap" th:if="${!movimentacoes.empty}">
+                <table>
+                    <thead>
+                        <tr class="cabecalho-table">
+                            <th>Movimento</th>
+                            <th>Origem</th>
+                            <th>Destino</th>
+                            <th>Item</th>
+                            <th class="num">Quantidade</th>
+                            <th>Data</th>
+                            <th>Usuário</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="linha-historico" th:each="movimento : ${movimentacoes}">
+                            <td>
+                                <span th:text="${movimento.status.descricao}"
+                                      class="card-label-detalhe"
+                                      th:classappend="${movimento.labelMovimentacao}">
+                                    movimento
+                                </span>
+                            </td>
+                            <td class="suave" th:text="${movimento.origem != null} ? ${movimento.origem.nome} : '—'">origem</td>
+                            <td class="suave" th:text="${movimento.destino != null} ? ${movimento.destino.nome} : '—'">destino</td>
+                            <td class="forte" th:text="${movimento.item.nome}">item</td>
+                            <td class="num" th:text="${movimento.quantidade}">quantidade</td>
+                            <td class="mono suave" th:text="${#temporals.format(movimento.data, 'dd/MM/yyyy HH:mm')}">data</td>
+                            <td class="suave" th:text="${movimento.usuario}">usuario</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vazio" th:if="${movimentacoes.empty}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>
+                <h3>Nenhuma movimentação registrada</h3>
+                <p>Quando itens entrarem, saírem ou mudarem de projeto, aparecerão aqui.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

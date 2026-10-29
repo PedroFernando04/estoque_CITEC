@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="ficha-topo">
+            <div>
+                <h1 th:text="${pedido.titulo}">Título do pedido</h1>
+
+                <div class="labels">
+                    <span class="card-label-detalhe"
+                          th:if="${pedido.statusPedido.name() == 'RECEBIDO'}"
+                          th:text="${pedido.statusPedido.descricao}"
+                          th:classappend="${pedido.classeLabelStatus}">recebido</span>
+
+                    <form th:if="${pedido.statusPedido.name() != 'RECEBIDO'}"
+                          th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
+
+                        <span class="select-pill">
+                            <select name="novoStatus"
+                                    class="card-label-detalhe"
+                                    aria-label="Status do pedido"
+                                    th:classappend="${pedido.classeLabelStatus}">
+                                <option th:each="status : ${statusExistentes}"
+                                        th:value="${status.name()}"
+                                        th:text="${status.descricao}"
+                                        th:selected="${status == pedido.statusPedido}">
+                                </option>
+                            </select>
+                        </span>
+
+                        <button type="submit" name="update" class="btn btn-pequeno">Atualizar status</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="acoes">
+                <button type="button" th:onclick="'window.location.href=\'/pedidos' + '\''" class="btn voltar">Voltar</button>
+
+                <button type="button" th:onclick="'window.location.href=\'/pedidos/' + ${pedido.id} + '/' + 'editar' + '\''"
+                        class="btn btn-primario editar"
+                        th:if="${pedido.statusPedido.name() != 'RECEBIDO'}">Editar pedido</button>
+            </div>
+        </div>
+
+        <section class="painel">
+            <div class="meta-grade">
+                <dl class="dados">
+                    <dt>Destino</dt>
+                    <dd th:text="${pedido.destino.nome}">Destino</dd>
+                </dl>
+
+                <dl class="dados">
+                    <dt>Data de solicitação</dt>
+                    <dd th:text="${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy HH:mm')}">11/10/2026 10:00</dd>
+                </dl>
+            </div>
+        </section>
+
+        <div class="grade-detalhe" th:classappend="${pedido.categoria.descricao != 'Requisição de Material'} ? 'coluna-unica'">
+
+            <section class="painel item" th:if="${pedido.categoria.descricao == 'Requisição de Material'}">
+                <div class="painel-topo titulo-item">
+                    <h3>Itens pedidos</h3>
+                    <button type="button" class="btn btn-primario btn-pequeno" onclick="abrirModal()">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                        Adicionar item
+                    </button>
+                </div>
+
+                <div class="tabela-wrap" th:if="${!itensLocal.empty}">
+                    <table>
+                        <thead>
+                            <tr class="cabecalho-table">
+                                <th>Nome</th>
+                                <th>Fantasia</th>
+                                <th>RM</th>
+                                <th class="num">Quantidade</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="itemPedido : ${itensLocal}">
+                                <td class="forte" th:text="${itemPedido.item.nome}">nome</td>
+                                <td th:text="${itemPedido.item.nomeFantasia}">fantasia</td>
+                                <td class="mono suave" th:text="${itemPedido.item.codigoRMFormatado}">rm</td>
+                                <td class="num forte" th:text="${itemPedido.quantidade}">quantidade</td>
+                                <td class="acoes-celula">
+                                    <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post">
+                                        <button type="submit" name="more" class="btn btn-pequeno btn-icone" aria-label="Aumentar quantidade" title="Aumentar quantidade" th:value="${itemPedido.id}">+</button>
+                                        <button type="submit" name="less" class="btn btn-pequeno btn-icone" aria-label="Diminuir quantidade" title="Diminuir quantidade" th:value="${itemPedido.id}">−</button>
+                                        <button type="submit" name="remove" class="btn btn-pequeno btn-perigo-suave" th:value="${itemPedido.id}">Remover</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="vazio" th:if="${itensLocal.empty}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 8-9-5-9 5v8l9 5 9-5z"/><path d="m3.3 7.5 8.7 5 8.7-5M12 22V12.5"/></svg>
+                    <h4>Nenhum item neste pedido</h4>
+                    <p>Use “Adicionar item” para listar o que precisa ser entregue.</p>
+                </div>
+            </section>
+
+            <aside class="painel historico">
+                <h3 style="margin-bottom: 18px;">Detalhes</h3>
+
+                <dl class="dados" id="detalhes">
+                    <dt>Categoria</dt>
+                    <dd>
+                        <span class="card-label-detalhe"
+                              th:text="${pedido.categoria.descricao}"
+                              th:classappend="${pedido.classeLabelCategoria}">
+                            categoria
+                        </span>
+                    </dd>
+
+                    <th:block th:if="${pedido.categoria.descricao == 'Ordem de Serviço'}">
+                        <dt>Tipo de OS</dt>
+                        <dd th:text="${pedido.tipoOs.descricao}">tipoOS</dd>
+                    </th:block>
+
+                    <th:block th:if="${pedido.categoria.descricao == 'Transporte'}">
+                        <dt>Tipo de transporte</dt>
+                        <dd th:text="${pedido.tipoTransporte.descricao}">tipoTransporte</dd>
+                    </th:block>
+
+                    <dt>Descrição</dt>
+                    <dd th:text="${pedido.descricao}">descricao</dd>
+                </dl>
+            </aside>
+
+        </div>
+    </main>
+
+    <form th:action="@{/pedidos/{id}(id=${pedido.id})}" method="post" class="modal-fundo" id="modal-adicionar"
+          th:if="${pedido.categoria.descricao == 'Requisição de Material'}">
+        <div class="modal-caixa modal" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-add">
+            <div class="modal-topo">
+                <h2 id="titulo-modal-add">Adicionar item</h2>
+                <button type="button" class="btn btn-discreto btn-icone" aria-label="Fechar" onclick="fecharModal()">&times;</button>
+            </div>
+
+            <div class="campo">
+                <label for="itemNome">Item</label>
+                <input list="lista-item" name="itemNome" id="itemNome" autocomplete="off" placeholder="Digite ou selecione">
+                <datalist id="lista-item">
+                    <option th:each="item : ${itensExistentes}"
+                            th:value="${item.nome.toString()}">
+                    </option>
+                </datalist>
+            </div>
+
+            <div class="campo">
+                <label for="quantidade">Quantidade</label>
+                <input type="number" name="quantidade" id="quantidade" placeholder="Digite a quantidade">
+            </div>
+
+            <div class="modal-rodape">
+                <button type="button" class="btn" onclick="fecharModal()">Cancelar</button>
+                <button type="submit" id="botaoEnviar" name="botaoEnviar" class="btn btn-primario">Registrar</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function abrirModal() {
+            var modal = document.getElementById("modal-adicionar");
+            if (!modal) { return; }
+            modal.style.display = "flex";
+            document.getElementById("itemNome").focus();
+        }
+
+        function fecharModal() {
+            var modal = document.getElementById("modal-adicionar");
+            if (modal) { modal.style.display = "none"; }
+        }
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") { fecharModal(); }
+        });
+
+        var fundo = document.getElementById("modal-adicionar");
+        if (fundo) {
+            fundo.addEventListener("mousedown", function (e) {
+                if (e.target === fundo) { fecharModal(); }
+            });
+        }
+    </script>
+</body>
+</html>

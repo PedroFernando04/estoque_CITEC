@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<footer th:fragment="footer">
+    <div th:if="${quantidadeFaltando > 0}"
+         class="alerta-faltando"
+         role="status"
+         onclick="window.location.href='/itens?nome=&faltando=true'">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg>
+
+        <div>
+            <strong>Atenção</strong>
+            <p th:text="|Exist${quantidadeFaltando < 2 ? 'e' : 'em'} ${quantidadeFaltando} item${quantidadeFaltando < 2 ? '' : 's'} faltando. Clique para ver.|">
+            </p>
+        </div>
+
+        <button type="button" class="fechar-alerta" aria-label="Fechar aviso"
+                onclick="event.stopPropagation(); fecharAlerta(this)">
+            &times;
+        </button>
+
+    </div>
+
+    <script>
+        function fecharAlerta(botao) {
+            const alerta = botao.parentElement;
+            alerta.style.opacity = '0';
+            alerta.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                alerta.style.display = 'none';
+            }, 300);
+        }
+    </script>
+
+</footer>
+</body>
+</html>

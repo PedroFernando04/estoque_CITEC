@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionários · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="cabecalho-pagina">
+            <div>
+                <h1>Funcionários</h1>
+                <p class="subtitulo">Quem tem acesso ao sistema e responde pelos projetos.</p>
+            </div>
+
+            <div class="acoes">
+                <a class="btn btn-primario" th:href="@{/funcionarios/cadastrar}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    Novo funcionário
+                </a>
+            </div>
+        </div>
+
+        <form th:action="@{/funcionarios}" method="get" class="filtros-barra">
+            <div class="busca">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input name="nome" type="text" placeholder="Pesquisar funcionário" aria-label="Pesquisar funcionário">
+            </div>
+
+            <div class="filtros">
+                <select name="cargo" aria-label="Cargo">
+                    <option value="">Cargo</option>
+                    <option th:each="cargo : ${cargosExistentes}"
+                            th:value="${cargo}"
+                            th:text="${cargo.descricao}">
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-primario">Filtrar</button>
+            </div>
+        </form>
+
+        <div class="paginacao">
+            <a th:if="${pagina.hasPrevious()}"
+               th:href="@{/funcionarios(page=${pagina.number - 1}, size=${pagina.size})}">
+                ‹ Anterior
+            </a>
+
+            <span th:if="${pagina.hasPrevious() || pagina.hasNext()}">
+                Página <span th:text="${pagina.number + 1}"></span>
+                de <span th:text="${pagina.totalPages}"></span>
+            </span>
+
+            <a th:if="${pagina.hasNext()}"
+               th:href="@{/funcionarios(page=${pagina.number + 1}, size=${pagina.size})}">
+                Próxima ›
+            </a>
+        </div>
+
+        <section class="painel historico">
+            <div class="tabela-wrap" th:if="${!funcionariosExistentes.empty}">
+                <table>
+                    <thead>
+                        <tr class="cabecalho-table">
+                            <th>Nome</th>
+                            <th>Cargo</th>
+                            <th>Login</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="conteudo-table" th:each="funcionario : ${funcionariosExistentes}">
+
+                            <td class="forte" th:text="${funcionario.nome}">nome</td>
+                            <td th:text="${funcionario.cargo.descricao}">cargo</td>
+                            <td class="suave" th:text="${funcionario.login}">login</td>
+
+                            <td class="acoes-celula">
+                                <form th:action="@{/funcionarios/cadastrados}" method="post">
+                                    <button type="button" class="btn btn-pequeno"
+                                            th:onclick="'window.location.href=\'/funcionarios/projetos/' + ${funcionario.id} + '\''">Projetos</button>
+
+                                    <button type="button" class="btn btn-pequeno"
+                                            th:onclick="'window.location.href=\'/funcionarios/' + ${funcionario.id} + '\''">Editar</button>
+
+                                    <button type="submit" name="remove" class="btn btn-pequeno btn-perigo-suave"
+                                            th:value="${funcionario.id}">Excluir</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vazio" th:if="${funcionariosExistentes.empty}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/></svg>
+                <h3>Nenhum funcionário cadastrado</h3>
+                <p>Cadastre quem vai usar o sistema ou responder por projetos.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

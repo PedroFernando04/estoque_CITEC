@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-pagina">
+
+        <section class="login-lado">
+            <img src="/imgs/Campus-PMM-2410Thumbnail_cesmac-1920w.png" alt="CESMAC">
+            <div>
+                <h1>Tudo o que o CITEC guarda, em um só lugar.</h1>
+                <p>Acompanhe itens, pedidos e projetos, e saiba onde cada material está.</p>
+            </div>
+        </section>
+
+        <main class="login-form-lado">
+            <div class="login-caixa">
+                <h2>Entrar</h2>
+                <p class="subtitulo">Use seu login e senha do CITEC.</p>
+
+                <div class="aviso erro" th:if="${param.error}">Login ou senha incorretos. Tente novamente.</div>
+                <div class="aviso" th:if="${param.logoutSuccess}">Você saiu do sistema.</div>
+                <div class="aviso" th:if="${param.loginRequired}">Entre para continuar.</div>
+
+                <form th:action="@{/entrar}" method="post">
+                    <div class="campo">
+                        <label for="login">Login</label>
+                        <input type="text" name="login" id="login" autocomplete="username" required autofocus>
+                    </div>
+
+                    <div class="campo">
+                        <label for="senha">Senha</label>
+                        <input type="password" name="senha" id="senha" autocomplete="current-password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primario">Entrar</button>
+                </form>
+
+                <p class="rodape-login">Ainda não tem acesso? <a th:href="@{/funcionarios/cadastrar}">Cadastre-se</a></p>
+            </div>
+        </main>
+
+    </div>
+</body>
+</html>

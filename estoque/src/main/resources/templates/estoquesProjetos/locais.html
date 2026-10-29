@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projetos · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="cabecalho-pagina">
+            <div>
+                <h1>Projetos</h1>
+                <p class="subtitulo">Cada projeto tem o seu próprio estoque de itens.</p>
+            </div>
+
+            <div class="acoes">
+                <a class="btn btn-primario" th:href="@{/locais/cadastrar}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    Novo projeto
+                </a>
+            </div>
+        </div>
+
+        <form th:action="@{/locais}" method="get" class="filtros-barra">
+            <div class="busca">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input name="nome" type="text" placeholder="Pesquisar projeto" aria-label="Pesquisar projeto">
+            </div>
+
+            <div class="filtros">
+                <select name="solicitante" aria-label="Solicitante">
+                    <option value="">Solicitante</option>
+                    <option th:each="solicitante : ${solicitantesExistentes}"
+                            th:value="${solicitante}"
+                            th:text="${solicitante}">
+                    </option>
+                </select>
+
+                <select name="status" aria-label="Status">
+                    <option value="">Status</option>
+                    <option th:each="status : ${statusExistentes}"
+                            th:value="${status}"
+                            th:text="${status.descricao}">
+                    </option>
+                </select>
+
+                <select name="categoria" aria-label="Categoria">
+                    <option value="">Categoria</option>
+                    <option th:each="categoria : ${categoriasExistentes}"
+                            th:value="${categoria}"
+                            th:text="${categoria.descricao}">
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-primario">Filtrar</button>
+            </div>
+        </form>
+
+        <div class="paginacao">
+            <a th:if="${pagina.hasPrevious()}"
+               th:href="@{/locais(page=${pagina.number - 1}, size=${pagina.size})}">
+                ‹ Anterior
+            </a>
+
+            <span th:if="${pagina.hasPrevious() || pagina.hasNext()}">
+                Página <span th:text="${pagina.number + 1}"></span>
+                de <span th:text="${pagina.totalPages}"></span>
+            </span>
+
+            <a th:if="${pagina.hasNext()}"
+               th:href="@{/locais(page=${pagina.number + 1}, size=${pagina.size})}">
+                Próxima ›
+            </a>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card"
+                 th:each="l : ${locais}"
+                 th:onclick="'window.location.href=\'/local/' + ${l.id} + '\''">
+
+                <svg class="ver" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+
+                <h4 th:text="${l.nome}">Nome do projeto</h4>
+
+                <div class="labels">
+                    <div class="card-label"
+                         th:text="${l.categoria.descricao}"
+                         th:classappend="${l.classeLabelCategoria}">
+                        Categoria
+                    </div>
+
+                    <div class="card-label"
+                         th:text="${l.statusProjeto.descricao}"
+                         th:classappend="${l.classeLabelStatus}">
+                        Status
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="painel vazio" th:if="${locais.isEmpty()}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <h3>Nenhum projeto encontrado</h3>
+            <p>Ajuste os filtros ou cadastre um novo projeto.</p>
+        </div>
+
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

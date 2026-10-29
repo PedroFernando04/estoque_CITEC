@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="ficha-topo">
+            <div>
+                <h1 th:text="${local.nome}">Nome do projeto</h1>
+
+                <div class="labels">
+                    <div class="card-label-detalhe"
+                         th:text="${local.categoria.descricao}"
+                         th:classappend="${local.classeLabelCategoria}">
+                        Categoria
+                    </div>
+
+                    <div class="card-label-detalhe"
+                         th:text="${local.statusProjeto.descricao}"
+                         th:classappend="${local.classeLabelStatus}">
+                        Status
+                    </div>
+                </div>
+            </div>
+
+            <div class="acoes" id="botaoEditar">
+                <button type="button" th:onclick="'window.location.href=\'/locais' + '\''" class="btn voltar">Voltar</button>
+                <button type="button" th:onclick="'window.location.href=\'/local/' + ${local.id} + '/' + 'editar' + '\''" class="btn btn-primario editar">Editar projeto</button>
+            </div>
+        </div>
+
+        <section class="painel">
+            <div class="meta-grade">
+                <dl class="dados">
+                    <dt>Solicitante</dt>
+                    <dd th:text="${local.nomeSolicitante}">Nome do solicitante</dd>
+                </dl>
+
+                <dl class="dados">
+                    <dt th:text="${funcionariosLocal.size() > 1 ? 'Responsáveis' : 'Responsável'}">Responsáveis</dt>
+                    <dd>
+                        <div class="chips">
+                            <span class="chip" th:each="f : ${funcionariosLocal}">
+                                <span th:text="${f.funcionario.nome}">Nome</span>
+                                <small th:text="${f.funcionario.cargo.descricao}">Cargo</small>
+                            </span>
+                        </div>
+                    </dd>
+                </dl>
+
+                <dl class="dados meta-largo">
+                    <dt>Descrição</dt>
+                    <dd th:text="${local.descricao}">Descrição</dd>
+                </dl>
+            </div>
+        </section>
+
+        <section class="painel item">
+            <div class="painel-topo titulo-item">
+                <h3>Itens do projeto</h3>
+                <button type="button" class="btn btn-primario btn-pequeno" onclick="abrirModal()">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    Adicionar item
+                </button>
+            </div>
+
+            <div class="tabela-wrap painel-item" th:if="${!itensLocal.empty}">
+                <table>
+                    <thead>
+                        <tr class="cabecalho-table">
+                            <th>Nome</th>
+                            <th>Nome fantasia</th>
+                            <th>RM</th>
+                            <th class="num">Quantidade</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="itemEstoque : ${itensLocal}">
+                            <td class="forte" th:text="${itemEstoque.item.nome}">nome</td>
+                            <td th:text="${itemEstoque.item.nomeFantasia}">nomeFantasia</td>
+                            <td class="mono suave" th:text="${itemEstoque.item.codigoRMFormatado}">rm</td>
+                            <td class="num forte" th:text="${itemEstoque.quantidade}">quantidade</td>
+                            <td class="acoes-celula">
+                                <button type="button" class="btn btn-pequeno btn-perigo-suave"
+                                        th:onclick="'abrirModalDeletar(' + ${itemEstoque.id} + ')'">Remover</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vazio" th:if="${itensLocal.empty}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 8-9-5-9 5v8l9 5 9-5z"/><path d="m3.3 7.5 8.7 5 8.7-5M12 22V12.5"/></svg>
+                <h4>Nenhum item associado</h4>
+                <p>Use “Adicionar item” para trazer itens do estoque ou de outro projeto.</p>
+            </div>
+        </section>
+
+        <section class="painel historico">
+            <div class="painel-topo titulo-historico">
+                <h3>Histórico</h3>
+            </div>
+
+            <div class="tabela-wrap" th:if="${!movimentacoesLocal.empty}">
+                <table>
+                    <thead>
+                        <tr class="cabecalho-table">
+                            <th>Movimento</th>
+                            <th>Origem</th>
+                            <th>Destino</th>
+                            <th>Item</th>
+                            <th class="num">Quantidade</th>
+                            <th>Data</th>
+                            <th>Usuário</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="linha-historico" th:each="movimento : ${movimentacoesLocal}">
+                            <td>
+                                <span th:text="${movimento.status.descricao}"
+                                      class="card-label-detalhe"
+                                      th:classappend="${movimento.labelMovimentacao}">
+                                    movimento
+                                </span>
+                            </td>
+                            <td class="suave" th:text="${movimento.origem != null} ? ${movimento.origem.nome} : '—'">origem</td>
+                            <td class="suave" th:text="${movimento.destino != null} ? ${movimento.destino.nome} : '—'">destino</td>
+                            <td class="forte" th:text="${movimento.item.nome}">item</td>
+                            <td class="num" th:text="${movimento.quantidade}">quantidade</td>
+                            <td class="mono suave" th:text="${#temporals.format(movimento.data, 'dd/MM/yyyy HH:mm')}">data</td>
+                            <td class="suave" th:text="${movimento.usuario}">usuario</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vazio" th:if="${movimentacoesLocal.empty}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>
+                <h4>Nenhuma movimentação registrada</h4>
+                <p>As entradas, saídas e transferências deste projeto aparecem aqui.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Adicionar item -->
+    <form th:action="@{/local/{id}(id=${local.id})}" method="post" class="modal-fundo" id="modal-adicionar">
+        <div class="modal-caixa modal" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-add">
+            <div class="modal-topo">
+                <h2 id="titulo-modal-add">Adicionar item</h2>
+                <button type="button" class="btn btn-discreto btn-icone" aria-label="Fechar" onclick="fecharModal()">&times;</button>
+            </div>
+
+            <div class="campo">
+                <label for="itemNome">Item</label>
+                <input list="lista-item" name="itemNome" id="itemNome" autocomplete="off" placeholder="Digite ou selecione">
+                <datalist id="lista-item">
+                    <option th:each="item : ${itensExistentes}"
+                            th:value="${item.nome.toString()}">
+                    </option>
+                </datalist>
+            </div>
+
+            <div class="campo">
+                <label for="quantidade">Quantidade</label>
+                <input type="number" name="quantidade" id="quantidade" placeholder="Digite a quantidade">
+            </div>
+
+            <div class="campo">
+                <label for="itemOrigem">Origem</label>
+                <input list="lista-locais" name="itemOrigem" id="itemOrigem" placeholder="Em branco para usar o estoque">
+                <datalist id="lista-locais">
+                    <option th:each="local : ${locaisExistentes}"
+                            th:value="${local.nome.toString()}">
+                    </option>
+                </datalist>
+            </div>
+
+            <div class="modal-rodape">
+                <button type="button" class="btn" onclick="fecharModal()">Cancelar</button>
+                <button type="submit" id="botaoEnviar" name="botaoEnviar" class="btn btn-primario">Registrar</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Remover item -->
+    <form class="modal-fundo cadas" method="post" id="remover" th:action="@{/local/{id}(id = ${local.id})}">
+        <div class="modal-caixa popup" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-rem">
+            <div class="modal-topo">
+                <h2 id="titulo-modal-rem">Como deseja remover este item?</h2>
+                <button type="button" class="btn btn-discreto btn-icone" aria-label="Fechar" onclick="fecharModalDeletar()">&times;</button>
+            </div>
+
+            <input type="hidden" name="itemProjetoId" id="itemProjetoId">
+
+            <div class="campo">
+                <label for="quantidadeRemovida">Quantidade</label>
+                <input type="number" name="quantidadeRemovida" id="quantidadeRemovida" placeholder="Deixe vazio para o total">
+            </div>
+
+            <div class="modal-rodape">
+                <button type="submit" name="estoque" id="estoque" class="btn btn-primario">Devolver ao estoque</button>
+                <button type="submit" name="remove" class="btn btn-perigo">Excluir</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function abrirModal() {
+            document.getElementById("modal-adicionar").style.display = "flex";
+            document.getElementById("itemNome").focus();
+        }
+
+        function fecharModal() {
+            document.getElementById("modal-adicionar").style.display = "none";
+        }
+
+        function abrirModalDeletar(id) {
+            document.getElementById("itemProjetoId").value = id;
+            document.getElementById("remover").style.display = "flex";
+        }
+
+        function fecharModalDeletar() {
+            document.getElementById("remover").style.display = "none";
+        }
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") { fecharModal(); fecharModalDeletar(); }
+        });
+
+        document.querySelectorAll(".modal-fundo").forEach(function (fundo) {
+            fundo.addEventListener("mousedown", function (e) {
+                if (e.target === fundo) { fundo.style.display = "none"; }
+            });
+        });
+    </script>
+</body>
+</html>

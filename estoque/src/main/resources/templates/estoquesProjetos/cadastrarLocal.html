@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo projeto · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+        <div class="cabecalho-pagina">
+            <h1>Novo projeto</h1>
+            <a class="btn" th:href="@{/locais}">Voltar</a>
+        </div>
+
+        <form th:action="@{/locais/cadastrar}" method="post" id="registrarForm" class="painel formulario-card">
+            <div class="grade-campos">
+
+                <div class="campo">
+                    <label for="nome">Título</label>
+                    <input type="text" name="nome" id="nome" placeholder="Título do projeto" required>
+                </div>
+
+                <div class="campo">
+                    <label for="solicitante">Solicitante</label>
+                    <input type="text" name="solicitante" id="solicitante" placeholder="Nome do solicitante" required>
+                </div>
+
+                <div class="campo largo">
+                    <label for="descricao">Descrição</label>
+                    <textarea name="descricao" id="descricao" placeholder="O que este projeto precisa?"></textarea>
+                </div>
+
+                <div class="campo">
+                    <label for="status">Status</label>
+                    <select name="status" id="status" required>
+                        <option th:each="status : ${statusExistentes}"
+                                th:value="${status}"
+                                th:text="${status.descricao}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="categoria">Categoria</label>
+                    <select name="categoria" id="categoria" required>
+                        <option th:each="categoria : ${categoriasExistentes}"
+                                th:value="${categoria}"
+                                th:text="${categoria.descricao}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo largo">
+                    <label for="funcionario">Responsável(is)</label>
+                    <select multiple name="funcionario" id="funcionario" class="select-multiple" required>
+                        <option th:each="funcionario : ${funcionariosExistentes}"
+                                th:value="${funcionario.id}"
+                                th:text="${funcionario.nome}">
+                        </option>
+                    </select>
+                    <span class="dica">Segure Ctrl (ou Cmd) para escolher mais de uma pessoa.</span>
+                </div>
+
+            </div>
+
+            <div class="rodape-form">
+                <a class="btn" th:href="@{/locais}">Cancelar</a>
+                <button type="submit" id="botaoEnviar" class="btn btn-primario">Registrar</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

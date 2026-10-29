@@ -1,0 +1,69 @@
+package com.citec.estoque.entities.tabelasAuxiliares;
+
+import com.citec.estoque.entities.enums.EnumStatusMovimentacao;
+import com.citec.estoque.entities.tabelasPrincipais.Estoque;
+import com.citec.estoque.entities.tabelasPrincipais.Item;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+
+@Entity(name = "movimentacoes")
+@Getter
+@Setter
+public class Movimentacao {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @JoinColumn(nullable = true)
+    @ManyToOne
+    private Estoque origem;
+
+    @JoinColumn(nullable = true)
+    @ManyToOne
+    private Estoque destino;
+
+    @JoinColumn(nullable = false)
+    @ManyToOne
+    private Item item;
+
+    @Column(nullable = false)
+    private Integer quantidade;
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDateTime data;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private EnumStatusMovimentacao status;
+
+    @Column
+    private String usuario;
+
+    //Construtores
+    public Movimentacao() {}
+
+    public Movimentacao(Estoque origem, Estoque destino, Item item, Integer quantidade, LocalDateTime data, String usuario) {
+        this.origem = origem;
+        this.destino = destino;
+        this.item = item;
+        this.quantidade = quantidade;
+        this.data = data;
+        this.usuario = usuario;
+    }
+
+    //Getter
+
+    public String getLabelMovimentacao() {
+        return switch (getStatus()) {
+            case ENTRADA -> "card-label-concluido";
+            case MOVIMENTACAO -> "card-label-planejado";
+            case SAIDA -> "card-label-cancelado";
+        };
+    }
+}

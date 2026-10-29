@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar pedido · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+        <div class="cabecalho-pagina">
+            <div>
+                <h1>Editar pedido</h1>
+                <p class="subtitulo">Deixe em branco o que não quiser alterar.</p>
+            </div>
+            <a class="btn" th:href="@{/pedidos/{id}(id=${pedido.id})}">Voltar</a>
+        </div>
+
+        <form th:action="@{/pedidos/{id}/editar(id = ${pedido.id})}" method="post" id="registrarForm" class="painel formulario-card">
+            <div class="grade-campos">
+
+                <div class="campo">
+                    <label for="titulo">Título</label>
+                    <input type="text" name="titulo" id="titulo" th:placeholder="${pedido.titulo}">
+                </div>
+
+                <div class="campo">
+                    <label for="destino">Destino</label>
+                    <select name="destino" id="destino">
+                        <option th:each="destino : ${destinos}"
+                                th:value="${destino.id}"
+                                th:text="${destino.nome}"
+                                th:selected="${destino.id == pedido.destino.id}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="status">Status</label>
+                    <select name="status" id="status">
+                        <option th:each="status : ${statusExistentes}"
+                                th:value="${status}"
+                                th:text="${status.descricao}"
+                                th:selected="${status == pedido.statusPedido}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="categoria">Categoria</label>
+                    <select name="categoria" id="categoria" onchange="trocarSelectTipo()">
+                        <option th:each="categoria : ${categoriasExistentes}"
+                                th:value="${categoria}"
+                                th:text="${categoria.descricao}"
+                                th:selected="${categoria == pedido.categoria}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo" id="grupoTipoOS" style="display: none;">
+                    <label for="tipoOS">Tipo de OS</label>
+                    <select name="tipoOS" id="tipoOS">
+                        <option th:each="tipoOs : ${tiposOsExistentes}"
+                                th:value="${tipoOs}"
+                                th:text="${tipoOs.descricao}"
+                                th:selected="${tipoOs == pedido.tipoOs}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo" id="grupoTipoTransporte" style="display: none;">
+                    <label for="tipoTransporte">Tipo de transporte</label>
+                    <select name="tipoTransporte" id="tipoTransporte">
+                        <option th:each="tipoTransporte : ${tiposTransporteExistentes}"
+                                th:value="${tipoTransporte}"
+                                th:text="${tipoTransporte.descricao}"
+                                th:selected="${tipoTransporte == pedido.tipoTransporte}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo largo">
+                    <label for="descricao">Descrição</label>
+                    <textarea name="descricao" id="descricao" th:placeholder="${pedido.descricao}"></textarea>
+                </div>
+
+            </div>
+
+            <div class="rodape-form">
+                <a class="btn" th:href="@{/pedidos/{id}(id=${pedido.id})}">Cancelar</a>
+                <button type="submit" id="botaoEnviar" class="btn btn-primario">Registrar</button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        function trocarSelectTipo() {
+            const categoria = document.getElementById("categoria").value;
+            const grupoOS = document.getElementById("grupoTipoOS");
+            const grupoTransporte = document.getElementById("grupoTipoTransporte");
+
+            grupoOS.style.display = categoria === "OS" ? "flex" : "none";
+            grupoTransporte.style.display = categoria === "TRANSPORTE" ? "flex" : "none";
+        }
+
+        trocarSelectTipo();
+    </script>
+</body>
+</html>

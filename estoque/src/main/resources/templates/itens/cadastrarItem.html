@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo item · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+        <div class="cabecalho-pagina">
+            <h1>Novo item</h1>
+            <a class="btn" th:href="@{/itens}">Voltar</a>
+        </div>
+
+        <form th:action="@{/itens/cadastrar}" method="post" enctype="multipart/form-data" class="painel formulario-card">
+            <div class="grade-campos">
+
+                <div class="campo">
+                    <label for="nomeFantasia">Nome fantasia</label>
+                    <input type="text" name="nomeFantasia" id="nomeFantasia" placeholder="Nome fantasia do item" required>
+                </div>
+
+                <div class="campo">
+                    <label for="nome">Nome</label>
+                    <input type="text" name="nome" id="nome" placeholder="Nome do item">
+                </div>
+
+                <div class="campo">
+                    <label for="rm">Código RM</label>
+                    <input type="text" name="rm" id="rm" maxlength="9" pattern="\d{2}\.\d{2}\.\d{3}" placeholder="00.00.000" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+
+                <div class="campo">
+                    <label for="quantidade">Quantidade</label>
+                    <input type="number" name="quantidade" id="quantidade" placeholder="Quantidade em estoque">
+                </div>
+
+                <div class="campo largo">
+                    <span class="rotulo">Foto</span>
+                    <input type="file" name="foto" id="foto" class="input-hidden" accept="image/*" onchange="mostrarPreViewFoto()">
+                    <label for="foto" class="custom-upload-label">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.8"/><path d="m21 15-5-5L5 21"/></svg>
+                        <img src="" id="preview" alt="Pré-visualização da foto">
+                        <strong>Escolha uma foto</strong>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="rodape-form">
+                <a class="btn" th:href="@{/itens}">Cancelar</a>
+                <button type="submit" id="botaoEnviar" class="btn btn-primario">Registrar</button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+    document.getElementById("rm").addEventListener("input", function(e) {
+        let value = e.target.value.replace(/\D/g, "");
+
+        if (value.length > 7) {
+            value = value.slice(0, 7);
+        }
+
+        if (value.length > 4) {
+            value = value.replace(/^(\d{2})(\d{2})(\d{0,3})$/, "$1.$2.$3");
+        } else if (value.length > 2) {
+            value = value.replace(/^(\d{2})(\d{0,2})$/, "$1.$2");
+        }
+
+        e.target.value = value;
+    });
+
+    function mostrarPreViewFoto() {
+        const input = document.getElementById("foto");
+        const preview = document.getElementById("preview");
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+
+                const textos = document.querySelectorAll(".custom-upload-label strong, .custom-upload-label svg");
+                textos.forEach(function (el) { el.style.display = "none"; });
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    </script>
+</body>
+</html>

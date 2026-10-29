@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos · Estoque CITEC</title>
+
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="pagina">
+
+        <div class="cabecalho-pagina">
+            <div>
+                <h1>Pedidos</h1>
+                <p class="subtitulo">Requisições de material, ordens de serviço e transportes.</p>
+            </div>
+
+            <div class="acoes">
+                <a class="btn btn-primario" th:href="@{/pedidos/cadastrar}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    Novo pedido
+                </a>
+            </div>
+        </div>
+
+        <form th:action="@{/pedidos}" method="get" class="filtros-barra" id="sub-head-movimentacao">
+            <div class="filtros">
+                <select name="status" id="filtroStatus" aria-label="Status">
+                    <option value="">Status</option>
+                    <option th:each="s : ${status}"
+                            th:value="${s}"
+                            th:text="${s.descricao}">
+                    </option>
+                </select>
+
+                <select name="destinoId" id="filtroDestino" aria-label="Destino">
+                    <option value="">Destino</option>
+                    <option th:each="local : ${destinos}"
+                            th:value="${local.id}"
+                            th:text="${local.nome}">
+                    </option>
+                </select>
+
+                <select name="itemId" id="filtroItem" aria-label="Item">
+                    <option value="">Item</option>
+                    <option th:each="item : ${itens}"
+                            th:value="${item.id}"
+                            th:text="${item.nome}">
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-primario">Filtrar</button>
+            </div>
+        </form>
+
+        <div class="paginacao">
+            <a th:if="${pagina.hasPrevious()}"
+               th:href="@{/pedidos(page=${pagina.number - 1}, size=${pagina.size})}">
+                ‹ Anterior
+            </a>
+
+            <span th:if="${pagina.hasPrevious() || pagina.hasNext()}">
+                Página <span th:text="${pagina.number + 1}"></span>
+                de <span th:text="${pagina.totalPages}"></span>
+            </span>
+
+            <a th:if="${pagina.hasNext()}"
+               th:href="@{/pedidos(page=${pagina.number + 1}, size=${pagina.size})}">
+                Próxima ›
+            </a>
+        </div>
+
+        <section class="painel historico">
+            <div class="tabela-wrap" th:if="${!pedidos.empty}">
+                <table>
+                    <thead>
+                        <tr class="cabecalho-table">
+                            <th>Título</th>
+                            <th>Status</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Itens</th>
+                            <th>Data</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="linha-historico" th:each="pedido : ${pedidos}">
+
+                            <td class="forte" th:text="${pedido.titulo}">titulo</td>
+
+                            <td>
+                                <span class="card-label-detalhe"
+                                      th:text="${pedido.status.descricao}"
+                                      th:classappend="${pedido.classeLabelStatus}"
+                                      th:if="${pedido.status.descricao == 'Recebido'}">recebido</span>
+
+                                <form th:action="@{/pedidos}" method="post" th:if="${pedido.status.descricao != 'Recebido'}">
+                                    <span class="select-pill">
+                                        <select name="novoStatus"
+                                                class="card-label-detalhe"
+                                                aria-label="Status do pedido"
+                                                th:classappend="${pedido.classeLabelStatus}">
+                                            <option th:each="s : ${status}"
+                                                    th:value="${s}"
+                                                    th:text="${s.descricao}"
+                                                    th:selected="${s == pedido.status}">
+                                            </option>
+                                        </select>
+                                    </span>
+                                    <button type="submit" name="update" class="btn btn-pequeno" th:value="${pedido.id}">Atualizar</button>
+                                </form>
+                            </td>
+
+                            <td class="suave"><div class="texto-corte" th:text="${pedido.descricao}" th:title="${pedido.descricao}">descricao</div></td>
+
+                            <td>
+                                <span class="card-label-detalhe"
+                                      th:text="${pedido.categoria.descricao}"
+                                      th:classappend="${pedido.classeLabelCategoria}">
+                                    categoria
+                                </span>
+                            </td>
+
+                            <td>
+                                <ul class="lista-itens-tabela" th:if="${!pedido.itens.isEmpty()}">
+                                    <li th:each="item, stat : ${pedido.itens}" th:if="${stat.index < 3}">
+                                        <span th:text="${item.item.nome}">nomeItem</span>
+                                        <span class="qtd" th:text="|${item.quantidade}x|">qntItem</span>
+                                    </li>
+                                </ul>
+                                <span class="suave" th:if="${pedido.itens.size() > 3}" th:text="|+ ${pedido.itens.size() - 3} item(ns)|">...</span>
+                                <span class="suave" th:if="${pedido.itens.isEmpty()}">—</span>
+                            </td>
+
+                            <td class="mono suave" th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy HH:mm')}">data</td>
+
+                            <td class="acoes-celula">
+                                <div class="acoes empilhadas">
+                                    <button type="button" class="btn btn-pequeno" id="botaoForm"
+                                            th:onclick="'window.location.href=\'/pedidos/' + ${pedido.id} + '\''">Detalhes</button>
+                                    <button type="button" class="btn btn-pequeno btn-perigo-suave"
+                                            th:onclick="'abrirModal(' + ${pedido.id} + ')'">Excluir</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vazio" th:if="${pedidos.empty}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+                <h3>Nenhum pedido registrado</h3>
+                <p>Crie um pedido para pedir material, abrir uma ordem de serviço ou agendar um transporte.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <form class="modal-fundo cadas" id="remover" method="post" th:action="@{/pedidos}">
+        <div class="modal-caixa popup" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-exc">
+            <h2 id="titulo-modal-exc">Excluir este pedido?</h2>
+            <p class="modal-texto">Essa ação não pode ser desfeita.</p>
+            <input type="hidden" name="remove" id="remove">
+            <div class="modal-rodape">
+                <button type="button" class="btn" onclick="fecharModal()">Voltar</button>
+                <button type="submit" class="btn btn-perigo">Excluir</button>
+            </div>
+        </div>
+    </form>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+        function abrirModal(id) {
+            document.getElementById("remove").value = id;
+            document.getElementById("remover").style.display = "flex";
+        }
+
+        function fecharModal() {
+            document.getElementById("remover").style.display = "none";
+        }
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") { fecharModal(); }
+        });
+
+        document.getElementById("remover").addEventListener("mousedown", function (e) {
+            if (e.target === this) { fecharModal(); }
+        });
+    </script>
+</body>
+</html>
