@@ -11,18 +11,6 @@ Projeto de portfólio feito em **Java + Spring Boot + Thymeleaf**. O back-end fo
 
 ---
 
-## Telas
-
-> Adicione aqui capturas de tela reais do sistema rodando, na pasta `docs/img/`.
-> Sugestão: login, lista de projetos, detalhe de um projeto, lista de itens e detalhe de pedido.
-
-```md
-![Projetos](docs/img/projetos.png)
-![Itens](docs/img/itens.png)
-```
-
----
-
 ## O que o sistema faz
 
 - **Projetos (locais de estoque):** cada projeto, aula ou setor do CITEC tem o próprio estoque, com solicitante, responsáveis, categoria e status.
